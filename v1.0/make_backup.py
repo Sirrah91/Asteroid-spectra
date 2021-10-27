@@ -13,7 +13,7 @@ def make_backup(version: str, ) -> None:
     check_dir(backup_dir_modules)
 
     # copy main and make_backup
-    source = "".join((project_dir, 'ma*.py'))
+    source = "".join((project_dir, '/ma*.py'))
     for file in glob(source):
         copy2(file, backup_dir)
 

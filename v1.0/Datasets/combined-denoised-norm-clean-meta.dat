@@ -1,0 +1,510 @@
+DP-JNG-006	Tuxtuac M-LL5-860C (Tuxtac LL5) chondrules <125 um	JNG	Other-Met	Rock	nan	Ordinary Chondrite	LL5 Chondrule	nan	0.0	125.0	Yes	Particulate Ground Sorted	Zacatecas, Mexico	Physical Research Lab	0.0	Asteroid-meteorite comparison
+DP-JNG-007	Tuxtuac M-LL5-860 (Tuxtac LL5) bulk <125 um	JNG	Other-Met	Rock	nan	Ordinary Chondrite	LL5	nan	0.0	125.0	Yes	Particulate Ground Sorted	Zacatecas, Mexico	Physical Research Lab	0.0	Asteroid-meteorite comparison
+DP-JNG-015	Saint Severin M-LL6-652 (St. Severin) bulk <125 um	JNG	Other-Met	Rock	nan	Ordinary Chondrite	LL6	nan	0.0	125.0	Yes	Particulate Ground Sorted	Poitou-Charentes, France	Physical Research Lab	0.0	Asteroid-meteorite comparison
+MT-DTB-057	Portales Valley 	DTB	Other-Met	Rock	nan	Ordinary Chondrite	H 	nan	20.0	250.0	Yes	Particulate	Portales Valley 	Univ. of Arizona	0.0	nan
+MT-HYM-078	Alta'ameem	HYM	Other-Met	Rock	nan	Ordinary Chondrite	LL5	nan	0.0	150.0	Yes	Particulate Ground Sorted	Iraq	University of Tennessee	0.0	From the Natural History Museum in London
+MT-HYM-080	Tuxtuac	HYM	Other-Met	Rock	nan	Ordinary Chondrite	LL5	nan	0.0	150.0	Yes	Particulate Ground Sorted	Zacatecas, Mexico	University of Tennessee	0.0	From the Natural History Museum in London
+OC-SXS-022-D	Bensour (LL6) <250 um	SXS	Other-Met	Rock	nan	Ordinary Chondrite	LL6	nan	0.0	250.0	Yes	Particulate Ground Sorted	nan	Mizusawa Observatory	0.0	nan
+TB-TJM-063	Air	TJM	Other-Met	Rock	nan	Ordinary Chondrite	L6	nan	0.0	150.0	Yes	Particulate Ground	Agadez, Niger	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-064	Apt	TJM	Other-Met	Rock	nan	Ordinary Chondrite	L6	nan	0.0	150.0	Yes	Particulate Ground	Vaucluse, France	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-066	Avanhandava	TJM	Other-Met	Rock	nan	Ordinary Chondrite	H4	nan	0.0	150.0	Yes	Particulate Ground	Sao Paulo, Brazil	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-069	Butsura	TJM	Other-Met	Rock	nan	Ordinary Chondrite	H6	nan	0.0	150.0	Yes	Particulate Ground	Champaran district, Bihar, India	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-094	Guarena	TJM	Other-Met	Rock	nan	Ordinary Chondrite	H6	nan	0.0	150.0	Yes	Particulate Ground	Badajos, Spain	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-097	Itapicuru-Mirim	TJM	Other-Met	Rock	nan	Ordinary Chondrite	H5	nan	0.0	150.0	Yes	Particulate Ground	Maranhao, Brazil	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-101	Aumale	TJM	Other-Met	Rock	nan	Ordinary Chondrite	L6	nan	0.0	150.0	Yes	Particulate Ground	Sour el Ghozlane, Alger, Algeria	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-104	Allegan	TJM	Other-Met	Rock	nan	Ordinary Chondrite	H5	nan	0.0	0.0	Yes	Particulate Ground	Allegan County, Michigan, USA	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-109	Malakal	TJM	Other-Met	Rock	nan	Ordinary Chondrite	L5	nan	0.0	150.0	Yes	Particulate Ground	Upper Nile Province, Sudan	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-125	Allegan	TJM	Other-Met	Rock	nan	Ordinary Chondrite	H5	nan	0.0	150.0	Yes	Particulate Ground	Allegan County, Michigan, USA	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-145	Saint Severin	TJM	Other-Met	Rock	nan	Ordinary Chondrite	LL6	nan	0.0	150.0	Yes	Particulate Ground	Hartford County, Connecticut, USA	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+MB-CMP-001	Tsarev powder	CMP	Other-Met	Rock	nan	Ordinary Chondrite	L5	nan	0.0	0.0	Yes	Particulate Ground Sorted	Volgograd, USSR 	Relab (DTB) 	0.0	Sample has slab,powder and magnetic separate spectra Chip in Relab D1-C3.
+MB-CMP-001-P2	Tsarev	CMP	Other-Met	Rock	nan	Ordinary Chondrite	L5	nan	0.0	63.0	Yes	Particulate Ground Sorted	Volgograd, USSR 	Relab (DTB) 	0.0	Sample has slab,powder and magnetic separate spectra Chip in Relab D1-C3.
+MT-HYM-077	Aldsworth	HYM	Other-Met	Rock	nan	Ordinary Chondrite	LL5	nan	0.0	150.0	Yes	Particulate Ground Sorted	Gloucestershire, England	University of Tennessee	0.0	From the Natural History Museum in London
+MT-HYM-083	Benares (a)	HYM	Other-Met	Rock	nan	Ordinary Chondrite	LL4	nan	0.0	150.0	Yes	Particulate Ground Sorted	Uttar Pradesh, India	University of Tennessee	0.0	From the Natural History Museum in London
+MT-HYM-085	Olivenza	HYM	Other-Met	Rock	nan	Ordinary Chondrite	LL5	nan	0.0	150.0	Yes	Particulate Ground Sorted	Spain	University of Tennessee	684.0	From Smithsonian
+OC-TXH-001-A	Cherokee Springs (LL6) chip	TXH	Other-Met	Rock	nan	Ordinary Chondrite	LL6	nan	0.0	0.0	nan	Chip	Spartenburg County, South Caroline, USA	Smithsonian National Museum of Natural History	0.0	USNM 1319
+OC-TXH-001-B	Cherokee Springs (LL6) 125-500 um	TXH	Other-Met	Rock	nan	Ordinary Chondrite	LL6	nan	125.0	500.0	Yes	Particulate Ground Sorted	Spartenburg County, South Caroline, USA	Smithsonian National Museum of Natural History	0.0	USNM 1319
+OC-TXH-001-C	Cherokee Springs (LL6) <125 um	TXH	Other-Met	Rock	nan	Ordinary Chondrite	LL6	nan	0.0	125.0	Yes	Particulate Ground Sorted	Spartenburg County, South Caroline, USA	Smithsonian National Museum of Natural History	0.0	USNM 1319
+OC-TXH-009-B	Olivenza (LL5) 125-500 um	TXH	Other-Met	Rock	nan	Ordinary Chondrite	LL5	nan	125.0	500.0	Yes	Particulate Ground Sorted	Badajoz, Spain	Field Museum	0.0	ME 2095
+OC-TXH-009-C	Olivenza (LL5) <125 um	TXH	Other-Met	Rock	nan	Ordinary Chondrite	LL5	nan	0.0	125.0	Yes	Particulate Ground Sorted	Badajoz, Spain	Field Museum	0.0	ME 2095
+RS-CMP-047-P1	Tsarev powder	CMP	Other-Met	Rock	nan	Ordinary Chondrite	L5	nan	0.0	250.0	Yes	Particulate	Volgograd, USSR 	University of Arizona	0.0	Also in Relab C1-H4.Sample #15384,1a/T Dark Lithology Slab plus powders
+RS-CMP-047-P10	Tsarev 45-63 um	CMP	Other-Met	Rock	nan	Ordinary Chondrite	L5	nan	45.0	63.0	Yes	Particulate	Volgograd, USSR 	University of Arizona	0.0	Also in Relab C1-H4.Sample #15384,1a/T Dark Lithology Slab plus powders
+RS-CMP-047-P4	Tsarev <63 um	CMP	Other-Met	Rock	nan	Ordinary Chondrite	L5	nan	0.0	63.0	Yes	Particulate	Volgograd, USSR 	University of Arizona	0.0	Also in Relab C1-H4.Sample #15384,1a/T Dark Lithology Slab plus powders
+RS-CMP-047-P8	Tsarev <25 um	CMP	Other-Met	Rock	nan	Ordinary Chondrite	L5	nan	0.0	25.0	Yes	Particulate	Volgograd, USSR 	University of Arizona	0.0	Also in Relab C1-H4.Sample #15384,1a/T Dark Lithology Slab plus powders
+RS-CMP-047-P9	Tsarev 25-45 um	CMP	Other-Met	Rock	nan	Ordinary Chondrite	L5	nan	25.0	45.0	Yes	Particulate	Volgograd, USSR 	University of Arizona	0.0	Also in Relab C1-H4.Sample #15384,1a/T Dark Lithology Slab plus powders
+RS-CMP-062-P1	Kunashak powder #1	CMP	Other-Met	Rock	nan	Ordinary Chondrite	L6	nan	0.0	0.0	Yes	Particulate	USSR	Relab (DTB) 	0.0	No I723   
+TB-TJM-067	Bandong	TJM	Other-Met	Rock	nan	Ordinary Chondrite	LL6	nan	0.0	150.0	Yes	Particulate Ground	Java, Indonesia	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-075	Greenwell Springs	TJM	Other-Met	Rock	nan	Ordinary Chondrite	LL4	nan	0.0	150.0	Yes	Particulate Ground	nan	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-077	Karatu	TJM	Other-Met	Rock	nan	Ordinary Chondrite	LL6	nan	0.0	75.0	Yes	Particulate Ground	Arusha, Tanzania	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-090	Cherokee Springs	TJM	Other-Met	Rock	nan	Ordinary Chondrite	LL6	nan	0.0	150.0	Yes	Particulate Ground	Spartenburg Co., SC	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-102	Bald Mountain	TJM	Other-Met	Rock	nan	Ordinary Chondrite	L4	nan	0.0	150.0	Yes	Particulate Ground	Yancy County, North Carolina, USA	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-103	Girgenti	TJM	Other-Met	Rock	nan	Ordinary Chondrite	L6	nan	0.0	150.0	Yes	Particulate Ground	Sicily, Italy	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-132	Chiang Khan	TJM	Other-Met	Rock	nan	Ordinary Chondrite	H5	nan	0.0	150.0	Yes	Particulate Ground	Loei, Thailand	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-135	Ipiranga	TJM	Other-Met	Rock	nan	Ordinary Chondrite	H6	nan	0.0	150.0	Yes	Particulate Ground	Lageado Ipiranga, Foz do Iguacu, Parana, Brazil	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-137	Karkh	TJM	Other-Met	Rock	nan	Ordinary Chondrite	L6	nan	0.0	150.0	Yes	Particulate Ground	Jhalawan, Baluchistan, Pakistan	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-139	Kunashak	TJM	Other-Met	Rock	nan	Ordinary Chondrite	L6	nan	0.0	150.0	Yes	Particulate Ground	Chelyabinsk region, Federated SSR, USSR	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+TB-TJM-140	Kyushu	TJM	Other-Met	Rock	nan	Ordinary Chondrite	L6	nan	0.0	150.0	Yes	Particulate Ground	Kyushu, Japan	Smithsonian Inst 	0.0	Ordinary chondrite powder studied by Jarosevich, Meteoritics, 323-337, 1990.  Almost all metal removed.  USNM 7073
+LM-LAM-009-A	ALH 77005,112 	LAM	Mars-Met	Rock	nan	Igneous	Shergottite	nan	0.0	0.0	nan	Natural 	Allan Hills, Antarctica 	JSC, Houston, TX	0.0	(A) Exposed face
+LM-LAM-009-B	ALH 77005,112 	LAM	Mars-Met	Rock	nan	Igneous	Shergottite	nan	0.0	0.0	nan	Natural 	Allan Hills, Antarctica 	JSC, Houston, TX	0.0	(B) Large internal face opposite of (A). 
+LM-LAM-009-D	ALH 77005,112 	LAM	Mars-Met	Rock	nan	Igneous	Shergottite	nan	0.0	0.0	nan	Natural 	Allan Hills, Antarctica 	JSC, Houston, TX	0.0	(D) Black part on (B). 
+LM-LAM-023	Lafayette 	LAM	Mars-Met	Rock	nan	Igneous	Nakhlite	nan	0.0	100.0	Yes	Particulate	Tippecanoe Co., Indiana 	CSI 	0.0	nan
+MB-CMP-026	MAC 88177 chips	CMP	Other-Met	Rock	nan	Achondrite	Lodranite 	nan	0.0	0.0	nan	Slab	MacAlpine Hills, Antarctica	nan	0.0	nan
+MB-TXH-037	Y-74357,2 	TXH	Other-Met	Rock	nan	Achondrite	Lodranite 	nan	0.0	0.0	nan	Slab	Yamato Mtn. Range, Anarctica	NIPR Tokyo, Japan 	0.0	nan
+MP-TXH-071-A	ALH 77256,143 	TXH	Other-Met	Rock	nan	Achondrite	Basaltic HED Diogenite	nan	0.0	25.0	Yes	Particulate	Allan Hills, Antarctica 	NASA JSC 	0.0	Rusted.   
+MT-JPE-302	MAC 88177,53 chip	JPE	Other-Met	Rock	nan	Achondrite	Primitive Achondrite Lodranite	nan	nan	nan	nan	Chip	MacAlpine Hills, Antarctica	University of Tennessee	0.0	nan
+MT-JPE-302-A	MAC 88177,53 powder <125 um (metals removed)	JPE	Other-Met	Rock	nan	Achondrite	Primitive Achondrite Lodranite	nan	0.0	125.0	Yes	Particulate Ground Sorted	MacAlpine Hills, Antarctica	University of Tennessee	0.0	nan
+RM-REM-123	ALH 77256,34 chip	REM	Other-Met	Rock	nan	Achondrite	Basaltic HED Olivine-Diogenite	nan	0.0	0.0	nan	Chip	Allan Hills, Antarctica	NASA JSC - Univ. Notre Dame	0.0	HED mixing model study
+RM-REM-123-A	ALH 77256,34 <45 um	REM	Other-Met	Rock	nan	Achondrite	Basaltic HED Olivine-Diogenite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Allan Hills, Antarctica	NASA JSC - Brown University	0.0	HED mixing model study
+RM-REM-123-P	ALH 77256,34 bulk powder	REM	Other-Met	Rock	nan	Achondrite	Basaltic HED Olivine-Diogenite	nan	0.0	1000.0	Yes	Particulate Ground Unsorted	Allan Hills, Antarctica	NASA JSC - Brown University	0.0	HED mixing model study
+RM-REM-126	MIL 03443,19 chip	REM	Other-Met	Rock	nan	Achondrite	Basaltic HED Olivine-Diogenite	nan	0.0	0.0	nan	Chip	Miller Range, Antarctica	NASA JSC - Univ. Notre Dame	0.0	HED mixing model study
+RM-REM-126-A	MIL 03443,19 <45 um	REM	Other-Met	Rock	nan	Achondrite	Basaltic HED Olivine-Diogenite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Miller Range, Antarctica	NASA JSC - Brown University	0.0	HED mixing model study
+RM-REM-126-P	MIL 03443,19 bulk powder	REM	Other-Met	Rock	nan	Achondrite	Basaltic HED Olivine-Diogenite	nan	0.0	1000.0	Yes	Particulate Ground Unsorted	Miller Range, Antarctica	NASA JSC - Brown University	0.0	HED mixing model study
+MB-TXH-038	Y-791491,20 	TXH	Other-Met	Rock	nan	Achondrite	Lodranite 	nan	0.0	0.0	nan	Slab	Yamato Mtn. Range, Anarctica	NIPR Tokyo, Japan 	0.0	nan
+MT-TXH-049	Brachina chip	TXH	Other-Met	Rock	nan	Achondrite	Brachinite	nan	0.0	0.0	nan	Chip	Near Brachina, S. Australia 	S. Australian Museum	0.0	Rusted and crambled   Chip
+MT-TXH-049-A	Brachina <45 um	TXH	Other-Met	Rock	nan	Achondrite	Brachinite	nan	0.0	45.0	Yes	Chip Particulate 	Near Brachina, S. Australia 	S. Australian Museum	0.0	Rusted and crambled 
+AG-TJM-012	85% LCP + 15% HCP	TJM	Earth	Mineral	nan	Mixture 	Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-013	50% LCP + 50% HCP	TJM	Earth	Mineral	nan	Mixture 	Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-014	70% OL + 30% LCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-015	40% OL + 51% LCP + 9% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-016	80% OL + 10% PLG + 8.5% LCP + 1.5% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-017	10% OL + 90% LCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-018	30% OL + 70% LCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-019	50% OL + 50% LCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-020	90% OL + 10% LCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-021	20% OL + 68% LCP + 12% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-022	30% OL + 59.5% LCP + 10.5% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-023	50% OL + 42.5% LCP + 7.5% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-024	60% OL + 34% LCP + 6% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-025	70% OL + 25.5% LCP + 4.5% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-026	80% OL + 17% LCP + 3% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-027	10% PLG + 45% LCP + 45% HCP	TJM	Earth	Mineral	nan	Mixture 	Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-028	20% PLG + 40% LCP + 40% HCP	TJM	Earth	Mineral	nan	Mixture 	Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-029	30% PLG + 35% LCP + 35% HCP	TJM	Earth	Mineral	nan	Mixture 	Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-032	90% OL + 5% PLG + 4.25% LCP + 0.75% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-033	70% OL + 15% PLG + 12.75% LCP + 2.25% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-034	60% OL + 20% PLG + 17% LCP + 3% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-035	20% OL + 40% LCP + 40% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-036	30% OL + 35% LCP + 35% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-037	40% OL + 30% LCP + 30% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-038	50% OL + 25% LCP + 25% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-039	60% OL + 20% LCP + 20% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-040	70% OL + 15% LCP + 15% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-041	80% OL + 10% LCP + 10% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-042	10% PLG + 76.5% LCP + 13.5% HCP	TJM	Earth	Mineral	nan	Mixture 	Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-043	20% PLG + 68% LCP + 12% HCP	TJM	Earth	Mineral	nan	Mixture 	Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-044	30% PLG + 59.5% LCP + 10.5% HCP	TJM	Earth	Mineral	nan	Mixture 	Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-047	90% OL + 5% PLG + 2.5% LCP + 2.5% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-048	80% OL + 10% PLG + 5% LCP + 5% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-049	70% OL + 15% PLG + 7.5% LCP + 7.5% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+AG-TJM-050	60% OL + 20% PLG + 10% LCP + 10% HCP	TJM	Earth	Mineral	nan	Mixture 	Olivine Plagioclase  Hypersthene Augite	nan	0.0	38.0	Yes	Particulate Ground Sorted	nan	Smithsonian Inst.	0.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+JB-JLB-A15	50 wt% Forsterite (JB945D) + 50 wt% Enstatite (JBA14A)	JLB	Earth	Mineral	nan	Mixture	Olivine Forsterite Pyroxene Orthopyroxene Enstatite	nan	0.0	125.0	Yes	Particulate Ground Dry-Sieved	San Carlos, Arizona and Bergen, Norway	Bishop Lab, SETI Institute	0.0	Spectroscopy of synthetic ureilite mixtures (MDAP, MFRP, Active Missions, Prop Prep)
+JB-JLB-A16	25 wt% Forsterite (JB945D) + 75 wt% Enstatite (JBA14A)	JLB	Earth	Mineral	nan	Mixture	Olivine Forsterite Pyroxene Orthopyroxene Enstatite	nan	0.0	125.0	Yes	Particulate Ground Dry-Sieved	San Carlos, Arizona and Bergen, Norway	Bishop Lab, SETI Institute	0.0	Spectroscopy of synthetic ureilite mixtures (MDAP, MFRP, Active Missions, Prop Prep)
+JB-JLB-A17	75 wt% Forsterite (JB945D) + 25 wt% Enstatite (JBA14A)	JLB	Earth	Mineral	nan	Mixture	Olivine Forsterite Pyroxene Orthopyroxene Enstatite	nan	0.0	125.0	Yes	Particulate Ground Dry-Sieved	San Carlos, Arizona and Bergen, Norway	Bishop Lab, SETI Institute	0.0	Spectroscopy of synthetic ureilite mixtures (MDAP, MFRP, Active Missions, Prop Prep)
+JB-JLB-A18	47.5 wt% Forsterite (JB945D) + 47.5 wt% Enstatite (JBA14A) + 5 wt% graphite (JBA05)	JLB	Earth	Mineral	nan	Mixture	Olivine Forsterite Pyroxene Orthopyroxene Enstatite	nan	0.0	125.0	Yes	Particulate Ground Dry-Sieved	San Carlos, Arizona and Bergen, Norway	Bishop Lab, SETI Institute	0.0	Spectroscopy of synthetic ureilite mixtures (MDAP, MFRP, Active Missions, Prop Prep)
+JB-JLB-A19	48 wt% Forsterite (JB945D) + 48 wt% Enstatite (JBA14A) + 3-4 wt% graphite (JBA05)	JLB	Earth	Mineral	nan	Mixture	Olivine Forsterite Pyroxene Orthopyroxene Enstatite	nan	0.0	125.0	Yes	Particulate Ground Dry-Sieved	San Carlos, Arizona and Bergen, Norway	Bishop Lab, SETI Institute	0.0	Spectroscopy of synthetic ureilite mixtures (MDAP, MFRP, Active Missions, Prop Prep)
+MX-JPE-019-A	50% San Carlos olivine + 50% Tanzania enstatite mixture <125 um	JPE	Earth	Mineral	nan	Mixture	Olivine Pyroxene Orthopyroxene Enstatite	nan	0.0	125.0	Yes	Particulate Ground Sorted	San Carlos, AZ & Tanzania, Africa	University of Tennessee	0.0	As a control for terrestrial weathering removal treatment
+MX-RGM-066	25% HCP (PX-18) + 75% LCP (PX-17) <25 um	RGM	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Mixture	nan	0.0	25.0	Yes	Particulate Ground Sieved	Synthesized by Donald Lindsley at SUNY Stonybrook	Texas Christian University	0.0	nan
+MX-RGM-067	50% HCP (PX-18) + 50% LCP (PX-17) <25 um	RGM	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Mixture	nan	0.0	25.0	Yes	Particulate Ground Sieved	Synthesized by Donald Lindsley at SUNY Stonybrook	Texas Christian University	0.0	nan
+MX-RGM-068	75% HCP (PX-18) + 25% LCP (PX-17) <25 um	RGM	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Mixture	nan	0.0	25.0	Yes	Particulate Ground Sieved	Synthesized by Donald Lindsley at SUNY Stonybrook	Texas Christian University	0.0	nan
+XP-CMP-001	Mixture 50% PE-32, 50% PP-23  Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clino Diopside Enstatite	nan	75.0	125.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	Mixture 50% PE-32, 50% PP-23  Origin PE-30,PP-21
+XP-CMP-002	60% Opx 40% Cpx   Origin PE-030, PP-021 	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	75.0	125.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	60% Opx 40% Cpx   Origin PE-030, PP-021 
+XP-CMP-003	40% Opx 60% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	75.0	125.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	40% Opx 60% Cpx   Origin PE-30,PP-21
+XP-CMP-004	75% Opx 25% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	75.0	127.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	75% Opx 25% Cpx   Origin PE-30,PP-21
+XP-CMP-005	25% Opx 75% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	75.0	125.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	25% Opx 75% Cpx   Origin PE-30,PP-21
+XP-CMP-006	85% Opx 15% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	75.0	127.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	85% Opx 15% Cpx   Origin PE-30,PP-21
+XP-CMP-007	15% Opx 85% Cpx   	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	75.0	125.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	15% Opx 85% Cpx   
+XP-CMP-010	50% Opx 50% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	0.0	45.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	50% Opx 50% Cpx   Origin PE-30,PP-21
+XP-CMP-011	60% Opx 40% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	0.0	45.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	60% Opx 40% Cpx   Origin PE-30,PP-21
+XP-CMP-012	40% Opx 60% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	0.0	45.0	Yes	Particulate	Relab 	Relab C1-E2 	0.0	40% Opx 60% Cpx   Origin PE-30,PP-21
+XP-CMP-013	75% Opx 25% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	0.0	45.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	75% Opx 25% Cpx   Origin PE-30,PP-21
+XP-CMP-014	25% Opx 75% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	0.0	45.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	25% Opx 75% Cpx   Origin PE-30,PP-21
+XP-CMP-015	85% Opx 15% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	0.0	45.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	85% Opx 15% Cpx   Origin PE-30,PP-21
+XP-CMP-016	15% Opx 85% Cpx   Origin PE-30,PP-21	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	0.0	45.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	15% Opx 85% Cpx   Origin PE-30,PP-21
+XP-CMP-017	25 Opx 75 Cpx <45 	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Ortho Clino Diopside Enstatite	nan	0.0	45.0	Yes	Particulate	Relab 	Relab unknown 	0.0	Mixture of 25% Enstatite (Websterite) 75% Hawaii Diopside   Origin PE-30,PP-21
+XP-CMP-020	Opx/Cpx 50/50 	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	45.0	75.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	Origin PE-30,PP-21  
+XP-CMP-021	Opx/Cpx 60/40 	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	45.0	75.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	Origin PE-30,PP-21  
+XP-CMP-022	Opx/Cpx 40/60 	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	45.0	75.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	Origin PE-30,PP-21  Opx 40% Cpx 60% 
+XP-CMP-023	Opx/Cpx 75/25 	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	45.0	75.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	websterite / hawaii cpx mixtures  Origin PE-30,PP-21
+XP-CMP-024	Opx/Cpx 25/75 	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	45.0	75.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	Origin PE-30,PP-21  
+XP-CMP-025	Opx/Cpx 85/15 	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	45.0	75.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	Origin PE-30,PP-21  
+XP-CMP-026	Opx/Cpx 15/85 	CMP	Earth	Mineral	nan	Mixture 	Binary Pyroxene Clinopyroxene Diopside Enstatite	nan	45.0	75.0	Yes	Particulate	Relab 	Relab C1-E1 	0.0	Origin PE-30,PP-21  
+AG-TJM-010	Augite	TJM	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Kakanui, New Zealand	Smithsonian Inst.	636.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+CP-JJG-001-A	C-Px <25 um	JJG	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite	nan	0.0	25.0	Yes	Particulate Ground Sorted	Czech	University of Hawaii	814.0	nan
+CP-JJG-001-B	C-Px 25-45 um	JJG	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite	nan	25.0	45.0	Yes	Particulate Ground Sorted	Czech	University of Hawaii	814.0	nan
+CP-JJG-001-C	C-Px 45-53 um	JJG	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite	nan	45.0	53.0	Yes	Particulate Ground Sorted	Czech	University of Hawaii	814.0	nan
+CP-JJG-001-D	C-Px 53-63 um	JJG	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite	nan	53.0	63.0	Yes	Particulate Ground Sorted	Czech	University of Hawaii	814.0	nan
+CP-JJG-001-E	C-Px 63-75 um	JJG	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite	nan	63.0	75.0	Yes	Particulate Ground Sorted	Czech	University of Hawaii	814.0	nan
+CP-JJG-001-F	C-Px 75-150 um	JJG	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite	nan	75.0	150.0	Yes	Particulate Ground Sorted	Czech	University of Hawaii	814.0	nan
+DD-MDD-003	Nakhla augite	MDD	Mars-Met	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite	nan	0.0	50.0	Yes	Particulate Ground Unsorted	Abu Hommos, Alexandria, Egypt	NMNH	0.0	Separated by hand picking, then ground.
+DD-MDD-005	Los Angeles pyroxene	MDD	Mars-Met	Mineral	nan	Silicate (Ino)	Pyroxene	nan	0.0	50.0	Yes	Particulate Ground Unsorted	Los Angeles, CA	NMNH	563.0	Separated by hand picking, then ground.
+DD-MDD-008	Zagami pyroxene	MDD	Mars-Met	Mineral	nan	Silicate (Ino)	Pyroxene	nan	0.0	50.0	Yes	Particulate Ground Unsorted	Katsina Province, Nigeria	NMNH	564.0	Separated by hand picking, then ground.
+DD-MDD-057	EETA 79001,596 lith-A pyroxene <45 um	MDD	Mars-Met	Mineral	nan	Silicate (Ino)	Pyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Elephant Moraine, Antarctica	JSC	0.0	nan
+DD-MDD-058	EETA 79001,60 lith-B pyroxene <45 um	MDD	Mars-Met	Mineral	nan	Silicate (Ino)	Pyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Elephant Moraine, Antarctica	JSC	0.0	nan
+DL-CMP-009	Wo 10 En 45 Fs 45 (EFW5-13: 99.5% cpx, 0.5% glass)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Turnock.
+DL-CMP-009-A	Wo 10 En 45 Fs 45 (EFW5-13) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	PGG.  From Turnock.
+DL-CMP-010	Wo 10 En 63 Fs 27 (EFW13-4: 100% cpx, trCrist)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Turnock.
+DL-CMP-010-A	Wo 10 En 63 Fs 27 (EFW13-4, 100% cpx) < 45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	PGG.  From Turnock.
+DL-CMP-011	Wo 10 En 36 Fs 54 (E35-6: 100% cpx, triCrist)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Turnock.
+DL-CMP-011-A	Wo 10 En 36 Fs 54 (E35-6, 100% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	PGG.  From Turnock.
+DL-CMP-013	Wo 8 En 46 Fs 46 (E40-1: 99.5% cpx, 0.5% glass, Crist)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Turnock.
+DL-CMP-013-A	Wo 8 En 46 Fs 46 (E40-1: 99.5% cpx, 0.5% glass, Crist) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-017-A	Wo 20 En 64 Fs 16 (EFW8-3, 99.5% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-018-A	Wo 10 En 72 Fs 18 (EFW9-18, 100% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-019-A	Wo 20 En 56 Fs 24 (EFW12-3, 99.5% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-039-A	Wo 50 En 25 Fs 25 (D5-26, 99% aug) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-046-A	Wo 15 En 34 Fs 51 (E43-100, 70% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-047-A	Wo 25 En 30 Fs 45 (E44-101, 95-98% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-048-A	Wo 10 En 13.5 Fs 76.5 (B) (Wo 10 X=85 B)<45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-049-A	Wo 10 En 13.5 Fs 76.5 (Wo 10 X=85) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-050-A	Wo 15 En 21 Fs 64 (B) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-051-A	Wo 20 En 40 Fs 40 (EFW4-9, 100% pyx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-053-A	Wo 10 En 22.5 Fs 67.5 (B) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-054-A	Wo 15 En 6.8 Fs 78 (A) (Wo 15 X=92) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-055-A	Wo 20 En 20 Fs 60 (A) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-056-A	Wo 20 En 20 Fs 60 (B) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-057-A	Wo 20 En 32 Fs 48 (EFW34-2, 100% pyx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-058-A	Wo 25 En 30 Fs 45 (D) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-066-A	Wo 30 En 17.5 Fs 52.5 (A) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-067-A	Wo 30 En 49 Fs 21 (EFW11-4, 95% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-068-A	Wo 30 En 28 Fs 42 (E33-16, 100% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-069-A	Wo 35 En 20 Fs 46 (E46-7, 99.7% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-070-A	Wo 40 En 15 Fs 45 (B) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-071-A	Wo 40 En 24 Fs 36 (EFW1-2, 100% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-073-A	Wo 30 En 35 Fs 35 (EFW3-9, 99% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-074-A	Wo 30 En 21 Fs 49 (E27-1, 97% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-075-A	Wo 40 En 48 Fs 12 (E6-7, 100% pyx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-076-A	Wo 40 En 10 Fs 50 (EFW17-2, 95% pyx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-077-A	Wo 40 En 55 Fs 5 (EFW19-3, 100% pyx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-079-A	Wo 40 En 30 Fs 30 (EFW2-7, 100% pyx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-080-A	Wo 40 En 20 Fs 40 (EFW15-10, 100% pyx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-081-A	Wo 35 En 26 Fs 39 (E42-106, 100% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-082-A	Wo 50 Fs 50 (Ca Hd O) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Hedenbergite 	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2008) Meteoritics & Planetary Science 43, 1591-1604.
+DL-CMP-084-A	Wo 35 Fs 65 (C) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-085-A	Wo 30 Fs 70 (C) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-086-A	Wo 25 Fs 75 (G) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-087-A	Wo 20 Fs 80 (I) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-088-A	Wo 10 Fs 90 (E,D) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-089-A	Wo 7 Fs 93 (C) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+JB-JLB-A38	Pigeonite from G2 basaltic rock 250-500 um	JLB	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	nan	250.0	500.0	Yes	Particulate Ground Wet-Sieved	Wilhelmsbad, Vogelsberg, Germany	Bishop Lab, SETI Institute	0.0	Prepared by Jan Harloff, picked by Jerry Marchand
+JB-JLB-A38-B	Pigeonite from G2 basaltic rock 90-125 um	JLB	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	nan	90.0	125.0	Yes	Particulate Ground Wet-Sieved	Wilhelmsbad, Vogelsberg, Germany	Bishop Lab, SETI Institute	0.0	Prepared by Jan Harloff, picked by Jerry Marchand
+JB-JLB-A39	Pigeonite from G3 basaltic rock 250-500 um	JLB	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	nan	250.0	500.0	Yes	Particulate Ground Wet-Sieved	Brockenheim, Vogelsberg, Germany	Bishop Lab, SETI Institute	0.0	Prepared by Jan Harloff, picked by Jerry Marchand
+LR-CMP-168	15555,965 reddish-brown pyroxene B	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite Mg-Poor	nan	0.0	125.0	Yes	Particulate Ground Sorted	Apollo 15 site, Moon	JSC PGI Brown 	672.0	Mineral separate from Apollo 15 basalt (LRMCC)
+LR-CMP-170	15555,965 light-brown pyroxene B	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite Mg-Rich Subcalcic	nan	0.0	125.0	Yes	Particulate Ground Sorted	Apollo 15 site, Moon	JSC PGI Brown 	673.0	Mineral separate from Apollo 15 basalt (LRMCC)
+LR-CMP-172	15058,276 brown pyroxene	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite 	nan	0.0	125.0	Yes	Particulate Ground Sorted	Apollo 15 site, Moon	JSC PGI Brown 	663.0	Mineral separate from Apollo 15 basalt (LRMCC)
+LR-CMP-173	15058,276 green pyroxene	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene/Pigeonite	nan	0.0	125.0	Yes	Particulate Ground Sorted	Apollo 15 site, Moon	JSC PGI Brown 	664.0	Mineral separate from Apollo 15 basalt (LRMCC)
+LR-CMP-175	70017,535 deep-brown pyroxene B	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite	nan	0.0	125.0	Yes	Particulate Ground Sorted	Apollo 17 site, Moon	JSC PGI Brown 	676.0	Mineral separate from Apollo 17 basalt (LRMCC)
+LR-CMP-176	70017,535 light-brown pyroxene B	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	nan	0.0	125.0	Yes	Particulate Ground Sorted	Apollo 17 site, Moon	JSC PGI Brown 	677.0	Mineral separate from Apollo 17 basalt (LRMCC)
+LR-CMP-179	70035,188 deep-brown pyroxene B	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite 	nan	0.0	125.0	Yes	Particulate Ground Sorted	Apollo 17 site, Moon	JSC PGI Brown 	666.0	Mineral separate from Apollo 17 basalt (LRMCC)
+LR-CMP-180	70035,188 light-brown pyroxene B	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	nan	0.0	125.0	Yes	Particulate Ground Sorted	Apollo 17 site, Moon	JSC PGI Brown 	667.0	Mineral separate from Apollo 17 basalt (LRMCC)
+LR-CMP-208	15058,276 brown pyroxene D <45 um	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite 	nan	0.0	45.0	Yes	Particulate Ground Sorted	Apollo 15 site, Moon	JSC PGI Brown 	663.0	Mineral separate from Apollo 15 basalt (LRMCC)
+LR-CMP-209	15058,276 green pyroxene D <45 um	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene/Pigeonite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Apollo 15 site, Moon	JSC PGI Brown 	664.0	Mineral separate from Apollo 15 basalt (LRMCC)
+LR-CMP-211	15555,965 reddish-brown pyroxene D <45 um	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite Mg-Poor	nan	0.0	45.0	Yes	Particulate Ground Sorted	Apollo 15 site, Moon	JSC PGI Brown 	672.0	Mineral separate from Apollo 15 basalt (LRMCC)
+LR-CMP-213	15555,965 light-brown pyroxene D <45 um	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite Mg-Rich Subcalcic	nan	0.0	45.0	Yes	Particulate Ground Sorted	Apollo 15 site, Moon	JSC PGI Brown 	673.0	Mineral separate from Apollo 15 basalt (LRMCC)
+LR-CMP-215	70017,535 deep-brown pyroxene D <45 um	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Apollo 17 site, Moon	JSC PGI Brown 	676.0	Mineral separate from Apollo 17 basalt (LRMCC)
+LR-CMP-216	70017,535 light-brown pyroxene D <45 um	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Apollo 17 site, Moon	JSC PGI Brown 	677.0	Mineral separate from Apollo 17 basalt (LRMCC)
+LR-CMP-219	70035,188 dark-brown pyroxene D <45 um	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite 	nan	0.0	45.0	Yes	Particulate Ground Sorted	Apollo 17 site, Moon	JSC PGI Brown 	666.0	Mineral separate from Apollo 17 basalt (LRMCC)
+LR-CMP-220	70035,188 light-brown pyroxene D <45 um	CMP	Moon-Ret	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Apollo 17 site, Moon	JSC PGI Brown 	667.0	Mineral separate from Apollo 17 basalt (LRMCC)
+MT-CMP-064	Y-980318 Ca-Px	CMP	Other-Met	Mineral	nan	Silicate (Ino)	Pyroxene Ca-rich	nan	75.0	150.0	Yes	Particulate Ground Sorted	Yamato Mtns, Antarctica 	JSC	0.0	21 mg, Fs 18-19, Wo 45-46
+PD-CMP-008	Diopside	CMP	Earth	Mineral	nan	Silicate (Ino)	Diopside	nan	0.0	250.0	Yes	Bulk Particulate 	India (Wards) 	Relab 	0.0	nan
+PD-JFM-009	Hydrabad diopside 	JFM	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	0.0	0.0	nan	Slab	Hydrabad, India 	Relab 	0.0	Ward's collection.  
+PP-CMP-020	Hawaii CPX	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	0.0	250.0	nan	nan	Hawaii	Depleted	35.0	High calcium pyroxene from 1801 volcanic bomb   Diopside: Wo 46% En 46% Fs 9% 
+PP-CMP-021	CPX 45	CMP	Earth	Mineral	nan	Silicate (Ino) 	Pyroxene Clinopyroxene Diopside 	nan	0.0	45.0	Yes	Particulate	Mauna Kea, Hawaii 	Relab C1-E1 	35.0	Set of separates from hawaii volcanic bomb Cpx  Diopside: Wo 46% En 46% Fs 9% 
+PP-CMP-022	Cpx 75	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	45.0	75.0	Yes	Particulate	Hawaii	Relab C1-E1 	35.0	Diopside: Wo 46% En 46% Fs 9%   
+PP-CMP-023	Cpx 125 	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	75.0	125.0	Yes	Particulate	Hawaii	Relab C1-E1 	35.0	Diopside: Wo 46% En 46% Fs 9%   
+PP-CMP-024	Cpx 25	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	0.0	25.0	Yes	Particulate	Hawaii	Relab unknown 	35.0	Sample eventually resieved back into PP-21  Diopside: Wo 46% En 46% Fs 9% 
+PP-CMP-025	Cpx 63	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	25.0	63.0	Yes	Particulate	Hawaii	Relab unknown 	35.0	Diopside: Wo 46% En 46% Fs 9%   
+PP-CMP-026	Cpx 125B	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	63.0	125.0	Yes	Particulate	Hawaii	Relab unknown 	35.0	Diopside: Wo 46% En 46% Fs 9%   
+PP-CMP-027-A	Cpx <25 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	0.0	25.0	Yes	Particulate	Hawaii	Relab C1-E2 	35.0	Hi Ca pyroxene from 1801 volcanic bomb for "soil" mixture experiment  Diopside: Wo 46%En 46%Fs 9% 
+PP-CMP-027-B	Cpx 25-75 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	25.0	75.0	Yes	Particulate	Hawaii	Relab C1-E2 	35.0	High calcium pyroxene from 1801 volcanic bomb   Diopside: Wo 46%En 46%Fs 9% 
+PP-CMP-027-C	Cpx 75-250 um 	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	75.0	250.0	Yes	Particulate	Hawaii	Relab C1-E2 	35.0	High calcium pyroxene from 1801 volcanic bomb   Diopside: Wo 46%En 46%Fs 9% 
+PP-CMP-027-D	Cpx 75-125 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	75.0	125.0	Yes	Particulate	Hawaii	Relab C1-E2 	35.0	High calcium pyroxene from 1801 volcanic bomb   Diopside: Wo 46%En 46%Fs 9% 
+PP-CMP-027-E	Cpx fine soil	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	0.0	0.0	Yes	Particulate	Hawaii	Relab C1-E2 	0.0	nan
+PP-CMP-027-F	Cpx medium soil	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	0.0	0.0	Yes	Particulate	Hawaii	Relab C1-E2 	35.0	High calcium pyroxene from 1801 volcanic bomb   Diopside: Wo 46%En 46%Fs 9% 
+PP-CMP-027-G	Cpx coarse soil	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	0.0	0.0	Yes	Particulate	Hawaii	Relab C1-E2 	35.0	High calcium pyroxene from 1801 volcanic bomb   Diopside: Wo 46%En 46%Fs 9% 
+PP-EAC-001	PYX005	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Endiopside 	nan	45.0	90.0	Yes	Particulate	nan	Alberta, Canada 	380.0	Locality unknown, probably Ontario  
+PP-EAC-009	PYX017	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Diopside 	nan	45.0	90.0	Yes	Particulate	Tillamook Co., OR 	Alberta, Canada 	387.0	Purchased from Minerals Unlimited   
+PP-EAC-042	PYX112	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Pigeonite (Magnesian)	nan	0.0	45.0	Yes	Particulate	unknown; probably Ontario 	Alberta, Canada 	12.0	a single crystalline sample with no weathering  
+PP-EAC-046	PYX015	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Endiopside 	nan	0.0	45.0	Yes	Particulate	San Carlos Co., AZ	Alberta, Canada 	14.0	From fine-grained volc xenolith. Also contains basalts frags,   spinel(?) & olivine(OLV013). Nearly pure - grains easy to separate. 
+PP-EAC-048	PYX103	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite 	nan	0.0	45.0	Yes	Particulate	unknown 	Alberta, Canada 	15.0	intimately mixed with a white phase (plagioclase?)  
+PP-EAC-049	PYX114	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite 	nan	45.0	90.0	Yes	Particulate	Skaergaard Intrusion, Greenland 	Alberta, Canada 	406.0	Univ. of Hawaii collection #10-21-6   Heterogeneous with PLG116, OLV022.
+PP-EAC-050	PYX115	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Augite 	nan	0.0	45.0	Yes	Particulate	Skaergaard Intrusion, Greenland 	Alberta, Canada 	16.0	fine-grained, intimately intergrown sample  
+PP-EAC-054	PYX107	EAC	Earth	Mineral	nan	Silicate (Ino) 	Pyroxene Clinopyroxene Diopside 	nan	0.0	45.0	Yes	Particulate	unknown 	Alberta, Canada 	18.0	mixture of PYX107 with plagioclase (PLG114)   
+PP-EAC-095	PYX167	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Augite 	nan	0.0	45.0	Yes	Particulate	Unknown 	Univ. of Winnipeg 	462.0	Pyroxene sample from gabbro   
+PX-DWS-012	Pigeonite (NMNH) 105869 (maybe impure)	DWS	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	nan	50.0	100.0	Yes	Particulate Ground	Hakone Volcano, Honshu, Japan	University of Arkansas	721.0	Source asteroids for unequilibrated ordinary chondrites (UOC) (PGG, Cosmochemistry, Student)
+PX-DWS-012-B	Pigeonite (NMNH 105869) (maybe impure) washed with HCl and dried at 120C	DWS	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	Yes	50.0	100.0	Yes	Particulate Ground	Hakone Volcano, Honshu, Japan	University of Arkansas	721.0	Source asteroids for unequilibrated ordinary chondrites (UOC) (PGG, Cosmochemistry, Student)
+PX-EAC-009	PYX185	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene	nan	0.0	45.0	Yes	Particulate Ground	Lac Onatchiway, Chicoutimi Co., Quebec, Canada	Univ. of Winnipeg	0.0	nan
+PX-RGM-018	Synthetic eucrite HCP (En 28.4 Fs 33.0 Wo 37.6) <25 um	RGM	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene High-Ca	nan	0.0	25.0	Yes	Particulate Ground Sieved	Synthesized by Donald Lindsley at SUNY Stonybrook	Texas Christian University	0.0	nan
+SB-RGB-001	Pigeonite 1 	RGB	Earth	Mineral	nan	Silicate (Ino)	Pigeonite 	nan	0.0	0.0	nan	nan	nan	MIT 	287.0	Pigeonite standard  
+AG-TJM-009	Hypersthene	TJM	Other-Met	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Hypersthene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Johnstown Meteorite	Smithsonian Inst.	635.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+DD-MDD-004	ALH 84001 orthopyroxene	MDD	Mars-Met	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	50.0	Yes	Particulate Ground Unsorted	Allan Hills, Antarctica	JSC	0.0	Separated by hand picking, then ground.
+DL-CMP-002	En 80 Fs 20 (E)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-002-A	En 80 Fs 20 (E) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-003	En 75 Fs 25 (F)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-003-A	En 75 Fs 25 (F) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-004	En 50 Fs 50	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Don Lindsley.
+DL-CMP-004-A	En 50 Fs 50 <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-005	En 40 Fs 60 (97+% Cpx)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Don Lindsley.
+DL-CMP-005-A	En 40 Fs 60 (97+% Cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-006	En 25 Fs 75	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Don Lindsley.
+DL-CMP-006-A	En 25 Fs 75 <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-008	Wo 5 En 38 Fs 57 (E36-103: 100% pig)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Turnock.
+DL-CMP-008-A	Wo 5 En 38 Fs 57 (E36-103, 100% opx) < 45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Pigeonite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG.  From Turnock.
+DL-CMP-012	Wo 5 En 47.5 Fs 47.5 (E14-11)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Turnock.
+DL-CMP-012-A	Wo 5 En 47.5 Fs 47.5 (E14-11) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-014	Wo 2.5 En 39 Fs 58.5 (E45-100)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Turnock.
+DL-CMP-014-A	Wo 2.5 En 39 Fs 58.5 (E45-100, 95% hyp, 2-5% cpx) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Turnock.
+DL-CMP-015	Wo 5 En 66.5 Fs 28.5 (EFW29-5)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Turnock.
+DL-CMP-015-A	Wo 5 En 66.5 Fs 28.5 (EFW29-5) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-016	Wo 5 En 76 Fs 19 (EFW21-101: 98% Px (Opx+Cpx), 2% glass+Crist)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Orthopyroxene	nan	0.0	100.0	Yes	Particulate Ground Unsorted	Synthetic 	nan	0.0	Grain size unknown.  PGG.  From Turnock.
+DL-CMP-016-A	Wo 5 En 76 Fs 19 (EFW21-101) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG.  From Turnock.
+DL-CMP-020-A	En 17 Fs 83 (A) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-021-A	En 8 Fs 92 (A) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-022-A	En 75 Fs 25 (A) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-023-A	En 30 Fs 70 (A) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-024-A	En 17 Fs 83 (C) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-025-A	En 35 Fs 65 (A) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-026-A	En 70 Fs 30 (B) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-027-A	En 80 Fs 20 (C) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-028-A	En 25 Fs 75 (C) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-029-A	En 15 Fs 85 (B) (Minor olivine) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-031-A	Fs 50 (F5-100)	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-034-A	En 50 Fs 50 (Wo0 x=50 B) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-045-A	Wo 4 En 48 Fs 48 (E41-105) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Turnock
+DL-CMP-061-A	Fs 100 PP1 <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Ferrosilite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-062-A	Fs 100 PP2 <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Ferrosilite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-063-A	Fs 100 PP3 <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Ferrosilite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-065-A	En 90 Fs 10 (G) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley.  See Klima, R. L. et al. (2007) Meteoritics & Planetary Science 42, 235-253.
+DL-CMP-090-A	Wo 5 Fs 95 (D) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+DL-CMP-091-A	Wo 2 Fs 98 (A) <45 um	CMP	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Clinopyroxene	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	PGG from Don Lindsley
+JA-CMP-001	JA #2368 HYP	CMP	Earth	Mineral	nan	Silicate (Ino) 	Pyroxene Orthopyroxene Hypersthene	nan	0.0	0.0	Yes	Bulk Particulate 	West Greenland	J Adams Collection	0.0	nan
+JA-CMP-007	JA #79558 HYP 	CMP	Earth	Mineral	nan	Silicate (Ino) 	Pyroxene Orthopyroxene Hypersthene	nan	0.0	0.0	Yes	Bulk Particulate 	Wilmington, DE	J Adams Collection	0.0	nan
+KR-KMR-009-A	Tanzania enstatite 20-32 um	KMR	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	20.0	32.0	Yes	Particulate Ground Dry-Sieved	Tanzania	Brown Planetary Geology	0.0	Lunar mixing
+KR-KMR-009-B	Tanzania enstatite 32-45 um	KMR	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	32.0	45.0	Yes	Particulate Ground Dry-Sieved	Tanzania	Brown Planetary Geology	0.0	Lunar mixing
+KR-KMR-009-C	Tanzania enstatite 45-63 um	KMR	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	45.0	63.0	Yes	Particulate Ground Dry-Sieved	Tanzania	Brown Planetary Geology	0.0	Lunar mixing
+KR-KMR-009-D	Tanzania enstatite 63-75 um	KMR	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	63.0	75.0	Yes	Particulate Ground Dry-Sieved	Tanzania	Brown Planetary Geology	0.0	Lunar mixing
+KR-KMR-009-E	Tanzania enstatite 75-125 um	KMR	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	75.0	125.0	Yes	Particulate Ground Dry-Sieved	Tanzania	Brown Planetary Geology	0.0	Lunar mixing
+MT-CMP-063	Y-980318 Fe-Px	CMP	Other-Met	Mineral	nan	Silicate (Ino)	Pyroxene Fe-rich	nan	75.0	150.0	Yes	Particulate Ground Sorted	Yamato Mtns, Antarctica 	JSC	0.0	24 mg, Fs 48-49 Wo 2
+MT-CMP-067	Y-980433 pyroxene	CMP	Other-Met	Mineral	nan	Silicate (Ino)	Pyroxene	nan	37.0	63.0	Yes	Particulate Ground Sorted	Yamato Mtns, Antarctica 	JSC	0.0	51 mg
+PE-CMP-006	Enstatite 	CMP	Earth	Mineral	nan	Silicate (Ino) 	Enstatite 	nan	0.0	250.0	nan	See Text	Webster, NC 	Destroyed 	0.0	25% <30 uM25% 30-4525% 45-10825% 150-250  
+PE-CMP-022	Enstatite 	CMP	Earth	Mineral	nan	Silicate (Ino) 	Enstatite 	nan	0.0	150.0	Yes	Particulate	Webster, N.C. 	Destroyed 	0.0	Jim's Enstatite   
+PE-CMP-023	Enstatite 	CMP	Earth	Mineral	nan	Silicate (Ino) 	Enstatite 	nan	125.0	250.0	nan	nan	Webster, NC 	Destroyed 	0.0	Sample used for mini-dish comparisons as well as for polarization tests   
+PE-CMP-024	Enstatite 	CMP	Earth	Mineral	nan	Silicate (Ino) 	Enstatite 	nan	63.0	125.0	Yes	Particulate	Webster, NC 	Destroyed 	0.0	nan
+PE-CMP-030	Web 45	CMP	Earth	Mineral	nan	Silicate (Ino) 	Enstatite 	nan	0.0	45.0	Yes	Particulate	Webster, NC 	Relab C1-E1 	36.0	Series of separates to be used as raw materials for J. Sunshines  Senior thesis Enstatite: Wo 1% En 87% Fs 12%
+PE-CMP-031	Web 75	CMP	Earth	Mineral	nan	Silicate (Ino) 	Enstatite 	nan	45.0	75.0	Yes	Particulate	Webster, NC 	Relab C1-E1 	36.0	Enstatite: Wo 1% En 87% Fs 12%  
+PE-CMP-032	Web 125 	CMP	Earth	Mineral	nan	Silicate (Ino)	Enstatite 	nan	75.0	125.0	Yes	Particulate	Webster, NC 	Relab C1-E1 	36.0	Enstatite: Wo 1% En 87% Fs 12%  
+PE-CMP-034-A	Websterite <25 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	0.0	25.0	Yes	Particulate	Webster, NC 	Relab unknown 	36.0	Remaining Websterite resieved May 92 by SFP 
+PE-CMP-034-B	Websterite 25-45 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	25.0	45.0	Yes	Particulate	Webster, NC 	Relab unknown 	36.0	Remaining Websterite resieved May 92 by SFP 
+PE-CMP-034-C	Websterite 45-75 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	45.0	75.0	Yes	Particulate	Webster, NC 	Relab unknown 	36.0	Remaining Websterite resieved May 92 by SFP 
+PE-CMP-034-D	Websterite 75-125 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	75.0	125.0	Yes	Particulate	Webster, NC 	Relab unknown 	36.0	Remaining Websterite resieved May 92 by SFP 
+PE-CMP-034-E	Websterite 125-250 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	125.0	250.0	Yes	Particulate	Webster, NC 	Relab unknown 	36.0	Remaining Websterite resieved May 92 by SFP 
+PE-CMP-034-F	Websterite 250-500 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Enstatite Orthopyroxene Pyroxene	nan	250.0	500.0	Yes	Particulate	Webster, NC 	Relab unknown 	36.0	Remaining Websterite resieved May 92 by SFP 
+PE-CMP-034-H1	Opx 25	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Enstatite; Webesterite 	nan	0.0	25.0	Yes	Particulate	Webster, NC 	Relab C1-C1 	36.0	Enstatite: Wo 1%En 87%Fs 12%  Used in "soil" mixture experiment 
+PE-CMP-034-H2	Opx 25	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Enstatite; Webesterite 	nan	0.0	25.0	Yes	Particulate	Webster, NC 	Relab C1-C1 	36.0	Enstatite: Wo 1%En 87%Fs 12%  Used in "soil" mixture experiment 
+PE-CMP-034-I	Opx 75	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Enstatite; Websterite	nan	25.0	75.0	Yes	Particulate	Wesbster, NC	Relab C1-C1 	36.0	Enstatite: Wo 1% En 87% Fs 12%  
+PE-CMP-034-J	Opx 250 	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Enstatite; Websterite	nan	75.0	250.0	Yes	Particulate	Webster, NC 	Relab C1-C1 	36.0	Enstatite: Wo 1%En 87%Fs 12%  
+PE-CMP-034-K	Fine opx soil	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Enstatite; Websterite	nan	0.0	250.0	Yes	Particulate	Webster, NC 	Relab C1-C1 	36.0	Enstatite: Wo 1%En 87%Fs 12%  
+PE-CMP-034-L	Medium opx soil	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Enstatite; Websterite	nan	0.0	250.0	Yes	Particulate	Webster, NC 	Relab C1-C1 	36.0	Enstatite: Wo 1%En 87%Fs 12%  
+PE-CMP-034-M	Coarse opx soil	CMP	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Enstatite; Websterite	nan	0.0	250.0	Yes	Particulate	Webster, NC 	Relab C1-C1 	36.0	Enstatite: Wo 1%En 87%Fs 12%  
+PE-CMP-040-A	Ani-jima Bronzite 	CMP	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	0.0	25.0	Yes	Particulate	Ani-jima, Bonin Islands, Japan	Relab unknown 	0.0	nan
+PE-CMP-040-B	Ani-jima Bronzite 	CMP	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	25.0	45.0	Yes	Particulate	Ani-jima, Bonin Islands, Japan	Relab unknown 	0.0	nan
+PE-CMP-040-C	Ani-jima Bronzite 	CMP	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	45.0	75.0	Yes	Particulate	Ani-jima, Bonin Islands, Japan	Relab unknown 	0.0	nan
+PE-CMP-040-D	Ani-jima Bronzite 	CMP	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	75.0	125.0	Yes	Particulate	Ani-jima, Bonin Islands, Japan	Relab unknown 	0.0	nan
+PE-CMP-040-E	Ani-jima Bronzite 	CMP	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	125.0	250.0	Yes	Particulate	Ani-jima, Bonin Islands, Japan	Relab unknown 	0.0	nan
+PE-CMP-040-F	Ani-jima Bronzite 	CMP	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	250.0	500.0	Yes	Particulate	Ani-jima, Bonin Islands, Japan	Relab unknown 	0.0	nan
+PE-CMP-041-A1	Chichi-jima bronzite <25 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	0.0	25.0	Yes	Particulate	Chichi-jima, Bonin Islands, Japan 	Relab unknown 	0.0	nan
+PE-CMP-041-A2	Chichi-jima bronzite <25 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	0.0	25.0	Yes	Particulate	Chichi-jima, Bonin Islands, Japan 	Relab unknown 	0.0	nan
+PE-CMP-041-B	Chichi-jima bronzite 25-45 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	25.0	45.0	Yes	Particulate	Chichi-jima, Bonin Islands, Japan 	Relab unknown 	0.0	nan
+PE-CMP-041-C	Chichi-jima bronzite 45-75 um	CMP	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	45.0	75.0	Yes	Particulate	Chichi-jima, Bonin Islands, Japan 	Relab unknown 	0.0	nan
+PE-TXH-041-CP	Chichi-jima bronzite 45-75 um pellet	TXH	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	45.0	75.0	nan	Pressed Pellet	Chichi-jima, Bonin Islands, Japan 	nan	0.0	nan
+PP-EAC-040	PYX003	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Bronzite 	nan	0.0	45.0	Yes	Particulate	Mantyharia, Finland 	Alberta, Canada 	11.0	single massive crystalline samp. w/very minor exterior weathering   sample from fresh interior
+PP-EAC-044	PYX117	EAC	Earth	Mineral	nan	Silicate (Ino) 	Pyroxene Bronzite 	nan	0.0	45.0	Yes	Particulate	unspecified locality in India 	Alberta, Canada 	13.0	from a single unweathered crystal   
+PP-EAC-047-B	PYX110 45-90 um	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Bronzite 	nan	45.0	90.0	Yes	Particulate	nan	Alberta, Canada 	405.0	Locality unknown.Univ. of Alberta Geology 330 lab collection #8/4/4.
+PP-EAC-052	PYX119	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Bronzite 	nan	45.0	90.0	Yes	Particulate	Loch Seaforth, Outer Hebrides, Scotland 	Alberta, Canada 	408.0	With OLV103   Purchased from Excalibur Mineral Co.
+PP-EAC-087	PYX042	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Enstatite	nan	45.0	90.0	Yes	Particulate	Bamble, Norway	Alberta, Canada 	421.0	Purchased from Ward's   
+PP-RGB-080	Standard OPX	RGB	Earth	Mineral	nan	Silicate (Ino) 	Pyroxene Orthopyroxene	Yes	0.0	250.0	Yes	Particulate	Barachois, Quebec 	MIT 	0.0	Standard (unheated) orthopyroxene   Contains 18.72 wt% FeO; Fs 14% En 86% 
+PX-JPE-020-A	Tanzania enstatite <125 um	JPE	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Enstatite	nan	0.0	125.0	Yes	Particulate Ground Sorted	Tanzania, Africa	University of Tennesee	0.0	As a control for terrestrial weathering removal treatment
+PX-RGM-017	Synthetic eucrite LCP (En 35.3 Fs 61.4 Wo 3.3) <25 um	RGM	Synthetic	Mineral	nan	Silicate (Ino)	Pyroxene Low-Ca	nan	0.0	25.0	Yes	Particulate Ground Sieved	Synthesized by Donald Lindsley at SUNY Stonybrook	Texas Christian University	0.0	nan
+SB-RGB-051-A	Orthopyroxene 	RGB	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	0.0	500.0	Yes	Particulate	Bushveldt complex 	MIT 	290.0	TZHP, Site Occupancy Study, Fe2 (M1) = 0.139, Fe2 (M2) = 0.794
+SB-RGB-051-B	Orthopyroxene #195	RGB	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	0.0	500.0	Yes	Particulate	Bushveldt complex 	MIT 	290.0	TZHP, Site Occupancy Study, Fe2 (M1) = 0.201, Fe2 (M2) = 0.760
+SB-RGB-051-C	Orthopyroxene #198	RGB	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	0.0	500.0	Yes	Particulate	Bushveldt complex 	MIT 	290.0	TZHP, Site Occupancy Study, Fe2 (M1) = 0.265, Fe2 (M2) = 0.696
+SB-RGB-051-D	Orthopyroxene #199	RGB	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	0.0	500.0	Yes	Particulate	Bushveldt Complex 	MIT 	290.0	Disordered Opx, Site Occupancy Study, Fe2 (M1) = 0.273, Fe2 (M2) = 0.694 
+SB-RGB-051-E	Orthopyroxene #200	RGB	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	0.0	500.0	Yes	Particulate	Bushveldt Complex 	MIT 	290.0	Disordered Opx, Site Occupancy Study, Fe2 (M1) = 0.247, Fe2 (M2) = 0.713 
+SB-RGB-052-A	Orthopyroxene #311	RGB	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	nan	0.0	500.0	Yes	Particulate	Granulite, W. Australia 	MIT 	291.0	Site Occup., 500 C, Fe2 (M1) = 0.202, Fe2 (M2) 0.531
+SB-RGB-052-B	Orthopyroxene #323	RGB	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	Yes	0.0	500.0	Yes	Particulate	Granulite, W. Australia 	MIT 	291.0	Unheated, Fe2 (M1) = 0.121, Fe2 (M2) = 0.624
+SB-RGB-053-B	Orthopyroxene #326	RGB	Earth	Mineral	nan	Silicate (Ino)	Orthopyroxene 	Yes	0.0	500.0	Yes	Particulate	Granulite, W. Australia 	MIT 	292.0	Unheated, Fe2 (M1) = 0.067, Fe2 (M2) = 0.665
+SB-RGB-054	Orthopyroxene 	RGB	Synthetic	Mineral	nan	Mineral 	Orthopyroxene Fs85	nan	0.0	500.0	Yes	Particulate	Synthetic 	MIT 	0.0	Synthetic Fs85, #E318, Fe 0.85, Fe2+/M1=0.771, Fe2+/M2=0.92   Site Occupancy study. Also run in dimple dish with some dish visible
+SC-EAC-009	PYX117	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene	nan	45.0	90.0	Yes	Particulate	India 	Alberta, Canada 	13.0	Low calcium pyroxenewet sieved  Vial B11c 
+SC-EAC-036	PYX032	EAC	Earth	Mineral	nan	Silicate (Ino)	Pyroxene Orthopyroxene Hypersthene	nan	45.0	90.0	Yes	Particulate	Ekersund, Norway	Alberta, Canada 	30.0	Vial L6   wet sieved
+AG-TJM-008	Olivine (Fo90)	TJM	Earth	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	San Carlos, Gila Co., AZ	Smithsonian Inst.	634.0	Olivine-Orthopyroxene-Clinopyroxene-Plagioclase mixture study
+CM-CMP-002	Olivine 	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine Forsterite 	nan	0.0	75.0	Yes	Particulate	San Carlos, Ariz	Relab 	0.0	Olivine for Clementine camera calibration   
+DD-MDD-037	Fo 90	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-038	Fo 80	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-039	Fo 70	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-040	Fo 60	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-041	Fo 50	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-042	Fo 40	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-043	Fo 30	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-044	Fo 20	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-045	Fo 10	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-052	San Carlos olivine	MDD	Earth	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	0.0	Yes	Particulate	San Carlos, Ariz	nan	0.0	Unaltered
+DD-MDD-087	Fa 20 Fo 80 <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-088	Fa 25 Fo 75 (B) <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-088-P	Fa 25 Fo 75 (B) <45 um pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.  Pressed by Tim Glotch.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-089	Fa 30 Fo 70 (A) <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-089-P	Fa 30 Fo 70 (A) <45 um pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.  Pressed by Tim Glotch.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-090	Fa 35 Fo 65 (A) <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-090-P	Fa 35 Fo 65 (A) <45 um pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.  Pressed by Tim Glotch.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-091	Fa 40 Fo 60 (B) <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-092	Fa 45 Fo 55 (A) <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-092-P	Fa 45 Fo 55 (A) <45 um pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.  Pressed by Tim Glotch.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-093	Fa 50 Fo 50 (A) <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-093-P	Fa 50 Fo 50 (A) <45 um pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.  Pressed by Tim Glotch.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-094	Fa 60 Fo 40 <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-094-P	Fa 60 Fo 40 <45 um pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.  Pressed by Tim Glotch.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-095	Fa 70 Fo 30 <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-095-P	Fa 70 Fo 30 <45 um pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.  Pressed by Tim Glotch.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-096	Fa 80 Fo 20 <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-096-P	Fa 80 Fo 20 <45 um pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.  Pressed by Tim Glotch.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-097	Fa 90 Fo 10 <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-097-P	Fa 90 Fo 10 <45 um pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.  Pressed by Tim Glotch.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-098	Fa 100 Fo 0 <45 um	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine Fayalite	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-098-P	Fa 100 Fo 0 <45 um pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine Fayalite	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.  Pressed by Tim Glotch.  See Dyar, M. D. et al. (2009) American Mineralogist, 94, 883-898.
+DD-MDD-115	Fa 10.5 Fo 89.5 <45 um (new)	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.
+DD-MDD-115-P	Fa 10.5 Fo 89.5 <45 um (new) pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.
+DD-MDD-116	Fa 30 Fo 70 (A) <45 um (new)	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted	Synthetic 	nan	0.0	From Don Lindsley.
+DD-MDD-116-P	Fa 30 Fo 70 (A) <45 um (new) pellet	MDD	Synthetic	Mineral	nan	Silicate (Neso)	Olivine	nan	0.0	45.0	Yes	Particulate Ground Sorted Pellet	Synthetic 	nan	0.0	From Don Lindsley.
+MS-CMP-004-C	Olivine (Fa 10-12) 100-200 um	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	100.0	200.0	Yes	Particulate	nan	USSR	0.0	Terrestrial Olivine (Fa 10-12)
+MS-CMP-004-F	Olivine (Fa 10-12) 40-100 um	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	40.0	100.0	Yes	Particulate	nan	USSR	0.0	Terrestrial Olivine (Fa 10-12)
+MS-CMP-004-X	Olivine (Fa 10-12) <40 um	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	0.0	40.0	Yes	Particulate	nan	USSR	0.0	Terrestrial Olivine (Fa 10-12)
+MS-CMP-005-C	Olivine (Fa 13.5) 100-200 um	CMP	Other-Met	Mineral	nan	Silicate (Neso) 	Olivine 	nan	100.0	200.0	Yes	Particulate	Karelia ASSR, USSR	USSR	0.0	Marjalahti Pallasite Olivine (Fa 13.5)
+MS-CMP-005-F	Olivine (Fa 13.5) 40-100 um	CMP	Other-Met	Mineral	nan	Silicate (Neso) 	Olivine 	nan	40.0	100.0	Yes	Particulate	Karelia ASSR, USSR	USSR	0.0	Marjalahti Pallasite Olivine (Fa 13.5)
+MS-CMP-005-X	Olivine (Fa 13.5) <40 um	CMP	Other-Met	Mineral	nan	Silicate (Neso) 	Olivine 	nan	0.0	40.0	Yes	Particulate	Karelia ASSR, USSR	USSR	0.0	Marjalahti Pallasite Olivine (Fa 13.5)
+OL-JMS-001	OLV002	JMS	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	45.0	90.0	Yes	Particulate	Mauna Kea, Hawaii 	Alberta, Canada 	369.0	Chrysolite- Cindercone W. of Hale Pohaku, S. flank of Mauna Kea   Self collected volcanic bomb
+OL-JMS-002	OLV005	JMS	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	45.0	90.0	Yes	Particulate	Egypt 	Alberta, Canada 	370.0	Forsterite- St. John's Island, Red Sea, Egypt (Minerals Unlimited)  
+OL-JMS-004	OLV013	JMS	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	45.0	90.0	Yes	Particulate	Arizona 	Alberta, Canada 	372.0	Forsterite- Navajo Indian Reservation, San Carlos County, AZ  Minerals Unlimited [from volcanic bomb, with PYX015]
+OL-JMS-008	OLV025	JMS	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	45.0	90.0	Yes	Particulate	Stillwater Intrusion, Montana 	Alberta, Canada 	374.0	Chrysolite- U. of Hawaii collection #10-3-6   
+PF-RGB-033	Synthetic Fayalite	RGB	Synthetic	Mineral	nan	Silicate (Neso)	Olivine Fayalite	nan	0.0	75.0	Yes	Particulate	MIT 	MIT 	0.0	Synthetic fayalite that has had magnetite magnetically separated from it  
+PH-RGB-001	Hortonolite 	RGB	Earth	Mineral	nan	Silicate (Neso)	Olivine Hortonlite	nan	0.0	75.0	Yes	Particulate	Transvaal, RSA	MIT (EAPS Dept.)	0.0	Hortonlite is (Fay 50, For 50)  
+PH-RGB-015	Hortonolite <45 	RGB	Earth	Mineral	nan	Silicate (Neso)	Olivine Hortonolite Hyalosiderite 	nan	0.0	45.0	Yes	Particulate	Lydenburg, Transvaal, South Africa	Relab C1-I3 	0.0	nan
+PH-RGB-016	Hortonolite 45-75 	RGB	Earth	Mineral	nan	Silicate (Neso)	Olivine Hortonolite Hyalosiderite 	nan	45.0	75.0	Yes	Particulate	Lydenburg, Transvaal, South Africa	Relab C3-J	0.0	nan
+PO-CMP-025	Oliv 45-75	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	45.0	75.0	Yes	Particulate	Hawaii	Relab unknown 	0.0	Hawaii olivine ground up for mixing experiments   
+PO-CMP-027	Hawaii Olivine	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	0.0	45.0	Yes	Particulate	Hawaii	Relab C1-G1 	0.0	Olivine from Hawaii beaches with no Opx contamination   
+PO-CMP-030	1801 Olivine	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	0.0	250.0	Yes	Particulate	Hawaii	Relab C3-J	37.0	Olivine grains handpicked from 1801 volcanic bomb   FOR 82.4% 
+PO-CMP-031	1801 Olivine	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	0.0	45.0	Yes	Particulate	Hawaii	Relab C3-J	37.0	Olivine grains handpicked from 1801 volcanic bomb   FOR 82.4% 
+PO-CMP-032-A	GSB olivine <25 um	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	0.0	25.0	Yes	Particulate	Hawaii	Relab C1-E2 	0.0	Green olivine beach sand purified by hand for "soil" mixture experiment   A had spinel inclusions,D was noisy,E was <25 sample we finally used
+PO-CMP-032-B	GSB olivine 25-75 um	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	25.0	75.0	Yes	Particulate	Hawaii	Relab C1-E2 	0.0	nan
+PO-CMP-032-C	GSB olivine 75-250 um	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	75.0	250.0	Yes	Particulate	Hawaii	Relab C1-E2 	0.0	nan
+PO-CMP-032-E	GSB olivine <25 um (purer)	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	0.0	25.0	Yes	Particulate	Hawaii	Relab C1-E2 	0.0	Ground from purer portion.
+PO-CMP-032-H	GSB olivine fine soil	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	0.0	0.0	Yes	Particulate	Hawaii	Relab C1-E2 	0.0	nan
+PO-CMP-032-I	GSB olivine medium soil	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	0.0	0.0	Yes	Particulate	Hawaii	Relab C1-E2 	0.0	nan
+PO-CMP-032-J	GSB olivine coarse soil	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	0.0	0.0	Yes	Particulate	Hawaii	Relab C1-E2 	0.0	nan
+PO-CMP-070	St. Peter's Fayalite	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine Fayalite	nan	0.0	45.0	Yes	Particulate	St. Peter's Dome, Colorado	Relab C3-J	0.0	#104568   
+PO-CMP-071	St. Peter's Fayalite	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine Fayalite	nan	45.0	75.0	Yes	Particulate	St. Peter's Dome, Colorado	Relab C3-J	0.0	#104568   
+PO-CMP-072	Franklin Fayalite 	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine Fayalite	nan	0.0	45.0	Yes	Particulate	Franklin, Sussex Co., NJ	Relab C3-J	0.0	#113637   
+PO-CMP-073	Franklin Fayalite 	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine Fayalite	nan	45.0	75.0	Yes	Particulate	Franklin, Sussex Co., NJ	Relab C3-J	0.0	#113637   
+PO-CMP-074	Rustanburg Fayalite 	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine Fayalite	nan	0.0	45.0	Yes	Particulate	Rustanburg, Transvaal, SA 	Relab C3-J	0.0	#118652   
+PO-CMP-076	Apache Forsterite 	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine Forsterite	nan	0.0	45.0	Yes	Particulate	Apache County, Arizona	Relab C3-J	0.0	Fo = c. 92%   #103267 
+PO-CMP-077	Apache Forsterite 	CMP	Earth	Mineral	nan	Silicate (Neso)	Olivine Forsterite	nan	45.0	75.0	Yes	Particulate	Apache County, Arizona	Relab C3-J	0.0	Fo = c. 92%   #103267 
+PO-EAC-004	OLV107	EAC	Earth	Mineral	nan	Silicate (Neso) 	Olivine Forsterite	nan	0.0	45.0	Yes	Particulate	Rayfield River, British Columbia, Canada	Univ. of Winnipeg 	458.0	Extracted from basalt xenolith  
+PO-EAC-050	OLV003	EAC	Earth	Mineral	nan	Silicate (Neso) 	Olivine Forsterite	nan	0.0	45.0	Yes	Particulate	San Carlos, AZ	Alberta, Canada 	4.0	(see also entry for OLV003 size 45-90 microns [SC-EAC-002])   FOR 90.4% -- FAY 9.6% 
+PO-EAC-051	OLV003	EAC	Earth	Mineral	nan	Silicate (Neso) 	Olivine Forsterite	nan	45.0	75.0	Yes	Particulate	San Carlos, AZ	Alberta, Canada 	4.0	(see also entry for OLV003 size 0-45 microns [PO-EAC-050])  FOR 90.4% -- FAY 9.6% 
+PO-EAC-052	OLV007	EAC	Earth	Mineral	nan	Silicate (Neso)	Olivine Forsterite	nan	0.0	45.0	Yes	Particulate	Cecchino, near Rome, Italy	Alberta, Canada 	5.0	An intimate fine-grained mess with mica diopside (?) etc.   FOR 96.9% -- FAY 3.1% Clean separate
+PO-EAC-053	OLV007	EAC	Earth	Mineral	nan	Silicate (Neso)	Olivine Forsterite	nan	45.0	90.0	Yes	Particulate	Cecchino, near Rome, Italy	Alberta, Canada 	5.0	Intimate fine-grained mass with mica-diopside (?).  FOR 96.9% FAY 3.1% Clean Separate. Spectra for 45-75 also exists. 
+PO-EAC-056	OLV010	EAC	Earth	Mineral	nan	Silicate (Neso) 	Olivine Chrysolite	nan	0.0	45.0	Yes	Particulate	Green sand beach near S Point, HI 	Alberta, Canada 	6.0	grains show rust, inclusions  FOR 88.5% -- FAY 11.5%
+PO-EAC-057	OLV010	EAC	Earth	Mineral	nan	Silicate (Neso) 	Olivine Chrysolite	nan	45.0	90.0	Yes	Particulate	Green sand beach near S Point, HI 	Alberta, Canada 	6.0	grains show rust, inclusions  FOR 88.5% -- FAY 11.5%
+PO-EAC-058	OLV011	EAC	Earth	Mineral	nan	Silicate (Neso)	Olivine Fayalite	nan	0.0	45.0	Yes	Particulate	Rockport, Mass. 	Alberta, Canada 	7.0	FOR 0.1% -- FAY 99.9%   Smithsonian Inst. #35117
+PO-EAC-059	OLV011	EAC	Earth	Mineral	nan	Silicate (Neso)	Olivine Fayalite	nan	45.0	90.0	Yes	Particulate	Rockport, Mass	Alberta, Canada 	7.0	FOR 0.1% -- FAY 99.9%   Smithsonian Inst.#35117. Spectra also exists for 45-75. 
+PO-EAC-060	OLV012	EAC	Earth	Mineral	nan	Silicate (Neso)	Olivine Forsterite	nan	0.0	45.0	Yes	Particulate	Twin Sister's Range, WA 	Alberta, Canada 	8.0	Easy to separate -- only minor chromite contamination   FOR 91.8% -- FAY 8.2% Ward's #136053
+PO-EAC-061	OLV012	EAC	Earth	Mineral	nan	Silicate (Neso) 	Olivine Forsterite	nan	45.0	90.0	Yes	Particulate	Twin Sister's Range, WA 	Alberta, Canada 	8.0	Easy to separate -- only minor chromite contamination   FOR 91.8% FAY 8.2% Ward's#13605345-75 spectra also exists 
+PO-EAC-062	OLV020	EAC	Earth	Mineral	nan	Silicate (Neso)	Olivine Hyalosiderite 	nan	0.0	45.0	Yes	Particulate	Skaergaard Intrusion, Greenland 	Alberta, Canada 	9.0	with PYX115 (PP-50)Still contains some pyroxene   FOR 59.5% -- FAY 40.5%
+PO-EAC-063	OLV020	EAC	Earth	Mineral	nan	Silicate (Neso)	Olivine Hyalosiderite 	nan	45.0	90.0	Yes	Particulate	Skaergaard Intrusion, Greenland 	Alberta, Canada 	9.0	with PYX115 (PP-50) Still contains some pyroxene  FOR 59.5% FAY 40.5% Spectra for 45-75 also exists. U Alberta sample?
+PO-EAC-064	OLV021	EAC	Earth	Mineral	nan	Silicate (Neso) 	Olivine Chrysolite	nan	0.0	45.0	Yes	Particulate	Stillwater Intrusion, Montana 	Alberta, Canada 	10.0	sample contaminated with chromite as discreet grains & vein fillings  separation may not be 100% efficient.FOR 85.9% -- FAY 14.1% 
+PO-EAC-065	OLV021	EAC	Earth	Mineral	nan	Silicate (Neso) 	Olivine Chrysolite	nan	45.0	90.0	Yes	Particulate	Stillwater Intrusion, Montana 	Alberta, Canada 	10.0	Sample contaminated with chromite as discreet grains & vein fillings  Separation may not be 100% efficient.FOR 85.9 -- FAY 14.1%
+PO-JFM-084-C	Olivine >45 um	JFM	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	45.0	0.0	Yes	Particulate	Jackson Cty, NC 	Relab 	0.0	nan
+PO-JFM-084-E	Olivine 45-75 um	JFM	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	45.0	75.0	Yes	Particulate	Jackson Cty, NC 	Relab 	0.0	nan
+PO-JFM-084-N	Olivine 5-10 um	JFM	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	5.0	10.0	Yes	Particulate	Jackson Cty, NC 	Relab 	0.0	nan
+PO-JFM-084-O	Olivine <5 um	JFM	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	0.0	5.0	Yes	Particulate	Jackson Cty, NC 	Relab 	0.0	nan
+PO-RGB-040	Peridot (unreacted) 	RGB	Earth	Mineral	nan	Silicate (Neso)	Olivine Forsterite	nan	0.0	100.0	Yes	Particulate	San Carlos, Arizona 	MIT 	0.0	Unreacted Olv(Fo88)stand (powdered single crystal)  Standard for locating crystal field bands @~ .9,1.05,1.25 
+PO-RGB-044	OLIV 4526 	RGB	Earth	Mineral	nan	Silicate (Neso)	Olivine Chrysolite	nan	0.0	0.0	Yes	Particulate	Skaergaard Intrusion, East Greenland	nan	163.0	Fa 21%  
+PO-RGB-045	Oliv 5111 	RGB	Earth	Mineral	nan	Silicate (Neso)	Olivine Hyalosiderite 	nan	0.0	0.0	Yes	Particulate	Skaergaard intrusion, East Greenland	nan	164.0	Fa 40%  
+PO-RGB-047	Oliv 5107 	RGB	Earth	Mineral	nan	Silicate (Neso)	Olivine Hyalosiderite 	nan	0.0	0.0	Yes	Particulate	Skaergaard intrusion, East Greenland 	nan	166.0	nan
+PO-RGB-049	Oliv 54087	RGB	Earth	Mineral	nan	Silicate (Neso)	Olivine Hortonolite 	nan	0.0	0.0	Yes	Particulate	nan	nan	162.0	Fa 49.09%   
+SC-EAC-002	OLV003	EAC	Earth	Mineral	nan	Silicate (Neso)	Olivine 	nan	45.0	90.0	Yes	Particulate	San Carlos, AZ USA	Alberta, Canada 	4.0	Vial B6a Sample wet sieved  
+ZB-CMP-011-A	Hawaii olivine	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	0.0	25.0	Yes	Particulate	Hawaii (beach sand) 	Relab C1-E1 	0.0	nan
+ZB-CMP-011-B	Hawaii olivine	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	25.0	45.0	Yes	Particulate	Hawaii (beach sand) 	Relab C1-E1 	0.0	nan
+ZB-CMP-011-C	Hawaii olivine	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	45.0	75.0	Yes	Particulate	Hawaii (beach sand) 	Relab C1-E1 	0.0	nan
+ZB-CMP-011-D	Hawaii olivine	CMP	Earth	Mineral	nan	Silicate (Neso) 	Olivine 	nan	75.0	125.0	Yes	Particulate	Hawaii (beach sand) 	Relab C1-E1 	0.0	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+C	-	T	a	p	e	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
+T	o	m	a	s	 	m	i	x	t	u	r	e	s	nan	nan	nan
+T	o	m	a	s	 	m	i	x	t	u	r	e	s	nan	nan	nan
+T	o	m	a	s	 	m	i	x	t	u	r	e	s	nan	nan	nan
+T	o	m	a	s	 	m	i	x	t	u	r	e	s	nan	nan	nan
+T	o	m	a	s	 	m	i	x	t	u	r	e	s	nan	nan	nan
+T	o	m	a	s	 	m	i	x	t	u	r	e	s	nan	nan	nan
+T	o	m	a	s	 	m	i	x	t	u	r	e	s	nan	nan	nan

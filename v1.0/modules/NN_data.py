@@ -43,35 +43,14 @@ def load_data(filename_data: str, clean_it: bool = False, keep_all_labels: bool 
         # normalise chemical
         for k in range(len(subtypes)):
             start, stop = stop, stop + subtypes[k]
-            # if subtypes[k] != len(subtypes_all_used[k]):
             norm = np.sum(y_train[:, start:stop], axis=1)
             # normalise only where sum of numbers is non-zero
             # IF IT IS ZERO, FILL IN WITH DUMMY DATA WHICH CAN BE NORMALISED (BEWARE OF FORBIDDEN REGIONS)
             zeros = np.where(norm == 0)[0]
             y_train[zeros, start:stop] = [0.2, 0.8, 0.0][:stop - start]
             norm = np.sum(y_train[:, start:stop], axis=1)
-            # non_zero = np.where(norm > 0)[0]
-            # y_train[non_zero, start:stop] = np.transpose(
-            # np.divide(np.transpose(y_train[non_zero, start:stop]), norm[non_zero]))
             y_train[:, start:stop] = np.transpose(
                 np.divide(np.transpose(y_train[:, start:stop]), norm))
-
-    """
-    # remove reflectances when these are the same for all spectra (probably due to normalisation)
-    # THIS WILL AFFECT LENGTH OF THE INPUT
-    ind_to_remove = np.where(np.std(x_train, axis=0) == 0)[0]
-    x_train = np.delete(x_train, ind_to_remove, axis=1)
-    """
-
-    """
-    # normalise the reflectances
-    for i in range(np.shape(x_train)[1]):
-        s = np.std(x_train[:, i])
-        if s < 1e-5:
-            x_train[:, i] = 0.
-        else:
-            x_train[:, i] = (x_train[:, i] - np.mean(x_train[:, i])) / s
-    """
 
     if modal_in_wt_percent:  # vol% is default
         y_train = vol_to_wt_percent(y_train)  # this function is not fully working and may causes problems
@@ -80,10 +59,6 @@ def load_data(filename_data: str, clean_it: bool = False, keep_all_labels: bool 
 
 
 def split_data(x_train: np.ndarray, y_train: np.ndarray, rnd_seed: int = 4) -> Tuple[np.ndarray, ...]:
-    # rnd_seed = 4 pro combined_v1 pokud bude treba
-    # rnd_seed = 0 pro combined_v2 OL, OPX, OL+OPX pokud bude treba
-    # rnd_seed = 4 pro combined_v2 pokud bude treba
-
     # This function splits the training data
 
     if val_portion > 0:

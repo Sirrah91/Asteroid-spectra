@@ -12,7 +12,8 @@ from modules.NN_losses_metrics_activations import *
 tfd = tfp.distributions
 tfpl = tfp.layers
 
-metrics = np.array([main_acc, mse, rmse, quantile, mae, Lp_norm, r2, sam])
+# metrics = np.array([main_acc, mse, rmse, quantile, mae, Lp_norm, r2, sam])
+metrics = np.array([main_acc])
 
 # delete main_acc if it is present in the list (eg main_acc = mse -> delete mse)
 mask_metrics = np.array([main_acc is not metrics[i] for i in range(len(metrics))])

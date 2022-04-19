@@ -6,20 +6,19 @@ from keras.layers import MaxPooling1D, AveragePooling1D, Flatten, BatchNormaliza
 from keras.models import Sequential, Model, Functional
 from keras import regularizers
 import tensorflow_probability as tfp
+from collections import Counter
 
 from modules.NN_losses_metrics_activations import *
 
 tfd = tfp.distributions
 tfpl = tfp.layers
 
-# metrics = np.array([main_acc, mse, rmse, quantile, mae, Lp_norm, r2, sam])
-metrics = np.array([main_acc])
+# metrics = [main_acc, mse, rmse, mae, quantile, Lp_norm, r2, sam]
+metrics = [main_acc]
 
-# delete main_acc if it is present in the list (eg main_acc = mse -> delete mse)
-mask_metrics = np.array([main_acc is not metrics[i] for i in range(len(metrics))])
-# first False -> True to keep main_acc
-mask_metrics[np.where(~mask_metrics)[0][0]] = True
-metrics = list(metrics[np.where(mask_metrics)])
+# make set of metrics unique
+counter = Counter(metrics)
+metrics = list(counter.keys())
 
 
 def FC_model(x_train: np.ndarray, params: Dict) -> Functional:

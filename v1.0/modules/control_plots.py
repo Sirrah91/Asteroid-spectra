@@ -725,12 +725,14 @@ def plot_model_history(model: Functional) -> None:
 
     if model.metrics_names[1] == 'mse':  # MSE to RMSE
         plot3 = np.convolve(np.sqrt(history[model.metrics_names[1]]), conv_kernel, 'same') / norm
+        labely = 'rmse'
     else:
         plot3 = np.convolve(history[model.metrics_names[1]], conv_kernel, 'same') / norm
+        labely = model.metrics_names[1]
 
-    lns1 = ax1.plot(plot1, color=color1, linestyle='-', label='Loss')
+    lns1 = ax1.plot(plot1, color=color1, linestyle='-', label='loss')
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-    lns3 = ax2.plot(plot3, color=color2, linestyle='-', label='RMSE')
+    lns3 = ax2.plot(plot3, color=color2, linestyle='-', label=labely)
 
     if val_portion > 0:
         plot2 = np.convolve(history['val_loss'], conv_kernel, 'same') / norm
@@ -738,22 +740,22 @@ def plot_model_history(model: Functional) -> None:
             plot4 = np.convolve(np.sqrt(history['val_' + model.metrics_names[1]]), conv_kernel, 'same') / norm
         else:
             plot4 = np.convolve(history['val_' + model.metrics_names[1]], conv_kernel, 'same') / norm
-        lns2 = ax1.plot(plot2, color=color1, linestyle=':', label='Val loss')
-        lns4 = ax2.plot(plot4, color=color2, linestyle=':', label='Val RMSE')
+        lns2 = ax1.plot(plot2, color=color1, linestyle=':', label='val loss')
+        lns4 = ax2.plot(plot4, color=color2, linestyle=':', label='val ' + labely)
 
         lns = lns1 + lns2 + lns3 + lns4
     else:
         lns = lns1 + lns3
 
-    ax1.set_xlabel('Epoch')
+    ax1.set_xlabel('epoch')
     ax1.tick_params(axis='x')
-    ax1.set_ylabel('Loss', color=color1)
+    ax1.set_ylabel('loss', color=color1)
     ax1.tick_params(axis='y', labelcolor=color1)
     ax1.set_ylim(bottom=0)
     ax1.set_xlim(left=0, right=model.history.params['epochs'])
     ax1.grid(False)
 
-    ax2.set_ylabel('RMSE', color=color2)  # we already handled the x-label with ax1
+    ax2.set_ylabel(labely, color=color2)  # we already handled the x-label with ax1
     ax2.tick_params(axis='y', labelcolor=color2)
     ax2.set_ylim(bottom=0)
     ax2.grid(False)

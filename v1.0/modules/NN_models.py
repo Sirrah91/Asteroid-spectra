@@ -12,8 +12,13 @@ from modules.NN_losses_metrics_activations import *
 tfd = tfp.distributions
 tfpl = tfp.layers
 
-# metrics = [mse, rmse, median, mae, Lp_norm, r2, sam]
-metrics = [mse]
+metrics = np.array([main_acc, mse, rmse, quantile, mae, Lp_norm, r2, sam])
+
+# delete main_acc if it is present in the list (eg main_acc = mse -> delete mse)
+mask_metrics = np.array([main_acc is not metrics[i] for i in range(len(metrics))])
+# first False -> True to keep main_acc
+mask_metrics[np.where(~mask_metrics)[0][0]] = True
+metrics = list(metrics[np.where(mask_metrics)])
 
 
 def FC_model(x_train: np.ndarray, params: Dict) -> Functional:

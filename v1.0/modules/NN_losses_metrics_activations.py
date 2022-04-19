@@ -272,7 +272,7 @@ def my_mae(num_minerals: int):
                 start, stop = stop, stop + subtypes[k]
 
                 # If the mineral is not present, we put there some values due to normalisation.
-                # These are artificial and should not enter the RMSE.
+                # These are artificial and should not enter the MAE.
                 z_true, z_pred = delete_wtrue_zero_samples(y_true[:, start:stop], y_pred[:, start:stop], w_true[:, k])
 
                 res = K.concatenate((res, tfnp.nanmean(K.abs(z_true - z_pred), axis=0)))
@@ -337,7 +337,7 @@ def my_quantile(num_minerals: int, percentile: float):
                 start, stop = stop, stop + subtypes[k]
 
                 # If the mineral is not present, we put there some values due to normalisation.
-                # These are artificial and should not enter the RMSE.
+                # These are artificial and should not enter the quantile.
                 z_true, z_pred = delete_wtrue_zero_samples(y_true[:, start:stop], y_pred[:, start:stop], w_true[:, k])
 
                 res = K.concatenate((res, tfp.stats.percentile(K.abs(z_true - z_pred), percentile,

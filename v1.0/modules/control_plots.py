@@ -730,9 +730,9 @@ def plot_model_history(model: Functional) -> None:
         plot3 = np.convolve(history[model.metrics_names[1]], conv_kernel, 'same') / norm
         labely = model.metrics_names[1]
 
-    lns1 = ax1.plot(plot1, color=color1, linestyle='-', label='train loss')
+    lns1 = ax1.plot(plot1, color=color1, linestyle='-', label='loss - training')
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-    lns3 = ax2.plot(plot3, color=color2, linestyle='-', label='train ' + labely)
+    lns3 = ax2.plot(plot3, color=color2, linestyle='-', label=labely + ' - training')
 
     if val_portion > 0:
         plot2 = np.convolve(history['val_loss'], conv_kernel, 'same') / norm
@@ -740,8 +740,8 @@ def plot_model_history(model: Functional) -> None:
             plot4 = np.convolve(np.sqrt(history['val_' + model.metrics_names[1]]), conv_kernel, 'same') / norm
         else:
             plot4 = np.convolve(history['val_' + model.metrics_names[1]], conv_kernel, 'same') / norm
-        lns2 = ax1.plot(plot2, color=color1, linestyle=':', label='validation loss')
-        lns4 = ax2.plot(plot4, color=color2, linestyle=':', label='validation ' + labely)
+        lns2 = ax1.plot(plot2, color=color1, linestyle=':', label='loss - validation')
+        lns4 = ax2.plot(plot4, color=color2, linestyle=':', label=labely + ' - validation')
         
         lns = lns1 + lns2 + lns3 + lns4
     else:

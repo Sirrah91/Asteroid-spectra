@@ -572,7 +572,7 @@ sam_name, sam = 'sam', my_sam(num_minerals)
 
 # important for hp tuning and early stopping
 # must be included in NN_models.py metrics variable and in custom_objects in NN_evaluate.py
-main_acc_name = 'val_mse'
+main_acc_name, main_acc = 'val_mse', mse
 
 # activations
 if p['output_activation'] == 'softmax':

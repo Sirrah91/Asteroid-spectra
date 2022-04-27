@@ -77,7 +77,7 @@ def plot_scatter_plots(y_true: np.ndarray, y_pred: np.ndarray, type: str = '') -
     y2p_line, y2m_line = y_line + 20, y_line - 20
     l10, l20 = 'm-', 'c-'
 
-    lab_line0, lab_line10, lab_line20 = '\phantom{1}0\% error', '10\% error', '20\% error'
+    lab_line0, lab_line10, lab_line20 = '0 pp error', '10 pp error', '20 pp error'
 
     RMSE = my_rmse(num_minerals)(y_true, y_pred).numpy() / 100  # is multiplied with 100 in the code
     R2 = my_r2(num_minerals)(y_true, y_pred).numpy()
@@ -477,7 +477,7 @@ def plot_scatter_NN_BC():
     y1p_line, y1m_line = y_line + 10, y_line - 10
     y2p_line, y2m_line = y_line + 20, y_line - 20
     l10, l20 = 'm-', 'c-'
-    lab_line0, lab_line10, lab_line20 = '\phantom{1}0\% error', '10\% error', '20\% error'
+    lab_line0, lab_line10, lab_line20 = '0 pp error', '10 pp error', '20 pp error'
 
     shift = 3  # Control ranges of axes (from 0 - shift to 100 + shift)
     fig_format = 'pdf'

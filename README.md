@@ -10,6 +10,8 @@ Python neural-network code is based on keras library and can be spit into 3 part
 
 The bahaviour of the whole code is driven by NN_config.py. You should not change the part at the bottom of this file unless you know the onsequences for the rest of the code.
 
+The whole code can be run via main.py.
+
 In ./Modules/chemical/ and ./Datasets/ there are trained modes and datasets which were used in the paper.
 
 For any question or comments, contant me at david.korda@helsinki.fi.

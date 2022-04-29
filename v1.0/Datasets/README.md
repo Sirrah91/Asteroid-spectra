@@ -11,6 +11,8 @@ Each row contains one reflectance spectrum (denoised with convolution filter and
     - if cleaning was applied
       - labels depend on config file (in this case, there are no wollastonite of orthopyroxene, and no information about plagioclase)
 
+    - labels are normalised to be from 0 to 1 (i.e. pyroxene Fs40 En55 Wo5 -> Fs=0.4, En=0.55, Wo=0.05 in data)
+
 Metadata contains:
   - AP_spectra-denoised-norm-meta.dat
     - asteroid number, Bus-DeMeo taxonomny class, slope, PC1'--PC5' (PC computed after removing slope)

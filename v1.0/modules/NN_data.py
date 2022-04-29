@@ -169,7 +169,6 @@ def remove_redundant_labels(x_data: np.ndarray, y_data: np.ndarray) -> Tuple[np.
 
 
 def keep_pure_only(x_data: np.ndarray, y_data: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-
     wanted = np.reshape(y_data[:, np.where(use_minerals_all)], (len(y_data), np.sum(use_minerals_all)))
     unwanted = np.reshape(y_data[:, np.where(~use_minerals_all)], (len(y_data), np.sum(~use_minerals_all)))
 
@@ -184,7 +183,9 @@ def keep_pure_only(x_data: np.ndarray, y_data: np.ndarray) -> Tuple[np.ndarray, 
 def reinterpolate_data(x_data: np.ndarray) -> np.ndarray:
     # re-interpolate the spectra to ghe given wavelengths range and the given spacing
     # re-normalise it to the given wavelength
-
+    
+    print('Re-interpolating the data')
+    
     # old resolution
     wvl_old = np.arange(lambda_min, lambda_max + resolution_final / 2, resolution_final)
     fun = interp1d(wvl_old, x_data, kind='cubic')

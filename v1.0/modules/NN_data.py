@@ -201,7 +201,6 @@ def reinterpolate_data(x_data: np.ndarray) -> np.ndarray:
     return x_data / v_norm
 
 
-
 def remove_nans(y_data: np.ndarray) -> np.ndarray:
     # NaNs in numbers
     inds = np.where(~np.isfinite(np.sum(y_data[:, used_indices], axis=1)))[0]

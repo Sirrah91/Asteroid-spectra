@@ -2,7 +2,9 @@ import numpy as np
 from typing import Tuple
 from sklearn.model_selection import train_test_split
 from copy import deepcopy
+from scipy.interpolate import interp1d
 
+from modules.CD_parameters import lambda_max, resolution_final, lambda_min
 from modules.NN_config import *
 from modules.utilities import *
 
@@ -26,6 +28,9 @@ def load_data(filename_data: str, clean_dataset: bool = False, keep_all_labels: 
     # select pure or mixtures (potentially remove a lot of samples and makes the rest of these faster)
     if use_pure_only:
         x_train, y_train = keep_pure_only(x_train, y_train)
+
+    # possible re-interpolation of the data to different wavelength range
+    # x_train = reinterpolate_data(x_train)
 
     if not keep_all_labels:
         x_train, y_train = remove_redundant_labels(x_train, y_train)
@@ -176,16 +181,24 @@ def keep_pure_only(x_data: np.ndarray, y_data: np.ndarray) -> Tuple[np.ndarray, 
     return x_data[indices], y_data[indices]
 
 
-def enforce_unit_sum(y_data: np.ndarray) -> np.ndarray:
-    # if not unit sum, add the difference to ll the elements
-    n_elements = np.shape(y_data)[1]
-    sums = np.sum(y_data, axis=1, keepdims=True)
+def reinterpolate_data(x_data: np.ndarray) -> np.ndarray:
+    # re-interpolate the spectra to ghe given wavelengths range and the given spacing
+    # re-normalise it to the given wavelength
 
-    add_to_elements = np.repeat((1 - sums) / n_elements, n_elements, axis=1)
+    # old resolution
+    wvl_old = np.arange(lambda_min, lambda_max + resolution_final / 2, resolution_final)
+    fun = interp1d(wvl_old, x_data, kind='cubic')
 
-    y_data += add_to_elements
+    # new resolution
+    wvl_new = np.linspace(500, 1650, 42)  # roughly ASPECT imager
+    x_data = fun(wvl_new)
 
-    return y_data
+    # normalised at what wavelength
+    normalised_at_wvl = 550
+    v_norm = np.reshape(fun(normalised_at_wvl), (len(x_data), 1))
+
+    return x_data / v_norm
+
 
 
 def remove_nans(y_data: np.ndarray) -> np.ndarray:

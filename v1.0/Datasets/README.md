@@ -10,3 +10,9 @@ Each row contains one reflectance spectrum (denoised with convolution filter and
     
     - if cleaning was applied
       - labels depend on config file (in this case, there are no wollastonite of orthopyroxene, and no information about plagioclase)
+
+Metadata contains:
+  - AP_spectra-denoised-norm-meta.dat
+    - asteroid number, Bus-DeMeo taxonomny class, slope, PC1'--PC5' (PC computed after removing slope)
+  - combined-denoised-norm*-meta.dat
+    - information about samples extracted mostly from RELAB adtabase

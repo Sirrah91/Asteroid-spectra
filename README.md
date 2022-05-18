@@ -29,4 +29,6 @@ The whole code can be run via main.py.
 
 In ./Modules/chemical/ and ./Datasets/ there are trained modes and datasets which were used in the paper.
 
+Short comments to datasets and models can be found in v1.0.
+
 For any question or comments, contant me at david.korda@helsinki.fi.

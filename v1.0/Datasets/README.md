@@ -7,7 +7,7 @@ Each row in the **dat** files contains one reflectance spectrum (denoised with c
     - ferrosilite, enstatite, wollastonite of clinopyroxene (3 values)
     - enorthosite, albite, orthoclase of plagioclase (3 values)
     
-    - if cleaning was applied
+    - if cleaning was applied (file name contains -clean)
       - labels depend on config file (in this case, there are no wollastonite of orthopyroxene, and no information about plagioclase)
 
     - labels are normalised to be from 0 to 1 (i.e. pyroxene Fs40 En55 Wo5 -> Fs=0.4, En=0.55, Wo=0.05 in data)

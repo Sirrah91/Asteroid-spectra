@@ -21,6 +21,7 @@ Metadata contains:
 
 
 **Datafiles which contain -norm were normalised at 550 nm.**
+
 **Datafiles which contain -denoised were denoised via a convolution filter.**
 
 The data files contain:

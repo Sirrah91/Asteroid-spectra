@@ -35,4 +35,5 @@ The data files contain:
   - data with labels contain Bus-DeMeo class at the first position
 - combined-denoised-norm.dat
   - combined dataset used for training, validation, and evaluation
-  - information about these data is listed in table **Sample_Catalogue_Clean.xlsx**
+  - information about these data is listed in table **Sample_Catalogue.xlsx**
+  - information about the data which pass through the selection criteria are in **Sample_Catalogue_Clean.xlsx*

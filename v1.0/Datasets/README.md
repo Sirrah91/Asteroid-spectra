@@ -29,7 +29,6 @@ The data files contain:
   - reflectance spectra of Chelyabinsk meteorite from Kohout et al. 2020 (in order SD 0% -- SD 100%, IM 0% -- IM 100%; SW 0 -- SW 700; see their Table 1)
 - Kachr_ol_opx-denoised-norm-nolabel.dat
   - reflectance spectra of olivine and otrhopyroxene from Chrbolkova et al. 2021 (in order ol-Ar, ol-H, ol-He, ol-laser, py-Ar, py-H, py-He, py-laser (always from fresh to the most weathered); see their Fig. 2)
-  - data range is **from 545 nm to 2415 nm** with a step of 5 nm
 - asteroid_spectra-denoised-norm-nolabel.dat and asteroid_spectra-denoised-norm.dat
   - reflectance spectra from DeMeo et al. 2009 and Binzel et al. 2019
   - data with labels contain Bus-DeMeo class at the first position

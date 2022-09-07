@@ -34,5 +34,5 @@ The data files contain:
   - data with labels contain Bus-DeMeo class at the first position
 - combined-denoised-norm.dat
   - combined dataset used for training, validation, and evaluation
-  - information about these data is listed in table **Sample_Catalogue.xlsx**
-  - information about the data which pass through the selection criteria of the final model are in **Sample_Catalogue_Clean.xlsx**
+  - known metadata and chemical analyses are listed in table **Sample_Catalogue.xlsx**
+  - known metadata, chemical analyses, and reflectance spectra of the data which pass through the selection criteria of the final model is in **Sample_Catalogue_Clean.xlsx**

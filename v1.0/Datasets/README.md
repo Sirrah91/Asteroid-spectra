@@ -1,7 +1,7 @@
 Data are stored in *.npz format. Each data file contain spectra, corresponding wavelengths, and metadata. Optionally, the files contain labels and notes about label and metadata. The file can be loaded with **data = numpy.load('name_of_a_file.npz, allow_pickle=True)**. Saved quantites are visualised with **data.files**.
 
 
-Each row in the **spectra** files contains one reflectance spectrum (denoised with convolution filter and normalised at 550 nm). The values are in the following order:
+Each row in the **spectra** files (accesible with data["spectra"]) contains one reflectance spectrum (denoised with convolution filter and normalised at 550 nm). The values are in the following order:
   - wavelengths from 450 nm to 2450 nm, step 5 nm (401 values); (see data["wavelengths"])
   - if labels are present; (see data["label metadata"])
     - olivine, orthopyroxene, clinopyroxene, plagioclase relative volume fraction (4 values)
@@ -15,7 +15,7 @@ Each row in the **spectra** files contains one reflectance spectrum (denoised wi
 
 Metadata are accesible through data["metadata"] and optional notes via data["metadata key"] and contains:
   - asteroid_spectra-denoised-norm.npz
-    - asteroid number, Bus-DeMeo taxonomny class, slope, PC1' -- PC5' (PC computed after removing slope)
+    - asteroid number, Bus-DeMeo taxonomny class, slope, PC1' - PC5' (PC computed after removing slope)
   - combined-denoised-norm.npz
     - information about samples extracted mostly from RELAB adtabase (see **Sample_Catalogue.xlsx**)
 

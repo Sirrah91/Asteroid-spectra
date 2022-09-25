@@ -1,6 +1,7 @@
 Data are stored in *.npz format. Each data file contain spectra, corresponding wavelengths, and metadata. Optionally, the files contain labels and notes about label and metadata. The file can be loaded with **data = numpy.load('name_of_a_file.npz, allow_pickle=True)**. Saved quantites are visualised with **data.files**.
 
 **Data files which contain -denoised were denoised via a convolution filter.**
+
 **Data files which contain -norm were normalised at 550 nm.**
 
 Each row in the **spectra** files (accesible with **data["spectra"]**) contains one reflectance spectrum (denoised with convolution filter and normalised at 550 nm). The corresponding wavelengths can be found in **data["wavelengths"]** and usually are from 450 nm to 2450 nm, step 5 nm (401 values).

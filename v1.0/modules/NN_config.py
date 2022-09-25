@@ -82,7 +82,7 @@ model_dir = 'compositional'  # directory where to save models
 # model_name = time_stamp + _ + model_type + _ + suffix + .h5
 model_name_suffix = interpolate_to if interpolate_to is not None else 'full'
 
-show_result_plot = False  # True for showing and saving of results plots, False for not
+show_result_plot = True  # True for showing and saving of results plots, False for not
 show_control_plot = True  # True for showing and saving of control plots, False for not
 verb = 2  # Set value for verbose: 0=no print, 1=full print, 2=simple print
 

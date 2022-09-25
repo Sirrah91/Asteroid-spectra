@@ -23,14 +23,14 @@ Python neural-network code is based on keras library and can be spit into 3 part
   - in NN_train.py there are also methods for tuning HP (based on Tuner and Talos)
 - NN_evaluate.py inputs the names of trained models and data for evaluation (either data or name of a file in ./Datasets/)
 
-The bahaviour of the whole code is driven by NN_config.py. You should not change the part at the bottom of this file unless you know the consequences for the rest of the code.
+The behaviour of the whole code is driven by NN_config.py. You should not change the part at the bottom of this file unless you know the consequences for the rest of the code.
 
 The whole code can be run via main.py.
 
-Trained models for determinich mineralogical properties can be found in ./Models/compositional/. See README.md at the folder for details about the models.
+Trained models for determining mineralogical properties can be found in ./Models/compositional/. See README.md at the folder for details about the models.
 
 Used dataset and their metadata are stored in ./Datasets/. Mineral and elemental analytical data used as input during training, validation, and testing are in **combined-denoised-norm.npz**. The relevant metadata and detailed mineral and chemical analyses used to derive training input analytical data are stored in table **Sample_Catalogue.xlsx**. See README.md for more details.
 
 Short comments to datasets and models can be found in v1.0.
 
-For any question or comments, contant me at david.korda@helsinki.fi.
+For any question or comments, contact me at david.korda@helsinki.fi.

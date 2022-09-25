@@ -27,9 +27,9 @@ The bahaviour of the whole code is driven by NN_config.py. You should not change
 
 The whole code can be run via main.py.
 
-Trained models for determinich mineralogical properties can be found in ./Models/chemical/. See README.md at the folder for details about the models.
+Trained models for determinich mineralogical properties can be found in ./Models/compositional/. See README.md at the folder for details about the models.
 
-Used dataset and their metadata are stored in ./Datasets/. Mineral and elemental analytical data used as input during training, validation, and testing are in **combined-denoised-norm.dat**. The relevant metadata and detailed mineral and chemical analyses used to derive training input analytical data are stored in table **Sample_Catalogue.xlsx**. See README.md for more details.
+Used dataset and their metadata are stored in ./Datasets/. Mineral and elemental analytical data used as input during training, validation, and testing are in **combined-denoised-norm.npy**. The relevant metadata and detailed mineral and chemical analyses used to derive training input analytical data are stored in table **Sample_Catalogue.xlsx**. See README.md for more details.
 
 Short comments to datasets and models can be found in v1.0.
 

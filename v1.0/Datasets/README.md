@@ -19,7 +19,7 @@ Metadata are accesible through **data["metadata"]** and optional notes via **dat
     - asteroid number, Bus-DeMeo taxonomny class, slope, PC1' - PC5' (PC computed after removing slope)
   - combined-denoised-norm.npz
     - information about samples extracted mostly from RELAB adtabase (see **Sample_Catalogue.xlsx**)
-   - Chelyabinsk-denoised-norm.npz and Kachr_ol_opx-denoised-norm.npz
+  - Chelyabinsk-denoised-norm.npz and Kachr_ol_opx-denoised-norm.npz
     - order in which the spectra were saved
 
 

@@ -16,7 +16,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 
 This project is related to (REF) paper about modal and chemical composition of silicate-rich rocks, including meteorites and asteroids.
 
-Python neural-network code is based on keras library and can be spit into 3 parts:
+Python neural-network code is based on the Keras library and can be spit into 3 parts:
 - NN_data.py reads data from ./Datasets/ and prepare them for training.
 - NN_train.py takes the loaded data and train the NN model
   - current models and losses and metrices are stored in NN_models.py, and NN_losses_metrics_activations.py. You should specify the metrices here

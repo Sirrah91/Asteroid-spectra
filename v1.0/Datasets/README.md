@@ -22,10 +22,9 @@ Metadata are accesible through **data["metadata"]** and optional notes via **dat
   - Chelyabinsk-denoised-norm.npz and Kachr_ol_opx-denoised-norm.npz
     - order in which the spectra were saved
 
+**Data files which contain -denoised were denoised via a convolution filter.**
 
-**Datafiles which contain -norm were normalised at 550 nm.**
-
-**Datafiles which contain -denoised were denoised via a convolution filter.**
+**Data files which contain -norm were normalised at 550 nm.**
 
 The data files contain:
 - Chelyabinsk-denoised-norm.npz

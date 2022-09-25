@@ -4,7 +4,7 @@ Data are stored in *.npz format. Each data file contain spectra, corresponding w
 Each row in the **spectra** files (accesible with **data["spectra"]**) contains one reflectance spectrum (denoised with convolution filter and normalised at 550 nm). The corresponding wavelengths can be found in **data["wavelengths"]** and usually are from 450 nm to 2450 nm, step 5 nm (401 values).
 
 
-if labels are present; (see **data["labels"]** and **data["label metadata"]**)
+if labels are present; (see **data["labels"]** and **data["label metadata"]**), these are usually
   - olivine, orthopyroxene, clinopyroxene, plagioclase in relative volume fraction (4 values)
   - fayalite, forsterite of olivine (2 values)
   - ferrosilite, enstatite, wollastonite of orthopyroxene (3 values)
@@ -38,7 +38,7 @@ The data files contain:
   - labels and their key
 - asteroid_spectra-denoised-norm.npz
   - reflectance spectra from DeMeo et al. 2009 and Binzel et al. 2019
-  - labels (Bus-DeMeo class)
+  - labels and their key (Bus-DeMeo class)
   - used wavelength grid
   - metadata
 - combined-denoised-norm.npz

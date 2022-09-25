@@ -66,51 +66,11 @@ def pipeline(n_models: int = 1) -> Union[np.ndarray, None]:
     else:
         # Names of the model in ./Models/compositional/
         model_names = ['20220330113805_CNN.h5']
-
-    filename_data = 'Didymos-denoised-norm.npz'
-
-    model_names = ['20220720211034_CNN.h5',
-                   '20220720214154_CNN.h5',
-                   '20220720220904_CNN.h5',
-                   '20220720223812_CNN.h5',
-                   '20220720225952_CNN.h5',
-                   '20220720231511_CNN.h5',
-                   '20220721102638_CNN.h5',
-                   '20220721104846_CNN.h5',
-                   '20220721111416_CNN.h5',
-                   '20220721113820_CNN.h5']
-
-    if interpolate_to in ["Itokawa", "Eros"]:
-        # No-label datafile in ./Datasets/
-        filename_data = interpolate_to + '.npz'
-
-        if interpolate_to in "Itokawa":
-            model_names = ['20220610105620_CNN.h5',
-                           '20220610110552_CNN.h5',
-                           '20220610112130_CNN.h5',
-                           '20220610113735_CNN.h5',
-                           '20220610114833_CNN.h5',
-                           '20220610120451_CNN.h5',
-                           '20220610122038_CNN.h5',
-                           '20220610122908_CNN.h5',
-                           '20220610124440_CNN.h5',
-                           '20220610125501_CNN.h5']
-        else:  # Eros
-            model_names = ['20220610130321_CNN.h5',
-                           '20220610131845_CNN.h5',
-                           '20220610132756_CNN.h5',
-                           '20220610133912_CNN.h5',
-                           '20220610134912_CNN.h5',
-                           '20220610140202_CNN.h5',
-                           '20220610141042_CNN.h5',
-                           '20220610163539_CNN.h5',
-                           '20220610164818_CNN.h5',
-                           '20220610165847_CNN.h5']
+        filename_data = 'asteroid_spectra-denoised-norm.npz'
 
         # Evaluate the models; second argument can be a path to the data or the data itself
         predictions = evaluate(model_names, filename_data)
-        plot_surface_spectra(predictions, filename_data, 'composition')
-
+        
     return predictions
 
 

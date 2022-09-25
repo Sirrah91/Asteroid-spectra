@@ -42,7 +42,7 @@ def pipeline(n_models: int = 1) -> Union[np.ndarray, None]:
 
     if train_new_model or tune_hyperparameters:
         # Name of the train data in ./Datasets/
-        filename_train_data = 'combined-denoised-norm.npy'
+        filename_train_data = 'combined-denoised-norm.npz'
 
         # Load the data
         x_train, y_train = load_data(filename_train_data, clean_dataset=True)
@@ -67,7 +67,7 @@ def pipeline(n_models: int = 1) -> Union[np.ndarray, None]:
         # Names of the model in ./Models/compositional/
         model_names = ['20220330113805_CNN.h5']
 
-    filename_data = 'Didymos-denoised-norm.npy'
+    filename_data = 'Didymos-denoised-norm.npz'
 
     model_names = ['20220720211034_CNN.h5',
                    '20220720214154_CNN.h5',
@@ -82,7 +82,7 @@ def pipeline(n_models: int = 1) -> Union[np.ndarray, None]:
 
     if interpolate_to in ["Itokawa", "Eros"]:
         # No-label datafile in ./Datasets/
-        filename_data = interpolate_to + '.npy'
+        filename_data = interpolate_to + '.npz'
 
         if interpolate_to in "Itokawa":
             model_names = ['20220610105620_CNN.h5',
@@ -138,7 +138,7 @@ from modules.NN_config import num_labels, use_minerals_all
 from modules.paper_plots import plot_ast_PC1_PC2, plot_Fa_vs_Fs_ast_only, plot_spectra, plot_mineralogy_histogram
 from modules.paper_plots import plot_PCA_BAR, plot_scatter_NN_BC, plot_error_density_plots
 
-filename_train_data = 'combined-denoised-norm.npy'
+filename_train_data = 'combined-denoised-norm.npz'
 x_train, y_train = load_data(filename_train_data, clean_dataset=True)
 # plot_mineralogy_histogram(y_train)
 # plot_spectra(x_train, y_train)
@@ -168,7 +168,7 @@ quantile_table(y_true, y_pred)
 plot_error_density_plots(y_true, y_pred)
 plot_scatter_NN_BC()
 
-filename_data = 'asteroid_spectra-denoised-norm.npy'
+filename_data = 'asteroid_spectra-denoised-norm.npz'
 y_pred = evaluate(model_names, filename_data)
 mean_asteroid_type(y_pred)
 mean_S_asteroid_type(y_pred)
@@ -176,9 +176,9 @@ plot_ast_PC1_PC2(y_pred)
 plot_Fa_vs_Fs_ast_only()
 plot_PCA_BAR()
 
-filename_data = 'Chelyabinsk-denoised-norm.npy'
+filename_data = 'Chelyabinsk-denoised-norm.npz'
 y_pred = evaluate(model_names, filename_data)
 
-filename_data = 'Kachr_ol_opx-denoised-norm.npy'
+filename_data = 'Kachr_ol_opx-denoised-norm.npz'
 y_pred = evaluate(model_names, filename_data)
 """

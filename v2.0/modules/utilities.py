@@ -141,9 +141,10 @@ def plot_me(x: np.ndarray, y: np.ndarray | None = None) -> None:
 
     fig, ax = plt.subplots(1, 1, figsize=(8, 6))
 
+    x = np.squeeze(x)
+    
     if y is None:
-        if np.ndim(np.squeeze(x)) == 1:  # line plot - x axis info is missing
-            x = np.squeeze(x)
+        if np.ndim(np.squeeze(x)) == 1:  # line plot - x axis info is missing        
             x, y = np.arange(len(x)), x
             ax.plot(x, y)
 
@@ -165,7 +166,7 @@ def plot_me(x: np.ndarray, y: np.ndarray | None = None) -> None:
             plt.colorbar(im, cax=cax)
 
     else:  # line plot
-        x, y = np.squeeze(x), np.squeeze(y)
+        y = np.squeeze(y)
         ax.plot(x, y)
 
         """

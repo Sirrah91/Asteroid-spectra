@@ -14,7 +14,7 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-This project is related to **David Korda, Antti Penttilä, Arto Klami and Tomáš Kohout, 2023, A&A, 669, A101** paper about modal and chemical composition of silicate-rich rocks, including meteorites and asteroids.
+This project is related to **David Korda, Antti Penttilä, Arto Klami, and Tomáš Kohout, 2023, A&A, 669, A101** paper about modal and chemical composition of silicate-rich rocks, including meteorites and asteroids.
 
 Python neural-network code is based on the Keras library and can be spit into 3 parts:
 - NN_data.py reads data from ./Datasets/ and prepare them for training.

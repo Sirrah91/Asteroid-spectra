@@ -26,9 +26,11 @@ if labels are present; (see **data["labels"]** and **data["label metadata"]**), 
     - taxonomy classes
  
 The data files contain:
-- asteroid_spectra-denoised-norm.npz
+- asteroid_spectra-*.npz
   - reflectance spectra from DeMeo et al. 2009 and Binzel et al. 2019
   - labels and their key (Bus-DeMeo class)
+    - **reduces** contains taxonomy classes from our reduced taxonomy system (see Table 1 in the reference paper)
+    - **deleted** contains taxonomy classes which we did not use (see Table 1 in the reference paper)
   - used wavelength grid
   - metadata
 - combined-denoised-norm.npz

@@ -1,4 +1,4 @@
-Models trained for the reference paper (see Appendix A for details about the models). Models were trained on reflectance spectra with wavelengths from 450 nm to 2450 nm with step of 5 nm (401 values); the spectra were normalised at 550 nm.
+Models trained for the reference paper (see Appendix A for details about the models). Models were trained on reflectance spectra with wavelengths from 450 nm to 2450 nm with the step of 5 nm (401 values); the spectra were normalised at 550 nm.
 - 20220325105832_CNN_OL.h5 → olivine-only model
 - 20220325114608_CNN_OPX.h5 → orthopyroxene-only model (no Wollastonite)
 -  20220404141225_CNN_OL_OPX.h5 → olivine-orthopyroxene model (no Wollastonite)

@@ -1,1 +1,1 @@
-Models trained for the reference paper. Models were trained on reflectance spectra with wavelengths from 450 nm to 2450 nm with step of 5 nm (full resolution); from 820 nm to 2360 nm with step of 20 nm (Eros resolution); from 820nm to 2080 nm with step of 20 nm (Itokawa resolution).
+Models trained for the reference paper. Models were trained on reflectance spectra with wavelengths from 450 nm to 2450 nm with the step of 5 nm (full resolution); from 820 nm to 2360 nm with the step of 20 nm (Eros resolution); from 820 nm to 2080 nm with the step of 20 nm (Itokawa resolution).

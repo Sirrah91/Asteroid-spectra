@@ -25,15 +25,15 @@ if labels are present; (see **data["labels"]** and **data["label metadata"]**), 
  
 The data files contain:
 - Chelyabinsk-denoised-norm.npz
-  - reflectance spectra of the Chelyabinsk meteorite from Kohout et al. 2020 in order SD 0% -- SD 100%, IM 0% -- IM 100%; SW 0 -- SW 700 (see **data["metadata"]** and their Table 1)
+  - reflectance spectra of the Chelyabinsk meteorite from Kohout et al. (2020) in order SD 0% -- SD 100%, IM 0% -- IM 100%; SW 0 -- SW 700 (see **data["metadata"]** and their Table 1)
   - used wavelength grid
   - labels and their key
 - Kachr_ol_opx-denoised-norm.npz
-  - reflectance spectra of olivine and orthopyroxene from Chrbolkova et al. 2021 in order ol-Ar, ol-H, ol-He, ol-laser, py-Ar, py-H, py-He, py-laser, always from fresh to the most weathered; (see **data["metadata"]** and their Fig. 2)
+  - reflectance spectra of olivine and orthopyroxene from Chrbolkova et al. (2021) in order ol-Ar, ol-H, ol-He, ol-laser, py-Ar, py-H, py-He, py-laser, always from fresh to the most weathered; (see **data["metadata"]** and their Fig. 2)
   - used wavelength grid
   - labels and their key
 - asteroid_spectra-denoised-norm.npz
-  - reflectance spectra from DeMeo et al. 2009 and Binzel et al. 2019
+  - reflectance spectra from DeMeo et al. (2009) and Binzel et al. (2019)
   - labels and their key (Bus-DeMeo class)
   - used wavelength grid
   - metadata

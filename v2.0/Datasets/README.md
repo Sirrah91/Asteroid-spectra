@@ -1,4 +1,4 @@
-Data are stored in *.npz format. Each data file contains spectra, corresponding wavelengths, and metadata. Optionally, the files contain labels and notes about labels and metadata. The file can be loaded with **data = numpy.load('name_of_a_file.npz, allow_pickle=True)**. Saved quantities are visualised with **data.files**.
+Data are stored in *.npz format. Each data file contains spectra, corresponding wavelengths, and metadata. Optionally, the files contain labels and notes about labels and metadata. The file can be loaded with **data = numpy.load("name_of_a_file.npz", allow_pickle=True)**. Saved quantities are visualised with **data.files**.
 
 **Data files which contain -denoised were denoised via a convolution filter.**
 

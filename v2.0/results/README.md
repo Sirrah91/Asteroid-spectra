@@ -1,4 +1,4 @@
-The files contain main outputs of our models. Namely:
+The files contain the main outputs of our models. Namely:
 
 - Itokawa-results.dat and Eros-results.dat
   - results of classification and composition models with assigned longitude and latitude

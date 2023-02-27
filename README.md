@@ -7,9 +7,9 @@ Python neural-network code is based on the Keras library and can be spit into 3 
 
 The behaviour of the whole code is driven by NN_config.py. You should not change the part at the bottom of this file unless you know the consequences for the rest of the code.
 
-The whole code can be run via main.py.
+The whole code can be run via main*.py.
 
-Trained models for determining mineralogical properties can be found in ./Models/compositional/. See README.md at the folder for details about the models.
+Trained models for determining mineralogical properties can be found in ./Models/. See README.md at the folder for details about the models.
 
 Used dataset and their metadata are stored in ./Datasets/. Mineral and elemental analytical data used as input during training, validation, and testing are in **combined-denoised-norm.npz**. Taxonomy data are in **asteroid_spectra-reduced-denoised-norm.npz**. The relevant metadata and detailed mineral and chemical analyses used to derive training input analytical data are stored in table **Sample_Catalogue.xlsx**. See corresponding README.md for more details.
 

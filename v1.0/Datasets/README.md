@@ -39,7 +39,7 @@ The data files contain:
   - metadata
 - combined-denoised-norm.npz
   - the combined dataset (RELAB and C-Tape databases and our own measurements) used for training, validation, and evaluation
-    - compare **data["metadata"]** with records in RELAB and C-Tape databases to find the spectra in the databases (e.g. via SampleID)
+    - compare **data["metadata"]** with records in RELAB and C-Tape databases to find the spectra in the databases (e.g. via SampleID in **data["metadata"][:, 0]**)
   - used wavelength grid
   - labels and their key
   - relevant metadata and their key

@@ -34,7 +34,8 @@ The data files contain:
   - used wavelength grid
   - metadata
 - combined-denoised-norm.npz
-  - the combined dataset used for training, validation, and evaluation
+  - the combined dataset (RELAB and C-Tape databases and our own measurements) used for training, validation, and evaluation
+    - compare **data["metadata"]** with records in RELAB and C-Tape databases to find the spectra in the databases (e.g. via SampleID)
   - used wavelength grid
   - labels and their key
   - relevant metadata and their key

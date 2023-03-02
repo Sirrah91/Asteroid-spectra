@@ -872,7 +872,7 @@ def resave_didymos_2022(add_blue_part: bool = False) -> list[str]:
         x, y = tmp[:, 0] * 1000, tmp[:, 1]
 
         if i == 0:
-            wvl_to_delete = np.array([750, 765, 1875, 1895, 1900, 2430, 2440
+            wvl_to_delete = np.array([750, 765, 1875, 1895, 1900, 2430, 2440,
                                       *safe_arange(1340, 1375, 5, endpoint=True),
                                       *safe_arange(1385, 1395, 5, endpoint=True),
                                       *safe_arange(1990, 2030, 5, endpoint=True)])

@@ -106,7 +106,7 @@ def load_taxonomy_data(filename_data: str, clean_dataset: bool = True, return_me
     meta = deepcopy(np.array(data["metadata"], dtype=object))
 
     if clean_dataset:
-        indices = filter_selected_classes(meta[:, 1])
+        indices = filter_selected_classes(y_train)  # metadata contains original taxonomy types even for "-reduce" data
         x_train, y_train, meta = x_train[indices], y_train[indices], meta[indices]
 
     # possible re-interpolation of the data to different wavelength range

@@ -1,4 +1,4 @@
-The codes and data can be used under MIT license (https://opensource.org/license/mit/).
+These codes and data are provided under MIT license (https://opensource.org/license/mit/).
 
 Copyright 2023 David Korda, Antti Penttila, Arto Klami, Tomas Kohout (University of Helsinki and Institute of Geology of the Czech Academy of Sciences).
 

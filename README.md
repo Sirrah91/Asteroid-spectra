@@ -1,3 +1,5 @@
+The codes and data can be used under MIT license (https://opensource.org/license/mit/).
+
 Python neural network code is based on the Keras library and can be split into 3 parts:
 - NN_data.py reads data from ./Datasets/ and prepares them for training.
 - NN_train.py takes the loaded data and trains the NN model

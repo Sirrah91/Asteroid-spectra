@@ -9,8 +9,8 @@
 """
 This code is provided under MIT license (https://opensource.org/license/mit/).
 
-Copyright 2023 David Korda, Tomáš Kohout, Kateřina Flanderová, Jean-Baptiste Vincent, and Antti Penttilä (University of Helsinki, 
-Institute of Geology of the Czech Academy of Sciences, and DLR Institute of Planetary Research).
+Copyright 2023 David Korda, Tomáš Kohout, Kateřina Flanderová, Jean-Baptiste Vincent, and Antti Penttilä 
+(University of Helsinki, Institute of Geology of the Czech Academy of Sciences, and DLR Institute of Planetary Research).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the 'Software'), to deal in the Software without restriction, including

@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------- #
 
 """
-This code is provided under MIT license (https://opensource.org/license/mit/).
+This code is provided under MIT licence (https://opensource.org/license/mit/).
 
 Copyright 2023 David Korda, Antti Penttila, Arto Klami, Tomas Kohout (University of Helsinki and Institute of Geology
 of the Czech Academy of Sciences).

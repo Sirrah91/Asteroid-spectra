@@ -1,4 +1,4 @@
-These codes and data are provided under MIT license (https://opensource.org/license/mit/).
+These codes and data are provided under MIT licence (https://opensource.org/license/mit/).
 
 Copyright 2023 David Korda, Tomáš Kohout, Kateřina Flanderová, Jean-Baptiste Vincent, and Antti Penttilä (University of Helsinki, Institute of Geology of the Czech Academy of Sciences, and DLR Institute of Planetary Research).
 

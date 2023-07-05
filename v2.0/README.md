@@ -6,4 +6,4 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-This project is related to the publication **Eros and Itokawa surface properties from reflectance spectra** by **David Korda, Tomáš Kohout, Kateřina Flanderová, Jean-Baptiste Vincent, and Antti Penttilä** about the evaluation of Eros and Itokawa reflectance spectra.
+This project is related to the publication **(433) Eros and (25143) Itokawa surface properties from reflectance spectra** by **David Korda, Tomáš Kohout, Kateřina Flanderová, Jean-Baptiste Vincent, and Antti Penttilä, 2023, A&A, 675, A50** about the evaluation of Eros and Itokawa reflectance spectra.

@@ -271,16 +271,16 @@ def find_nearest(array: np.ndarray, value: float) -> float:
     return array[argnearest(array=array, value=value)]
 
 
-def plot_me(x: np.ndarray, y: np.ndarray | None = None, **kwargs) -> tuple:
+def plot_me(x: np.ndarray, y: np.ndarray | None = None, *args, **kwargs) -> tuple:
     matplotlib.use("TkAgg")  # Potentially dangerous (can change backend of the following parts)
 
     fig, ax = plt.subplots(1, 1, figsize=(8, 6))
 
     x = np.squeeze(x)
 
-    if y is None:
+    if y is None or not (isinstance(y, list) or isinstance(y, np.ndarray)):
         if np.ndim(x) == 1:  # line plot - x-axis info is missing
-            ax.plot(x, **kwargs)
+            ax.plot(x, y, *args, **kwargs)
 
             """
             ax.spines['left'].set_position('zero')
@@ -293,7 +293,7 @@ def plot_me(x: np.ndarray, y: np.ndarray | None = None, **kwargs) -> tuple:
 
         else:  # x is matrix to plot
             y_max, x_max = np.shape(x)
-            im = ax.imshow(x, origin="lower", extent=[0, x_max, 0, y_max], aspect="auto", **kwargs)
+            im = ax.imshow(x, y, *args, origin="lower", extent=[0, x_max, 0, y_max], aspect="auto", **kwargs)
 
             divider = make_axes_locatable(ax)
             cax = divider.append_axes(position="right", size="5%", pad=0.1)
@@ -302,9 +302,9 @@ def plot_me(x: np.ndarray, y: np.ndarray | None = None, **kwargs) -> tuple:
     else:  # line plot
         y = np.squeeze(y)
         try:
-            ax.plot(x, y, **kwargs)
+            ax.plot(x, y, *args, **kwargs)
         except ValueError:
-            ax.plot(x, np.transpose(y), **kwargs)
+            ax.plot(x, np.transpose(y), *args, **kwargs)
 
         """
         ax.spines['left'].set_position('zero')
@@ -608,7 +608,7 @@ def distance(rectangle: np.ndarray, point: np.ndarray) -> np.ndarray:
     return np.sqrt(dx * dx + dy * dy)
 
 
-def my_pca(x_data: np.ndarray, 
+def my_pca(x_data: np.ndarray,
            n_components: int | float | None = None,
            standardise: bool = False,
            return_info: bool = False,
@@ -616,18 +616,19 @@ def my_pca(x_data: np.ndarray,
            **kwargs) -> tuple[np.ndarray, dict[str, bool | np.ndarray | PCA]] | np.ndarray:
     # Function computes first n_components principal components
 
-    mu = np.mean(x_data, axis=0)  # PCA does this automatically and stores mu to pca.mean_
     if standardise:
         std = np.std(x_data, ddof=1, axis=0)
     else:
-        std = 1.
+        std = np.full(np.shape(x_data)[1], fill_value=1.)
 
-    x = (x_data - mu) / std
+    x = x_data / std  # mean is removed and stored within PCA
 
     pca = PCA(n_components=n_components, svd_solver=svd_solver, **kwargs)
     x_data_pca = pca.fit_transform(x)
 
     """
+    mu = np.mean(x, axis=0)
+    x = x - mu
     cov = np.cov(x, rowvar=False)
     eigenvalues, eigenvectors = np.linalg.eig(cov)
 
@@ -637,19 +638,19 @@ def my_pca(x_data: np.ndarray,
 
     explained_variance = eigenvalues / np.sum(eigenvalues)
 
-    x_data_pca = x @ np.transpose(PC[:n_components])
+    x_data_pca = x @ np.transpose(PC[:n_components])  # may have different orientation and length
 
-    back_projection = x_data_pca @ PC[:n_components] * std + mu
+    back_projection = (x_data_pca @ PC[:n_components] + mu) * std
     """
 
     if return_info:
+        pca.std_correction_ = std
+
         info = {"standardised": standardise,
-                "mean": mu,
-                "std": std,
                 "PC": pca.components_,
                 "eigenvalues": pca.explained_variance_,
                 "explained_variance": pca.explained_variance_ratio_,
-                "back_projection": pca.inverse_transform(x_data_pca) * std + mu,
+                "back_projection": pca.inverse_transform(x_data_pca) * std,
                 "model": pca}
 
         return x_data_pca, info

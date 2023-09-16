@@ -277,6 +277,7 @@ def plot_me(x: np.ndarray | list, *args, **kwargs) -> tuple:
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(8, 6))
 
     x = np.squeeze(x)
+    if np.ndim(x) == 0: x = np.reshape(x, (1,))
 
     if np.ndim(x) == 1:  # line plot
         # is first arg y axis?

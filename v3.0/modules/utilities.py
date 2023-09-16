@@ -271,40 +271,23 @@ def find_nearest(array: np.ndarray, value: float) -> float:
     return array[argnearest(array=array, value=value)]
 
 
-def plot_me(x: np.ndarray, y: np.ndarray | None = None, *args, **kwargs) -> tuple:
-    matplotlib.use("TkAgg")  # Potentially dangerous (can change backend of the following parts)
+def plot_me(x: np.ndarray | list, *args, **kwargs) -> tuple:
+    matplotlib.use("TkAgg")  # Potentially dangerous (changes backend in the following code)
 
-    fig, ax = plt.subplots(1, 1, figsize=(8, 6))
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(8, 6))
 
     x = np.squeeze(x)
 
-    if y is None or not (isinstance(y, list) or isinstance(y, np.ndarray)):
-        if np.ndim(x) == 1:  # line plot - x-axis info is missing
-            ax.plot(x, y, *args, **kwargs)
-
-            """
-            ax.spines['left'].set_position('zero')
-            ax.spines['bottom'].set_position('zero')
-            ax.spines['right'].set_color('none')
-            ax.spines['top'].set_color('none')
-            ax.xaxis.set_ticks_position('bottom')
-            ax.yaxis.set_ticks_position('left')
-            """
-
-        else:  # x is matrix to plot
-            y_max, x_max = np.shape(x)
-            im = ax.imshow(x, y, *args, origin="lower", extent=[0, x_max, 0, y_max], aspect="auto", **kwargs)
-
-            divider = make_axes_locatable(ax)
-            cax = divider.append_axes(position="right", size="5%", pad=0.1)
-            plt.colorbar(im, cax=cax)
-
-    else:  # line plot
-        y = np.squeeze(y)
-        try:
-            ax.plot(x, y, *args, **kwargs)
-        except ValueError:
-            ax.plot(x, np.transpose(y), *args, **kwargs)
+    if np.ndim(x) == 1:  # line plot
+        # is first arg y axis?
+        if len(args) and isinstance(args[0], np.ndarray | list) and np.size(x) in np.shape(args[0]):
+            y = np.squeeze(args[0])
+            try:
+                ax.plot(x, y, *args[1:], **kwargs)
+            except ValueError:
+                ax.plot(x, np.transpose(y), *args[1:], **kwargs)
+        else:
+            ax.plot(x, *args, **kwargs)
 
         """
         ax.spines['left'].set_position('zero')
@@ -314,6 +297,14 @@ def plot_me(x: np.ndarray, y: np.ndarray | None = None, *args, **kwargs) -> tupl
         ax.xaxis.set_ticks_position('bottom')
         ax.yaxis.set_ticks_position('left')
         """
+
+    else:  # x is matrix to plot
+        y_max, x_max = np.shape(x)
+        im = ax.imshow(x, *args, origin="lower", extent=[0, x_max, 0, y_max], aspect="auto", **kwargs)
+
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes(position="right", size="5%", pad=0.1)
+        plt.colorbar(im, cax=cax)
 
     mng = plt.get_current_fig_manager()
     mng.resize(*mng.window.maxsize())

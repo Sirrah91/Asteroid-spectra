@@ -608,7 +608,8 @@ def distance(rectangle: np.ndarray, point: np.ndarray) -> np.ndarray:
     return np.sqrt(dx * dx + dy * dy)
 
 
-def my_pca(x_data: np.ndarray, n_components: int | float | None = None,
+def my_pca(x_data: np.ndarray, 
+           n_components: int | float | None = None,
            standardise: bool = False,
            return_info: bool = False,
            svd_solver: str = "full",

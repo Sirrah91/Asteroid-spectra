@@ -614,7 +614,7 @@ def remove_no_iron_samples(y_data: pd.DataFrame,
     all_minerals = gimme_minerals_all(used_minerals, used_endmembers)
 
     # iron limits are not important if the mineral is not present (0 modal and 0 iron should not be removed)
-    header = np.array([c for c in y_data if c.startswith(tuple(mineral_names_short[:3]))])
+    header = np.array([c for c in y_data if c.startswith(("OL", "OPX", "CPX"))])
     indices1 = np.array(y_data[header] > 0.)  # to remove
 
     # iron limits (if mineral is not in all_minerals, you actually prefer low-iron samples which are featureless)

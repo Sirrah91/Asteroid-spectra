@@ -615,7 +615,7 @@ def my_pca(x_data: np.ndarray, n_components: int | float | None = None,
            **kwargs) -> tuple[np.ndarray, dict[str, bool | np.ndarray | PCA]] | np.ndarray:
     # Function computes first n_components principal components
 
-    mu = np.mean(x_data, axis=0)
+    mu = np.mean(x_data, axis=0)  # PCA does this automatically and stores mu to pca.mean_
     if standardise:
         std = np.std(x_data, ddof=1, axis=0)
     else:

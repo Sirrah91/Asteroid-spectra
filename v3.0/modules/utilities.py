@@ -566,7 +566,7 @@ def sliding_window(image: np.ndarray, kernel: np.ndarray, func: str | Callable, 
                     result[ix, iy] = func(intermediate[ix, iy], kernel)
 
         # do not apply the function on "filtered-out" data (where kernel <= 0)
-        intermediate = intermediate * np.where(kernel > 0, 1., np.nan)
+        intermediate = intermediate * np.where(kernel > 0., 1., np.nan)
 
         if func == "median":
             result = np.nanmedian(intermediate, axis=(2, 3))
@@ -608,14 +608,14 @@ def distance(rectangle: np.ndarray, point: np.ndarray) -> np.ndarray:
     return np.sqrt(dx * dx + dy * dy)
 
 
-def my_pca(x_data: np.ndarray, n_components: int = 2,
+def my_pca(x_data: np.ndarray, n_components: int | float | None = None,
            standardise: bool = False,
            return_info: bool = False,
            svd_solver: str = "full",
            **kwargs) -> tuple[np.ndarray, dict[str, bool | np.ndarray | PCA]] | np.ndarray:
     # Function computes first n_components principal components
 
-    mu = np.mean(x_data, axis=0),
+    mu = np.mean(x_data, axis=0)
     if standardise:
         std = np.std(x_data, ddof=1, axis=0)
     else:
@@ -626,12 +626,29 @@ def my_pca(x_data: np.ndarray, n_components: int = 2,
     pca = PCA(n_components=n_components, svd_solver=svd_solver, **kwargs)
     x_data_pca = pca.fit_transform(x)
 
+    """
+    cov = np.cov(x, rowvar=False)
+    eigenvalues, eigenvectors = np.linalg.eig(cov)
+
+    inds = np.argsort(eigenvalues)[::-1]
+    eigenvalues = eigenvalues[inds]
+    PC = np.transpose(eigenvectors[:, inds])  # may have different orientation and length
+
+    explained_variance = eigenvalues / np.sum(eigenvalues)
+
+    x_data_pca = x @ np.transpose(PC[:n_components])
+
+    back_projection = x_data_pca @ PC[:n_components] * std + mu
+    """
+
     if return_info:
         info = {"standardised": standardise,
                 "mean": mu,
                 "std": std,
                 "PC": pca.components_,
                 "eigenvalues": pca.explained_variance_,
+                "explained_variance": pca.explained_variance_ratio_,
+                "back_projection": pca.inverse_transform(x_data_pca) * std + mu,
                 "model": pca}
 
         return x_data_pca, info
@@ -649,7 +666,7 @@ def my_mv(source: str, destination: str, mv_or_cp: str = "mv") -> None:
         print('mv_or_cp must be either "mv" or "cp"')
 
 
-def isfloat(element: any) -> bool:
+def is_float(element: any) -> bool:
     try:
         float(element)
         return True

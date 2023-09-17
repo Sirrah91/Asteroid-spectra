@@ -54,7 +54,8 @@ def load_composition_data(filename_data: str, clean_dataset: bool = True, keep_a
 
     if clean_dataset:  # original data are filtered; after normalisation, there can be some red spectra
         x_train, y_train, inds = clean_data(x_train, y_train, filtering_setup=filtering_setup,
-                                            used_minerals=used_minerals, used_endmembers=used_endmembers, return_indices=True)
+                                            used_minerals=used_minerals, used_endmembers=used_endmembers,
+                                            return_indices=True)
         meta = meta.iloc[inds]
 
     # possible re-interpolation of the data to different wavelength range
@@ -611,36 +612,48 @@ def remove_no_iron_samples(y_data: pd.DataFrame,
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
 
+    # add more if needed
+    limits = {"OL": {"Fa": Fa_threshold},
+              "OPX": {"Fs (OPX)": Fs_threshold},
+              "CPX": {"Fs (CPX)": Fs_threshold}}
+
+    def filter_mineral(mineral, limit, index):
+        # iron limits are not important if the mineral is not present (0 modal and 0 iron should not be removed)
+        indices_mineral = np.array(y_data[mineral] > 0.)
+
+        # iron limits (if mineral is not in all_minerals, you actually prefer low-iron samples which are featureless)
+        if remove_high_iron_unwanted:
+            indices_chemical = np.array([y_data[key] < value / 100. if all_minerals[index] else
+                                         y_data[key] >= value / 100. for key, value in limit.items()])
+
+        else:
+            indices_chemical = np.array([y_data[key] < value / 100. for key, value in limit.items()])
+
+            # if you ask for modal but not in mineral composition -> you should remove low-iron samples anyway,
+            # or you can possibly derive ol/opx from a flat spectra of OL and OPX
+            # (you can mix them with any ratio and get just a flat spectrum...)
+
+            # If you want to keep such samples (you ask for modal but do not want to delete low-iron chemical)
+            if keep_if_not_used:
+                # iron limits are not important if the end-member is not present
+                used_inds = used_indices(used_minerals=used_minerals, used_endmembers=used_endmembers)
+                used_names = np.array(list(y_data))[used_inds]
+
+                # fill row of indices_chemical with False (not to remove)
+                indices_chemical[[key not in used_names for key in limit]] = False
+
+        return np.all(stack((indices_mineral, np.any(indices_chemical, axis=0)), axis=0), axis=0)  # to remove
+
     all_minerals = gimme_minerals_all(used_minerals, used_endmembers)
 
-    # iron limits are not important if the mineral is not present (0 modal and 0 iron should not be removed)
-    header = np.array([c for c in y_data if c.startswith(("OL", "OPX", "CPX"))])
-    indices1 = np.array(y_data[header] > 0.)  # to remove
+    min_index, header = zip(*[(i, key) for mineral in limits for i, key in enumerate(y_data)
+                              if key.startswith(mineral)])
 
-    # iron limits (if mineral is not in all_minerals, you actually prefer low-iron samples which are featureless)
-    header = np.array(["Fa", "Fs (OPX)", "Fs (CPX)"])
-    limits = np.array([Fa_threshold, Fs_threshold, Fs_threshold])
+    limits = {key: value for key, value in zip(header, limits.values())}
 
-    if remove_high_iron_unwanted:
-        indices2 = np.transpose([y_data[header[i]] < limits[i] / 100. if all_minerals[i] else
-                                 y_data[header[i]] >= limits[i] / 100. for i in range(len(header))])  # to remove
-        mask = np.logical_and(indices1, indices2)
-    else:
-        indices2 = np.array(y_data[header] < limits / 100.)  # to remove
-        mask = np.logical_and(indices1, indices2)[:, all_minerals[:3]]
+    mask = [filter_mineral(mineral, limits[mineral], min_index[i]) for i, mineral in enumerate(limits)]
 
-        # if you ask for modal but not in mineral composition -> you should remove low-iron samples anyway,
-        # or you can possibly derive ol/opx from a flat spectra of OL and OPX
-        # (you can mix them with any ratio and get just a flat spectrum...)
-
-        # If you want to keep such samples (you ask for modal but do not want to delete low-iron chemical)
-        if keep_if_not_used:
-            # iron limits are not important if the end-member is not present
-            endmember_mask = np.array([used_endmembers[0][0], used_endmembers[1][0],
-                                       used_endmembers[2][0]])[all_minerals[:3]]
-            mask = mask[:, endmember_mask]
-
-    indices = np.where(~np.any(mask, axis=1))[0]  # to keep
+    indices = np.where(~np.any(mask, axis=0))[0]  # to keep
 
     return np.array(indices, dtype=int)
 

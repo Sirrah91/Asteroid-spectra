@@ -652,6 +652,10 @@ def remove_no_iron_samples(y_data: pd.DataFrame,
     # limit is not empty but filled with unknown minerals, no samples are deleted
     if not header: return np.full(len(y_data), fill_value=False)
 
+    if len(header) != len(limits):
+        warnings.warn("Not unique distinguish of minerals in filtering low-iron spectra. Rather skipping it.")
+        return np.full(len(y_data), fill_value=False)
+
     mineral_index, header = zip(*header)
     limits = {key: value for key, value in zip(header, limits.values())}
 

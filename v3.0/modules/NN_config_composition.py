@@ -39,11 +39,16 @@ comp_filtering_setup = {
     # if use_pure_only == False, this option is not used
     "use_mix_of_the_pure_ones": False,
 
-    "lim_vol_part": 0.65,  # remove samples with at least x vol% of wanted minerals
+    "lim_vol_part": 0.65,  # remove samples with at least x vol fraction of wanted minerals
 
-    # these two are also used to remove samples with high-iron phase that is not in "minerals"
-    "Fa_lim": 3.,  # lower limits of iron in olivine (to have reasonable absorption bands)
-    "Fs_lim": 5.,  # lower limits of iron in pyroxenes (to have reasonable absorption bands)
+    # LOWER limits of end-member amounts (to have reasonable absorption bands)
+    # these are also used to remove samples with high-iron phase that is not in "minerals"
+    "chem_limits": {"OL": {"Fa": 3.},  # lower limits of iron in olivine
+                    "OPX": {"Fs (OPX)": 5.},  # lower limits of iron in orthopyroxene
+                    "CPX": {"Fs (CPX)": 5.}},  # lower limits of iron in clinopyroxene
+
+    "remove_high_iron_unwanted": True,  # more iron than the limit => remove it
+    "keep_if_not_used": False,  # it the chemical composition is not used, ignore limits
 
     "red_thresh": 5.  # threshold for normalised reflectance (redder spectra are deleted)
 }

@@ -646,13 +646,16 @@ def remove_no_iron_samples(y_data: pd.DataFrame,
 
         return np.all(stack((indices_mineral, np.any(indices_chemical, axis=0)), axis=0), axis=0)  # to remove
 
-    all_minerals = gimme_minerals_all(used_minerals, used_endmembers)
+    # true mineral name in the DataFrame and its index in all_minerals
+    header = [(i, key) for mineral in limits for i, key in enumerate(y_data) if key.startswith(mineral)]
 
-    mineral_index, header = zip(*[(i, key) for mineral in limits for i, key in enumerate(y_data)
-                                  if key.startswith(mineral)])
+    # limit is not empty but filled with unknown minerals, no samples are deleted
+    if not header: return np.full(len(y_data), fill_value=False)
 
+    mineral_index, header = zip(*header)
     limits = {key: value for key, value in zip(header, limits.values())}
 
+    all_minerals = gimme_minerals_all(used_minerals, used_endmembers)
     mask = [filter_mineral(mineral, mineral_index[i]) for i, mineral in enumerate(limits)]
 
     indices = np.where(~np.any(mask, axis=0))[0]  # to keep

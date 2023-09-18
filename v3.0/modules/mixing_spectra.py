@@ -187,8 +187,11 @@ def load_spectra() -> Iterator[np.ndarray, ...]:
     filtering_setup = {"use_pure_only": False,
                        "use_mix_of_the_pure_ones": False,
                        "lim_vol_part":  0.65,
-                       "Fa_lim": 3.,
-                       "Fs_lim": 5.,
+                       "chem_limits": {"OL": {"Fa": 3.},
+                                       "OPX": {"Fs (OPX)": 5.},
+                                       "CPX": {"Fs (CPX)": 5.}},
+                       "remove_high_iron_unwanted": True,
+                       "keep_if_not_used": False,
                        "red_thresh": 5.
                        }
 

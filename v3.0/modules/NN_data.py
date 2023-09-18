@@ -557,9 +557,10 @@ def clean_data(x_data: np.ndarray, y_data: pd.DataFrame,
     inds_1 = delete_data(x_data)
 
     # remove olivine and pyroxene with low iron abundance (weak absorptions, must be before mineral deletion)
-    inds_2 = remove_no_iron_samples(y_data, filtering_setup["Fa_lim"], filtering_setup["Fs_lim"],
+    inds_2 = remove_no_iron_samples(y_data, limits=filtering_setup["chem_limits"],
                                     used_minerals=used_minerals, used_endmembers=used_endmembers,
-                                    remove_high_iron_unwanted=True, keep_if_not_used=False)
+                                    remove_high_iron_unwanted=filtering_setup["remove_high_iron_unwanted"],
+                                    keep_if_not_used=filtering_setup["keep_if_not_used"])
 
     # remove spectra of other-than-wanted minerals and remove unwanted columns from data
     inds_3 = remove_redundant_spectra(y_data,  filtering_setup["lim_vol_part"],
@@ -601,23 +602,24 @@ def delete_data(x_data: np.ndarray) -> np.ndarray:
 
 
 def remove_no_iron_samples(y_data: pd.DataFrame,
-                           Fa_threshold: float = 0.,
-                           Fs_threshold: float = 0.,
+                           limits: dict[str, dict[str, float]] | None = None,
                            used_minerals: np.ndarray | None = None,
                            used_endmembers: list[list[bool]] | None = None,
                            remove_high_iron_unwanted: bool = True,
                            keep_if_not_used: bool = False) -> np.ndarray:
     # this function is applied before removing unwanted labels
 
+    if limits is None: return np.array(np.arange(len(y_data)), dtype=int)
+
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
 
-    # add more if needed
-    limits = {"OL": {"Fa": Fa_threshold},
-              "OPX": {"Fs (OPX)": Fs_threshold},
-              "CPX": {"Fs (CPX)": Fs_threshold}}
+    def filter_mineral(mineral: str, index: int):
+        limit = limits[mineral]
 
-    def filter_mineral(mineral, limit, index):
+        # if limit is empty, no samples are deleted
+        if not limit: return np.full(len(y_data), fill_value=False)
+
         # iron limits are not important if the mineral is not present (0 modal and 0 iron should not be removed)
         indices_mineral = np.array(y_data[mineral] > 0.)
 
@@ -646,12 +648,12 @@ def remove_no_iron_samples(y_data: pd.DataFrame,
 
     all_minerals = gimme_minerals_all(used_minerals, used_endmembers)
 
-    min_index, header = zip(*[(i, key) for mineral in limits for i, key in enumerate(y_data)
-                              if key.startswith(mineral)])
+    mineral_index, header = zip(*[(i, key) for mineral in limits for i, key in enumerate(y_data)
+                                  if key.startswith(mineral)])
 
     limits = {key: value for key, value in zip(header, limits.values())}
 
-    mask = [filter_mineral(mineral, limits[mineral], min_index[i]) for i, mineral in enumerate(limits)]
+    mask = [filter_mineral(mineral, mineral_index[i]) for i, mineral in enumerate(limits)]
 
     indices = np.where(~np.any(mask, axis=0))[0]  # to keep
 
@@ -663,6 +665,8 @@ def remove_redundant_spectra(y_data: pd.DataFrame,
                              used_minerals: np.ndarray | None = None,
                              used_endmembers: list[list[bool]] | None = None) -> np.ndarray:
     # remove spectra which do not contain much of the wanted minerals
+
+    if vol_part_thresh is None or vol_part_thresh == 0.: return np.array(np.arange(len(y_data)), dtype=int)
 
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
@@ -684,6 +688,9 @@ def remove_duplicities(x_data: np.ndarray) -> np.ndarray:
 
 def remove_too_red_spectra(x_data: np.ndarray, red_threshold: float = np.inf) -> np.ndarray:
     # spectra with normalised reflectance > red_thresh are deleted
+
+    if red_threshold is None or red_threshold == np.inf: return np.array(np.arange(len(x_data)), dtype=int)
+
     indices = np.unique(np.where(np.all(x_data <= red_threshold, axis=1))[0])
 
     return np.array(indices, dtype=int)

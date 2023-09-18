@@ -56,7 +56,7 @@ def calc_BAR_BC(wavelength: np.ndarray, reflectance: np.ndarray) -> tuple[np.nda
             BAR[i] = np.nan
             continue
 
-        # if the founded maxima are out of wavelength range, put at the edge
+        # if the founded maxima are out of wavelength range, shift them at the edge
         wvl_max_1 = np.max((wvl_max_1, np.min(wavelength)))
         wvl_max_3 = np.min((wvl_max_3, np.max(wavelength)))
 

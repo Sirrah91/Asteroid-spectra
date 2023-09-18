@@ -609,16 +609,14 @@ def remove_no_iron_samples(y_data: pd.DataFrame,
                            keep_if_not_used: bool = False) -> np.ndarray:
     # this function is applied before removing unwanted labels
 
-    if limits is None: return np.array(np.arange(len(y_data)), dtype=int)
+    # if limit is None or empty, no samples are deleted
+    if limits is None or not limits: return np.array(np.arange(len(y_data)), dtype=int)
 
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
 
     def filter_mineral(mineral: str, index: int):
         limit = limits[mineral]
-
-        # if limit is empty, no samples are deleted
-        if not limit: return np.full(len(y_data), fill_value=False)
 
         # iron limits are not important if the mineral is not present (0 modal and 0 iron should not be removed)
         indices_mineral = np.array(y_data[mineral] > 0.)
@@ -646,17 +644,23 @@ def remove_no_iron_samples(y_data: pd.DataFrame,
 
         return np.all(stack((indices_mineral, np.any(indices_chemical, axis=0)), axis=0), axis=0)  # to remove
 
+    def remove_non_unique() -> dict:
+        headers = [mineral for mineral in limits for i, key in enumerate(y_data) if key.startswith(mineral)]
+        headers, counts = np.unique(headers, return_counts=True)
+        headers = headers[counts == 1]  # isolate the unique and used keys
+
+        limits_unique = {key: value for key, value in limits.items() if key in headers} if headers else {}
+        if limits_unique != limits:
+            warnings.warn('Not all inputs in "remove_no_iron_samples" are unique or used. These were deleted.')
+        return limits_unique
+
+    limits = remove_non_unique()
+    # if limit empty, no samples are deleted
+    if not limits: return np.array(np.arange(len(y_data)), dtype=int)
+
     # true mineral name in the DataFrame and its index in all_minerals
-    header = [(i, key) for mineral in limits for i, key in enumerate(y_data) if key.startswith(mineral)]
-
-    # limit is not empty but filled with unknown minerals, no samples are deleted
-    if not header: return np.full(len(y_data), fill_value=False)
-
-    if len(header) != len(limits):
-        warnings.warn("Not unique distinguish of minerals in filtering low-iron spectra. Rather skipping it.")
-        return np.full(len(y_data), fill_value=False)
-
-    mineral_index, header = zip(*header)
+    mineral_index, header = zip(*[(i, key) for mineral in limits for i, key in enumerate(y_data)
+                                  if key.startswith(mineral)])
     limits = {key: value for key, value in zip(header, limits.values())}
 
     all_minerals = gimme_minerals_all(used_minerals, used_endmembers)

@@ -863,7 +863,7 @@ def resave_didymos_2022(add_blue_part: bool = False) -> list[str]:
 
         spectrum = interp1d(x, np.transpose(y), kind="linear")(xq)  # too noisy to do cubic interpolation
 
-        norm = np.mean(spectrum)  # I don't have non-normalised S-type spectra
+        # norm = np.mean(spectrum)  # I don't have non-normalised S-type spectra
 
         spectrum = denoise_and_norm(data=spectrum, wavelength=xq, denoising=denoise, normalising=normalise, sigma_nm=20,
                                     wvl_norm_nm=1500)
@@ -880,7 +880,7 @@ def resave_didymos_2022(add_blue_part: bool = False) -> list[str]:
             spectrum = denoise_and_norm(data=spectrum, wavelength=xq_full, denoising=True, normalising=normalise,
                                         sigma_nm=5, wvl_norm_nm=wvl_norm)
 
-            spectrum *= norm / np.mean(spectrum[0, xq_full >= np.min(xq)])  # normalise it back to Didymos level
+            # spectrum *= norm / np.mean(spectrum[0, xq_full >= np.min(xq)])  # normalise it back to Didymos level
 
         final_spectra[i] = spectrum
 

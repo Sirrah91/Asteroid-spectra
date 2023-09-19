@@ -20,7 +20,7 @@ def make_backup(version: str) -> None:
     dirs_to_save_specific = {_subdirs["modules"]: ["*.py"],
                              path.join(_subdirs["HP_tuning"], "Bayes"): ["*.csv"],
                              path.join(_subdirs["HP_tuning"], "Random"): ["*.csv"],
-                             _subdirs["web_app"]: ["*.py"],
+                             _subdirs["web_app"]: ["*.py", "requirements.txt"],
                              path.join(_subdirs["web_app"], "support"): ["*.npz"],
                              path.join(_subdirs["web_app"], "templates"): ["*.html"],
                              "": ["ma*.py", "requirements*.txt"],  # empty folder can't be first in the dict
@@ -51,7 +51,7 @@ def make_backup(version: str) -> None:
             for file in glob(source):
                 copy2(file, backup_dir_name)
 
-    # save all what is inside
+    # save all that is inside
     for directory in dirs_to_save_all:
         source = path.join(_project_dir, directory)
 
@@ -66,4 +66,4 @@ def make_backup(version: str) -> None:
 
 
 if __name__ == "__main__":
-    make_backup("v3.3.0")
+    make_backup("v3.3.2")

@@ -1142,6 +1142,6 @@ if __name__ == "__main__":
     resave_kachr_ol_opx()
 
     resave_didymos_2004()
-    resave_didymos_2022(add_blue_part=False)
+    resave_didymos_2022(add_blue_part=True)
     
     resave_HyperScout_transmission()

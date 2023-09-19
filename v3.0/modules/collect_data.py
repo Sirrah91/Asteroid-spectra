@@ -29,12 +29,13 @@ from modules.CD_parameters import lambda_max, lambda_min, resolution_max, resolu
 from modules.CD_parameters import num_labels_CD, num_minerals_CD, minerals_CD, endmembers_CD
 from modules.CD_parameters import denoise, denoising_sigma, normalise, wvl_norm
 
-from modules._constants import _path_data, _path_relab_spectra, _relab_web_page, _num_eps
+from modules._constants import _path_data, _path_relab_spectra, _relab_web_page
 from modules._constants import _spectra_name, _wavelengths_name, _label_name, _coordinates_name, _sep_in, _sep_out
 
 # defaults only
 from modules.NN_config_composition import minerals_used, endmembers_used, comp_model_setup
 from modules.NN_config_taxonomy import classes
+from modules._constants import _num_eps
 
 
 def collect_data_RELAB(start_line_number: tuple[int, ...] | int, end_line_number: tuple[int, ...] | int | None = None,
@@ -101,14 +102,14 @@ def collect_data_RELAB(start_line_number: tuple[int, ...] | int, end_line_number
 
         return filenames, numbers, metadata
 
-    def select_numbers(numbers: list[float]) -> np.ndarray:
+    def select_numbers(numbers: list[float], num_eps: float = _num_eps) -> np.ndarray:
         # modals
         modal = np.array(numbers[0], dtype=float)
         modal = modal[:, np.where(minerals_CD)[0]]
 
         # normalise to unit sum
         norm = np.array(np.nansum(modal, axis=1), dtype=float)
-        mask = norm > _num_eps
+        mask = norm > num_eps
         modal[mask] = normalise_in_rows(modal[mask])
 
         # chemical
@@ -213,7 +214,7 @@ def collect_data_RELAB(start_line_number: tuple[int, ...] | int, end_line_number
             continue
 
         # select the numbers according to the config file
-        numbers = select_numbers(numbers)
+        numbers = select_numbers(numbers, num_eps=_num_eps)
 
         # Collecting and normalising the spectra
         spectra = collect_spectra(xq, fnames)

@@ -641,7 +641,7 @@ def my_pca(x_data: np.ndarray,
     if standardise:
         std = np.std(x_data, ddof=1, axis=0)
         if np.any(std == 0.):
-            raise ValueError("Not all features are discriminative. Remove these samples, or don't use standardisation.")
+            raise ValueError("Not all features are discriminatory. Remove these samples, or don't use standardisation.")
     else:
         std = np.full(np.shape(x_data)[1], fill_value=1.)
 

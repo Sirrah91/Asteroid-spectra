@@ -635,12 +635,13 @@ def my_pca(x_data: np.ndarray,
            standardise: bool = False,
            return_info: bool = False,
            svd_solver: str = "full",
+           num_eps: float = _num_eps,
            **kwargs) -> tuple[np.ndarray, dict[str, bool | np.ndarray | PCA]] | np.ndarray:
     # Function computes first n_components principal components
 
     if standardise:
         std = np.std(x_data, ddof=1, axis=0)
-        if np.any(std == 0.):
+        if np.any(std <= num_eps):  # "<=" is necessary for num_eps = 0.
             raise ValueError("Not all features are determinative. Remove these features, or don't use standardisation.")
     else:
         std = np.full(np.shape(x_data)[1], fill_value=1.)

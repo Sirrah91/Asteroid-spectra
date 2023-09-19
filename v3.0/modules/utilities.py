@@ -23,7 +23,10 @@ import tracemalloc
 from linecache import getline
 
 from modules.decorators import reduce_like
-from modules._constants import _num_eps, _sep_out, _sep_in, _rnd_seed
+from modules._constants import _sep_out, _sep_in
+
+# defaults only
+from modules._constants import _num_eps, _rnd_seed
 
 
 def check_dir(dir_or_file_path: str) -> None:
@@ -237,7 +240,7 @@ def is_constant(array: np.ndarray | list| float, constant: float | None = None, 
 
 
 def safe_arange(start: float, stop: float | None = None, step: float = 1.0, dtype: type = float,
-                endpoint: bool = False, linspace_like: bool = True) -> np.ndarray:
+                endpoint: bool = False, linspace_like: bool = True, num_eps: float = _num_eps) -> np.ndarray:
     if stop is None:
         start, stop = 0.0, start
 
@@ -259,7 +262,7 @@ def safe_arange(start: float, stop: float | None = None, step: float = 1.0, dtyp
         return np.linspace(start, stop, n, endpoint=endpoint, dtype=dtype)
 
     return np.array(step * np.arange(start * one_over_step,
-                                     (stop + _num_eps * np.sign(2 * int(endpoint == True) - 1)) * one_over_step),
+                                     (stop + num_eps * np.sign(2 * int(endpoint == True) - 1)) * one_over_step),
                     dtype=dtype)
 
 
@@ -721,7 +724,8 @@ def sort_df_with_keys(df: pd.DataFrame, sorted_keys: list[str]) -> pd.DataFrame:
 def normalise_array(array: np.ndarray,
                     axis: int | None = None,
                     norm_vector: np.ndarray | None = None,
-                    norm_constant: float = 1.) -> np.ndarray:
+                    norm_constant: float = 1.,
+                    num_eps: float = _num_eps) -> np.ndarray:
     if norm_vector is None:
         norm_vector = np.nansum(array, axis=axis, keepdims=True)
 
@@ -729,7 +733,7 @@ def normalise_array(array: np.ndarray,
     if np.ndim(norm_vector) != np.ndim(array) and np.ndim(norm_vector) > 0:
         norm_vector = np.expand_dims(norm_vector, axis=axis)
 
-    if np.any(np.abs(norm_vector) < _num_eps):
+    if np.any(np.abs(norm_vector) < num_eps):
         warnings.warn("You normalise with (almost) zero values. Check the normalisation vector.")
 
     return array / norm_vector * norm_constant

@@ -402,7 +402,6 @@ def resave_Tomas_OL_OPX_mixtures() -> list[str]:
 
 
 def resave_Chelyabinsk() -> list[str]:
-
     print("Re-saving Chelyabinsk data...")
 
     subfolder = "Chelyabinsk"
@@ -804,7 +803,6 @@ def resave_kachr_ol_opx() -> list[str]:
 
 
 def resave_didymos_2004() -> list[str]:
-
     print("Re-saving Didymos' data...")
 
     subfolder = "Didymos"
@@ -829,7 +827,6 @@ def resave_didymos_2004() -> list[str]:
 
 
 def resave_didymos_2022(add_blue_part: bool = False) -> list[str]:
-
     print("Re-saving Didymos' data...")
 
     files = ["a65803_IR_Spec_IRTF_20220926_Polishook.dat", "a65803_IR_Spec_IRTF_20220927_Polishook.dat"]

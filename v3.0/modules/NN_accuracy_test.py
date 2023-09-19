@@ -19,14 +19,14 @@ from modules.NN_data import labels_to_categories, load_composition_data, load_ta
 from modules.NN_train import train
 from modules.NN_evaluate import evaluate_test_data
 
-from modules._constants import _path_accuracy_tests, _spectra_name, _wavelengths_name, _metadata_name
+from modules._constants import _path_accuracy_tests, _spectra_name, _wavelengths_name, _metadata_name, _sep_out, _sep_in
 from modules._constants import _metadata_key_name, _label_key_name, _label_true_name, _label_pred_name, _config_name
-from modules._constants import _sep_out, _sep_in, _rnd_seed
 
 # defaults only
 from modules.NN_config_composition import minerals_used, endmembers_used, comp_model_setup, comp_filtering_setup
 from modules.NN_config_composition import comp_output_setup, comp_grid
 from modules.NN_config_taxonomy import classes, tax_filtering_setup, tax_output_setup, tax_grid, tax_model_setup
+from modules._constants import _rnd_seed
 
 
 def split_data_for_testing(x_data: np.ndarray, y_data: np.ndarray,
@@ -125,9 +125,7 @@ def gimme_method(maximum_splits: int, len_data: int) -> tuple[str, int]:
 
 
 def shuffle_data(x_data: np.ndarray, y_data: np.ndarray, metadata: pd.DataFrame,
-                 rnd_seed: int | None = None) -> tuple[np.ndarray, np.ndarray, pd.DataFrame]:
-    if rnd_seed is None: rnd_seed = _rnd_seed
-
+                 rnd_seed: int | None = _rnd_seed) -> tuple[np.ndarray, np.ndarray, pd.DataFrame]:
     rng = np.random.default_rng(seed=rnd_seed)  # to always get the same permutation
     idx = rng.permutation(len(x_data))
     x_data = x_data[idx]

@@ -3,7 +3,9 @@
 import numpy as np
 from scipy.optimize import brentq
 
+# defaults only
 from modules._constants import _num_eps
+
 
 incoming_angle = 0.0
 emmerging_angle = 30.0
@@ -29,7 +31,7 @@ def ch(w: np.ndarray, x: np.ndarray) -> np.ndarray:
     return 1. / (1. - w * x * (r0 + (1. - 2. * r0 * x) / 2. * np.log((1. + x) / x)))
 
 
-def reflect(w: np.ndarray, mu_0: np.ndarray, mu: np.ndarray) -> np.ndarray:
+def reflect(w: np.ndarray, mu_0: np.ndarray, mu: np.ndarray, num_eps: float = _num_eps) -> np.ndarray:
     """
     Calculates reflectance of the mixture
     w - single scatter albedo
@@ -37,7 +39,7 @@ def reflect(w: np.ndarray, mu_0: np.ndarray, mu: np.ndarray) -> np.ndarray:
     mu_0 cosine of the emergence angle
     """
 
-    if phi > _num_eps:
+    if phi > num_eps:
         K = - np.log(1. - 1.209 * phi ** (2. / 3.)) / (1.209 * phi ** (2. / 3.))
     else:
         K = 1.
@@ -48,7 +50,7 @@ def reflect(w: np.ndarray, mu_0: np.ndarray, mu: np.ndarray) -> np.ndarray:
     P = 1. + b * np.cos(g) + c * (1.5 * np.cos(g) ** 2 - 0.5)
 
     hs = 3. * np.sqrt(3.) / 8. * K * phi / np.log(Dl_Ds)
-    if hs > _num_eps:
+    if hs > num_eps:
         B = 1. / (1. + np.tan(g / 2.) / hs)
     else:
         B = 0.
@@ -62,7 +64,7 @@ def residual_reflect(w: np.ndarray, r: np.ndarray) -> np.ndarray:
     params : w, inc_angle, emr_angle
     r : reflectance data to subtract
     """
-    return reflect(w, mu0, mu) - r
+    return reflect(w, mu0, mu, num_eps=_num_eps) - r
 
 
 def extract_ssa(r_data: np.ndarray):
@@ -93,7 +95,7 @@ def hapke(spectra: np.ndarray, coefs: np.ndarray, grain_sizes: np.ndarray | None
             w_mix += coefs[i] * w / grain_sizes[i]
         w_mix /= normalisation
 
-        return reflect(w_mix, mu0, mu)
+        return reflect(w_mix, mu0, mu, num_eps=_num_eps)
     else:
         return np.ravel(spectra[inds])
 

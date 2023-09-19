@@ -479,7 +479,11 @@ def resave_Chelyabinsk() -> list[str]:
 
 def resave_asteroid_taxonomy_data(grouping_options: list[str]) -> None:
     # This function interpolates B-D + MITHNEOS data to the given grid
-    print("Re-samving asteroid data...")
+    print("Re-sampling asteroid data...")
+
+    if not normalise:
+        print("I don't have non-normalised spectra of asteroids. Skipping it.")
+        return
 
     subfolder = "taxonomy"
 

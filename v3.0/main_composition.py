@@ -1,14 +1,14 @@
 # ----------------------------------------------------------------------- #
-# Neural Network to Classify Asteroids Using Keras and Tensorflow Backend #
+# Neural Network to Classify Asteroids Using Keras and TensorFlow Backend #
 # by David Korda (david.korda@helsinki.fi)                                #
 # ----------------------------------------------------------------------- #
-# Run with python 3.10.6                                                  #
+# Run with Python 3.10.6                                                  #
 # Install: requirements.txt                                               #
 # pip install -r requirements.txt                                         #
 # ----------------------------------------------------------------------- #
 
 """
-This code is provided under MIT licence (https://opensource.org/license/mit/).
+This code is provided under the MIT licence (https://opensource.org/license/mit/).
 
 Copyright 2023 David Korda and Tomáš Kohout (University of Helsinki and Institute of Geology of the Czech
 Academy of Sciences).
@@ -66,18 +66,19 @@ def pipeline(num_models: int = 1) -> np.ndarray:
                                                                                  used_minerals=minerals_used)
 
         if tune_hyperparameters:
-            # Tuning of the hyperparameters defined in p_for_tuning dictionary
+            # Tuning of the hyperparameters defined in the p_for_tuning dictionary
             model_names = hp_tuner(x_train, y_train, x_val, y_val, "composition",
                                    monitoring=comp_model_setup["monitoring"],
                                    model_subdir=model_subdir, model_name=model_name,
                                    metrics=comp_model_setup["metrics"])
         else:
-            # Create, train, and save the neural network, evaluate it on the test data
+            # Create, train, and save the neural network
             model_names = [train(x_train, y_train, x_val, y_val, params=comp_model_setup["params"],
                                  monitoring=comp_model_setup["monitoring"],
                                  model_subdir=model_subdir, model_name=model_name,
                                  metrics=comp_model_setup["metrics"]) for _ in range(num_models)]
-
+        
+        # Evaluate it on the test data
         predictions, accuracy = evaluate_test_data(model_names, x_test, y_test, x_val=x_val, y_val=y_val,
                                                    x_train=x_train, y_train=y_train,
                                                    proportiontocut=comp_model_setup["trim_mean_cut"],

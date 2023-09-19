@@ -10,8 +10,7 @@
 """
 This code is provided under the MIT licence (https://opensource.org/license/mit/).
 
-Copyright 2023 David Korda and Tomáš Kohout (University of Helsinki and Institute of Geology of the Czech
-Academy of Sciences).
+Copyright 2023 David Korda (University of Helsinki and Institute).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation

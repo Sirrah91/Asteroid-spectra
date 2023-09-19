@@ -285,20 +285,22 @@ def denoise_and_norm(data: np.ndarray, wavelength: np.ndarray,
 
 def denoise_and_norm_file(file: str, denoising: bool, normalising: bool, sigma_nm: float = 7.,
                      normalised_at_wvl: float = 550., subfolder: str = "") -> None:
+    if not denoising and not normalising:
+        return
+    
     # load the data
-    data_file = path.join(_path_data, subfolder, file)
-    data = load_npz(data_file)
+    data = load_npz(file)
 
     xq, spectra = data[_wavelengths_name], data[_spectra_name]
 
     spectra = denoise_and_norm(spectra, xq, denoising=denoising, normalising=normalising, sigma_nm=sigma_nm,
                                wvl_norm_nm=normalised_at_wvl)
 
-    final_name = filename_adjustment(data_file, denoising=denoising, normalising=normalising, allways_add_suffix=True)
+    final_name = filename_adjustment(file, denoising=denoising, normalising=normalising, allways_add_suffix=True)
 
     save_data(final_name, spectra=spectra, wavelengths=xq, labels=data[_label_name],
               metadata=data[_metadata_name], labels_key=data[_label_key_name], metadata_key=data[_metadata_key_name],
-              denoised=denoising, normalised=normalise)
+              denoised=denoising, normalised=normalise, subfolder=subfolder)
 
 
 def normalise_spectrum_at_wvl(wavelength: list[float] | np.ndarray) -> float:

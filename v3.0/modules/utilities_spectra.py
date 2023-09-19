@@ -182,15 +182,15 @@ def combine_files(filenames: tuple[str, ...], final_name: str, subfolder: str = 
     return final_name
 
 
-def filename_adjustment(filename: str, denoising: bool, normalising: bool) -> str:
+def filename_adjustment(filename: str, denoising: bool, normalising: bool, allways_add_suffix: bool = False) -> str:
     tmp = Path(filename)
     final_name = tmp.name.replace(tmp.suffix, "")  # remove suffix
 
     if denoising:
-        if "_denoised" not in final_name:
+        if allways_add_suffix or "_denoised" not in final_name:
             final_name += f"{_sep_out}denoised"
     if normalising:
-        if "_norm" not in final_name:
+        if allways_add_suffix or "_norm" not in final_name:
             final_name += f"{_sep_out}norm"
 
     return f"{final_name}.npz"
@@ -294,7 +294,7 @@ def denoise_and_norm_file(file: str, denoising: bool, normalising: bool, sigma_n
     spectra = denoise_and_norm(spectra, xq, denoising=denoising, normalising=normalising, sigma_nm=sigma_nm,
                                wvl_norm_nm=normalised_at_wvl)
 
-    final_name = filename_adjustment(data_file, denoising=denoising, normalising=normalising)
+    final_name = filename_adjustment(data_file, denoising=denoising, normalising=normalising, allways_add_suffix=True)
 
     save_data(final_name, spectra=spectra, wavelengths=xq, labels=data[_label_name],
               metadata=data[_metadata_name], labels_key=data[_label_key_name], metadata_key=data[_metadata_key_name],

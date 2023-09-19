@@ -226,7 +226,6 @@ def collect_data_RELAB(start_line_number: tuple[int, ...] | int, end_line_number
 
 
 def collect_data_CTAPE() -> list[str]:
-
     print("Collecting data from C-Tape...")
     subfolder = f"C{_sep_in}Tape"
 
@@ -316,7 +315,6 @@ def collect_data_CTAPE() -> list[str]:
 
 
 def resave_Tomas_OL_OPX_mixtures() -> list[str]:
-
     print("Collecting Tomas' OL-OPX mixtures...")
 
     subfoder = f"ol{_sep_in}opx{_sep_in}mix"
@@ -623,6 +621,10 @@ def resave_asteroid_taxonomy_data(grouping_options: list[str]) -> None:
 def resave_Itokawa_Eros() -> None:
     print("Re-saving Itokawa and Eros data...")
 
+    if not normalise:
+        print("I don't have non-normalised spectra of Itokawa and Eros. Skipping it.")
+        return
+
     metadata_key = np.array(["longitude", "latitude", "asteroid name", "instrument"])
 
     # load the data
@@ -828,6 +830,10 @@ def resave_didymos_2004() -> list[str]:
 
 def resave_didymos_2022(add_blue_part: bool = False) -> list[str]:
     print("Re-saving Didymos data...")
+
+    if not normalise:
+        print("I don't have non-normalised spectra of Didymos. Skipping it.")
+        return [""]
 
     files = ["a65803_IR_Spec_IRTF_20220926_Polishook.dat", "a65803_IR_Spec_IRTF_20220927_Polishook.dat"]
 

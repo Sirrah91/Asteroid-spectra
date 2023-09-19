@@ -7,17 +7,17 @@ from scipy.optimize import brentq
 from modules._constants import _num_eps
 
 
-incoming_angle = 0.0
-emmerging_angle = 30.0
-phase_angle = 30.0
+incoming_angle = 0.0  # deg
+emmerging_angle = 30.0  # deg
+phase_angle = 30.0  # deg
 
 Dl_Ds = 250. / 100.  # largest / smallest grain
 phi = 0.0  # filling factor
 b, c = -0.4, 0.25
 
-mu0 = np.cos(incoming_angle * np.pi / 180.)
-mu = np.cos(emmerging_angle * np.pi / 180.)
-g = phase_angle * np.pi / 180.
+mu0 = np.cos(np.deg2rad(incoming_angle))
+mu = np.cos(np.deg2rad(emmerging_angle))
+g = np.deg2rad(phase_angle)
 
 
 def ch(w: np.ndarray, x: np.ndarray) -> np.ndarray:

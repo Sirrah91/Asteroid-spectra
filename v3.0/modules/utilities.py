@@ -95,13 +95,20 @@ def stack(arrays: tuple | list, axis: int | None = None, reduce: bool = False) -
             max_dim = np.max(ndim)
 
             # longest array
-            shape = list(np.shape(arrays[np.argmax(ndim)]))
+            shape = np.array(np.shape(arrays[np.argmax(ndim)]))
             shape[axis] = -1
 
-            arrays = [np.reshape(a, shape) if np.ndim(a) < max_dim else a for a in arrays]
+            # reshape is dangerous; you can potentially stack e.g. 10x1 with 2x5x2 along axis=0 that is incorrect
+            # possible dimension difference is one; omit the -1 shape. The est should be equal
+            shapes = [np.array(np.shape(array)) for array in arrays if np.ndim(array) < max_dim]
+            if not np.all([sh in shape[shape > 0] for sh in shapes]):
+                raise ValueError("Arrays of these dimensions cannot be stacked.")
+
+            arrays = [np.reshape(array, shape) if np.ndim(array) < max_dim else array for array in arrays]
+
             return np.concatenate(arrays, axis=axis)
 
-        elif is_constant(ndim):  # N-D array + N-D array + -> N-D array or (N+1)-D array
+        elif is_constant(ndim):  # N-D array + N-D array + ... -> N-D array or (N+1)-D array
             ndim = ndim[0]
             if axis < ndim:  # along existing dimensions
                 return np.concatenate(arrays, axis=axis)
@@ -109,7 +116,8 @@ def stack(arrays: tuple | list, axis: int | None = None, reduce: bool = False) -
                 return np.stack(arrays, axis=axis)
 
     def _check_dims(ndim: np.ndarray, reduce: bool = False) -> None:
-        error_msg = "Maximum allowed difference in dimension of concatenated arrays is one."
+        error_msg = ("Maximum allowed difference in dimension of concatenated arrays is one. "
+                     "If you want to stack along higher dimensions, use a combination of stack and np.reshape.")
 
         if np.max(ndim) - np.min(ndim) > 1:
             if reduce:

@@ -62,6 +62,7 @@ if __name__ == "__main__":
             x_train, y_train, meta = shuffle_data(x_train, y_train, meta)
 
         normalised_at = wavelengths[is_constant(x_train, constant=1.0, axis=0)]
+        if np.size(normalised_at) == 0: normalised_at = None
 
         grid_setup["wvl_grid"], grid_setup["wvl_norm"] = wavelengths, normalised_at
         model_setup["model_subdir"], model_setup["model_subdir"] = model_subdir, model_name

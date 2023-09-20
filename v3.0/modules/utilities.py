@@ -99,7 +99,7 @@ def stack(arrays: tuple | list, axis: int | None = None, reduce: bool = False) -
             shape[axis] = -1
 
             # reshape is dangerous; you can potentially stack e.g. 10x1 with 2x5x2 along axis=0 that is confusing
-            # possible dimension difference is one; omit the -1 shape. The est should be equal
+            # possible dimension difference is one; omit the -1 shape. The rest should be equal.
             shapes = [np.array(np.shape(array)) for array in arrays if np.ndim(array) < max_dim]
             if not np.all([sh in shape[shape > 0] for sh in shapes]):
                 raise ValueError("Arrays of these dimensions cannot be stacked.")

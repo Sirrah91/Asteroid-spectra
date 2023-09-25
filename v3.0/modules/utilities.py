@@ -291,7 +291,7 @@ def find_nearest(array: np.ndarray, value: float) -> float:
 
 
 def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
-                  n_sigma: float = 1., num_eps: float = _num_eps) -> np.ndarray:
+                  z_thresh: float = 1., num_eps: float = _num_eps) -> np.ndarray:
     if x is None: x = np.arange(len(y))
 
     if len(np.unique(x)) != len(x):
@@ -302,12 +302,11 @@ def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
 
     while True:
         deriv = np.diff(y_iterate) / np.diff(x_iterate)
-
         ddof = np.min((len(deriv) - 1, 1))
-        mean_deriv, std_deriv = np.mean(deriv), np.std(deriv, ddof=ddof)
+        z_score = (deriv - np.mean(deriv)) / np.std(deriv, ddof=ddof)
 
-        positive = np.where((deriv - mean_deriv) > n_sigma * std_deriv + num_eps)[0]
-        negative = np.where(-(deriv - mean_deriv) > n_sigma * std_deriv + num_eps)[0]
+        positive = np.where(z_score > z_thresh + num_eps)[0]
+        negative = np.where(-z_score > z_thresh + num_eps)[0]
 
         # noise -> the points are next to each other (overlap if compensated for "diff" shift)
         outliers = stack((np.intersect1d(positive, negative + 1), np.intersect1d(negative, positive + 1)))
@@ -322,8 +321,8 @@ def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
 
 
 def remove_outliers(y: np.ndarray, x: np.ndarray | None = None,
-                    n_sigma: float = 1., num_eps: float = _num_eps) -> np.ndarray | tuple[np.ndarray, ...]:
-    inds_to_remove = find_outliers(y=y, x=x, n_sigma=n_sigma, num_eps=num_eps)
+                    z_thresh: float = 1., num_eps: float = _num_eps) -> np.ndarray | tuple[np.ndarray, ...]:
+    inds_to_remove = find_outliers(y=y, x=x, z_thresh=z_thresh, num_eps=num_eps)
 
     if x is None:
         return np.delete(y, inds_to_remove)

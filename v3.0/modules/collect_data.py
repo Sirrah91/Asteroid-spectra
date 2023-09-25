@@ -345,7 +345,7 @@ def resave_Tomas_OL_OPX_mixtures() -> list[str]:
         data2 = np.array([f.readline() for _ in range(len(x2))], dtype=float)
 
     # match the two spectra, remove jumps at 850 [:91] and 1170 [147:] and remove outliers
-    x, data = match_spectra((x1, x2), (data1, data2), deg=2)
+    x, data = match_spectra((x1, x2), (data1, data2))
     data[:91] /= remove_jumps_in_spectra(x, data, jump_index=91)
     data[147:] *= remove_jumps_in_spectra(x, data, jump_index=147)
     data, x = remove_outliers(y=data, x=x, n_sigma=1.)
@@ -362,7 +362,7 @@ def resave_Tomas_OL_OPX_mixtures() -> list[str]:
         data2 = np.array([f.readline() for _ in range(len(x2))], dtype=float)
 
     # match the two spectra, remove jumps at 850 [:91] and 1170 [147:] and remove outliers
-    x, data = match_spectra((x1, x2), (data1, data2), deg=2)
+    x, data = match_spectra((x1, x2), (data1, data2))
     data[:91] /= remove_jumps_in_spectra(x, data, jump_index=91)
     data[147:] *= remove_jumps_in_spectra(x, data, jump_index=147)
     data, x = remove_outliers(y=data, x=x, n_sigma=1.)

@@ -959,6 +959,10 @@ def remove_jumps_in_spectra(wavelengths: np.ndarray, reflectance: np.ndarray, ju
                             n_points: int = 3, shift: int = 0, deg: int = 1) -> float:
     # fit n_points behind and after the jump
     # You can shift the points with "shift" if the values around the jump are damaged
+    if n_points < 0:
+        raise ValueError(f'"n_points" must be non-negative but is {n_points}.')
+    if shift < 0:
+        raise ValueError(f'"shift" must be non-negative but is {shift}.')
 
     # to not have poorly conditioned polyfit
     n_points = np.max((n_points, deg + 1))
@@ -981,6 +985,10 @@ def remove_jumps_in_spectra(wavelengths: np.ndarray, reflectance: np.ndarray, ju
 
 def match_spectra(wavelengths: tuple[np.ndarray, ...], reflectance: tuple[np.ndarray, ...],
                   min_points: int = 3, deg: int = 1) -> tuple[np.ndarray, ...]:
+
+    if min_points < 0:
+        raise ValueError(f'"min_points" must be non-negative but is {min_points}.')
+
     # sort wavelength tuple first
     index, minimum = zip(*[(i, np.min(wvl)) for i, wvl in enumerate(wavelengths)])
     index, minimum = np.array(index), np.array(minimum)

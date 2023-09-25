@@ -136,12 +136,20 @@ def stack(arrays: tuple | list, axis: int | None = None, reduce: bool = False) -
         return _stack(arrays, axis)
 
 
-def return_mean_std(array: np.ndarray, axis: int | None = None) -> tuple[np.ndarray, np.ndarray]:
+def return_mean_std(array: np.ndarray, axis: int | None = None) -> tuple[np.ndarray, ...] | tuple[float, ...]:
     mean_value = np.nanmean(array, axis=axis)
-    std_value = np.nanstd(array, axis=axis, ddof=1)
+    if axis is None:
+        ddof = np.min((np.size(array) - 1, 1))
+    else:
+        ddof = np.min((np.shape(array)[axis] - 1, 1))
+    std_value = np.nanstd(array, axis=axis, ddof=ddof)
 
-    # If there are less than 2 numeric (finite) samples
-    std_value[np.logical_and(np.isnan(std_value), ~np.isnan(mean_value))] = 0.
+    # If there are less than 2 numeric (finite) samples (should not be important since adaptive ddof)
+    if axis is None:
+        if np.isnan(std_value) and ~np.isnan(mean_value):
+            std_value = 0.
+    else:
+        std_value[np.logical_and(np.isnan(std_value), ~np.isnan(mean_value))] = 0.
 
     return mean_value, std_value
 
@@ -154,7 +162,7 @@ def my_polyfit(x: np.ndarray | list[float], y: np.ndarray | list[float], deg: in
     if len(y) < deg + 1:
         warnings.warn("Polyfit may be poorly conditioned")
 
-    if len(y) == deg + 1:
+    if len(y) <= deg + 1:
         p = np.polyfit(x, y, deg)
     else:
         if method == "huber":
@@ -235,11 +243,11 @@ def is_constant(array: np.ndarray | list| float, constant: float | None = None, 
         array = array[np.newaxis]
 
     if constant is None:  # return True if the array is constant along the axis
-        if np.size(array) == 1:  # single-value array is always constant
-            return True
-
         # ddof = 1 for single value gives std = NaN, but I want std = 0
-        ddof = 1 if axis is None else np.min((np.shape(array)[axis] - 1, 1))
+        if axis is None:
+            ddof = np.min((np.size(array) - 1, 1))
+        else:
+            ddof = np.min((np.shape(array)[axis] - 1, 1))
 
         return np.std(array, axis=axis, ddof=ddof) < atol
 
@@ -282,14 +290,21 @@ def find_nearest(array: np.ndarray, value: float) -> float:
     return array[argnearest(array=array, value=value)]
 
 
-def find_outliers(x: np.ndarray, y: np.ndarray, n_sigma: float = 2., num_eps: float = _num_eps) -> np.ndarray:
+def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
+                  n_sigma: float = 1., num_eps: float = _num_eps) -> np.ndarray:
+    if x is None: x = np.arange(len(y))
+
+    if len(np.unique(x)) != len(x):
+        raise ValueError('"x" input must be unique.')
+
     inds = np.argsort(x)
     x_iterate, y_iterate = x[inds], y[inds]
 
     while True:
         deriv = np.diff(y_iterate) / np.diff(x_iterate)
 
-        mean_deriv, std_deriv = np.mean(deriv), np.std(deriv, ddof=1)
+        ddof = np.min((len(deriv) - 1, 1))
+        mean_deriv, std_deriv = np.mean(deriv), np.std(deriv, ddof=ddof)
 
         positive = np.where((deriv - mean_deriv) > n_sigma * std_deriv + num_eps)[0]
         negative = np.where(-(deriv - mean_deriv) > n_sigma * std_deriv + num_eps)[0]
@@ -306,10 +321,14 @@ def find_outliers(x: np.ndarray, y: np.ndarray, n_sigma: float = 2., num_eps: fl
     return np.where([x_test not in x_iterate for x_test in x])[0]
 
 
-def remove_outliers(x: np.ndarray, y: np.ndarray, n_sigma: float = 2.) -> tuple[np.ndarray, ...]:
-    inds_to_remove = find_outliers(x=x, y=y, n_sigma=n_sigma)
+def remove_outliers(y: np.ndarray, x: np.ndarray | None = None,
+                    n_sigma: float = 1., num_eps: float = _num_eps) -> np.ndarray | tuple[np.ndarray, ...]:
+    inds_to_remove = find_outliers(y=y, x=x, n_sigma=n_sigma, num_eps=num_eps)
 
-    return np.delete(x, inds_to_remove), np.delete(y, inds_to_remove)
+    if x is None:
+        return np.delete(y, inds_to_remove)
+
+    return np.delete(y, inds_to_remove), np.delete(x, inds_to_remove)
 
 
 def plot_me(x: np.ndarray | list, *args, **kwargs) -> tuple:
@@ -459,10 +478,16 @@ def my_argextreme(min_or_max: Literal["min", "max"], x: np.ndarray, y: np.ndarra
     x_fit = (x_ext - x_mean) / x_std
     y_fit = (y_ext - y_mean) / y_std
 
-    if len(x_fit) == 3:
+    if len(x_fit) == 3:  # not enough points -> use numpy
         params = my_polyfit(x_fit, y_fit, 2, method="numpy")
         try_numpy = False
+
+    elif fit_method == "numpy":  # numpy is used when other methods fail
+        # keep it here as extra possibility to not repeat it in "except"
+        params = my_polyfit(x_fit, y_fit, 2, method=fit_method)
+        try_numpy = False
     else:
+
         try:
             params = my_polyfit(x_fit, y_fit, 2, method=fit_method)
             try_numpy = True
@@ -651,7 +676,8 @@ def my_pca(x_data: np.ndarray,
     # Function computes first n_components principal components
 
     if standardise:
-        std = np.std(x_data, ddof=1, axis=0)
+        ddof = np.min((len(x_data) - 1, 1))
+        std = np.std(x_data, ddof=ddof, axis=0)
         if np.any(std <= num_eps):  # "<=" is necessary for num_eps = 0.
             raise ValueError("Not all features are determinative. Remove these features, or don't use standardisation.")
     else:
@@ -666,7 +692,7 @@ def my_pca(x_data: np.ndarray,
     mu = np.mean(x, axis=0)
     x = x - mu
     cov = np.cov(x, rowvar=False)
-    eigenvalues, eigenvectors = np.linalg.eig(cov)
+    eigenvalues, eigenvectors = np.linalg.eigh(cov)
 
     inds = np.argsort(eigenvalues)[::-1]
     eigenvalues = eigenvalues[inds]

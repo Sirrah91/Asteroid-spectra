@@ -178,7 +178,7 @@ def collect_data_RELAB(start_line_number: tuple[int, ...] | int, end_line_number
             v = v[idx]
             idx = np.logical_and(lambda_min - 50. <= x, x <= lambda_max + 50.)  # 50. to cover the edges for interp1d
             x, v = x[idx], v[idx]
-            v, x = remove_outliers(v, x, 0.5)
+            v, x = remove_outliers(y=v, x=x, z_thresh=0.5)
 
             vq[i, :] = interp1d(x, v, kind="cubic")(xq)
 
@@ -289,7 +289,7 @@ def collect_data_CTAPE() -> list[str]:
             vq_clean = np.delete(vq, inds, axis=1)
 
             # interpolate the spectra
-            inds_to_delete = [find_outliers(spectrum, xq_clean, 0.5) for spectrum in vq_clean]
+            inds_to_delete = [find_outliers(spectrum, xq_clean, z_thresh=0.5) for spectrum in vq_clean]
             X = [np.delete(xq_clean, ind) for ind in inds_to_delete]
             Y = [np.delete(vq_clean[i], ind) for i, ind in enumerate(inds_to_delete)]
 
@@ -348,7 +348,7 @@ def resave_Tomas_OL_OPX_mixtures() -> list[str]:
     x, data = match_spectra((x1, x2), (data1, data2))
     data[:91] /= remove_jumps_in_spectra(x, data, jump_index=91)
     data[147:] *= remove_jumps_in_spectra(x, data, jump_index=147)
-    data, x = remove_outliers(y=data, x=x, n_sigma=1.)
+    data, x = remove_outliers(y=data, x=x, z_thresh=1.)
 
     OL = interp1d(x, data, kind="cubic")(xq)
 
@@ -365,7 +365,7 @@ def resave_Tomas_OL_OPX_mixtures() -> list[str]:
     x, data = match_spectra((x1, x2), (data1, data2))
     data[:91] /= remove_jumps_in_spectra(x, data, jump_index=91)
     data[147:] *= remove_jumps_in_spectra(x, data, jump_index=147)
-    data, x = remove_outliers(y=data, x=x, n_sigma=1.)
+    data, x = remove_outliers(y=data, x=x, z_thresh=1.)
 
     OPX = interp1d(x, data, kind="cubic")(xq)
 
@@ -387,7 +387,7 @@ def resave_Tomas_OL_OPX_mixtures() -> list[str]:
             data[147:, 1] *= remove_jumps_in_spectra(data[:, 0], data[:, 1], jump_index=147)
         else:
             data[146:, 1] *= remove_jumps_in_spectra(data[:, 0], data[:, 1], jump_index=146)
-        data = np.transpose(remove_outliers(y=data[:, 1], x=data[:, 0], n_sigma=1.)[::-1])  # wavelengths first
+        data = np.transpose(remove_outliers(y=data[:, 1], x=data[:, 0], z_thresh=1.)[::-1])  # wavelengths first
         spectra_msm[:, i + 1] = interp1d(data[:, 0], data[:, 1], kind="cubic")(xq)
 
     spectra = denoise_and_norm(data=np.transpose(spectra_msm), wavelength=xq, denoising=denoise, normalising=normalise,
@@ -422,7 +422,7 @@ def resave_Chelyabinsk() -> list[str]:
     for i, SD_name in enumerate(SD_names):
         tmp = load_txt(SD_name, subfolder=subfolder, sep="\t", header=None).to_numpy()
         x, y = tmp[:, 0], tmp[:, 1]
-        y, x = remove_outliers(y, x, n_sigma=0.3)
+        y, x = remove_outliers(y=y, x=x, z_thresh=0.3)
 
         tmp_spec = interp1d(x, y, kind="cubic")(xq)
 
@@ -437,7 +437,7 @@ def resave_Chelyabinsk() -> list[str]:
     for i, IM_name in enumerate(IM_names):
         tmp = load_txt(IM_name, subfolder=subfolder, sep="\t", header=None).to_numpy()
         x, y = tmp[:, 0] * 1000., tmp[:, 1]
-        y, x = remove_outliers(y, x, n_sigma=0.3)
+        y, x = remove_outliers(y=y, x=x, z_thresh=0.3)
 
         tmp_spec = interp1d(x, y, kind="cubic")(xq)
 
@@ -451,7 +451,7 @@ def resave_Chelyabinsk() -> list[str]:
     for i, SW_name in enumerate(SW_names):
         tmp = load_txt(SW_name, subfolder=subfolder, sep="\t", header=None).to_numpy()
         x, y = tmp[:, 0], tmp[:, 1]
-        y, x = remove_outliers(y, x, n_sigma=0.7)
+        y, x = remove_outliers(y=y, x=x, z_thresh=0.7)
 
         tmp_spec = interp1d(x, y, kind="cubic")(xq)
 
@@ -518,7 +518,7 @@ def resave_asteroid_taxonomy_data(grouping_options: list[str]) -> None:
     final_name = f"asteroid{_sep_in}spectra"
 
     # interpolate the spectra
-    inds_to_delete = [find_outliers(s, x_old, 0.5) for s in spectra_raw]
+    inds_to_delete = [find_outliers(s, x_old, z_thresh=0.5) for s in spectra_raw]
     X = [np.delete(x_old, ind) for ind in inds_to_delete]
     Y = [np.delete(spectra_raw[i], ind) for i, ind in enumerate(inds_to_delete)]
 
@@ -651,7 +651,7 @@ def resave_Itokawa_Eros() -> None:
     data, coordinates, wavelengths = load_h5(filename, subfolder=subfolder,
                                              list_keys=[_spectra_name, _coordinates_name, _wavelengths_name]).values()
 
-    inds_to_delete = [find_outliers(d, wavelengths, 0.5) for d in data]
+    inds_to_delete = [find_outliers(d, wavelengths, z_thresh=0.5) for d in data]
     X = [np.delete(wavelengths, ind) for ind in inds_to_delete]
     Y = [np.delete(data[i], ind) for i, ind in enumerate(inds_to_delete)]
 
@@ -685,7 +685,7 @@ def resave_Itokawa_Eros() -> None:
     wavelengths = wavelengths[mask]
     data = data[:, mask]
 
-    inds_to_delete = [find_outliers(d, wavelengths, 0.5) for d in data]
+    inds_to_delete = [find_outliers(d, wavelengths, z_thresh=0.5) for d in data]
     X = [np.delete(wavelengths, ind) for ind in inds_to_delete]
     Y = [np.delete(data[i], ind) for i, ind in enumerate(inds_to_delete)]
 
@@ -797,7 +797,7 @@ def resave_kachr_ol_opx() -> list[str]:
 
         x, y = tmp[:, 0], tmp[:, 1:]
 
-        inds_to_delete = [find_outliers(spectrum, x, 1.) for spectrum in np.transpose(y)]
+        inds_to_delete = [find_outliers(spectrum, x, z_thresh=1.) for spectrum in np.transpose(y)]
         X = [np.delete(x, ind) for ind in inds_to_delete]
         Y = [np.delete(y[:, i], ind) for i, ind in enumerate(inds_to_delete)]
 
@@ -846,7 +846,7 @@ def resave_didymos_2004() -> list[str]:
     file = "Didymos_vnir_albedo.dat"
     tmp = load_txt(file, subfolder=subfolder, sep="\t").to_numpy()
     x, y = tmp[:, 0], np.transpose(tmp[:, 1:])
-    y, x = remove_outliers(y[0], x, 0.4)
+    y, x = remove_outliers(y=y[0], x=x, z_thresh=0.4)
 
     spectrum = interp1d(x, y, kind="cubic")(xq)  # one spectrum per row
     spectrum = denoise_and_norm(data=spectrum, wavelength=xq, denoising=denoise, normalising=normalise, sigma_nm=30.,
@@ -892,7 +892,7 @@ def resave_didymos_2022(add_blue_part: bool = False) -> list[str]:
         tmp = load_txt(file, subfolder=subfolder, sep="\s+", header=None).iloc[:, :2].to_numpy()
 
         x, y = tmp[:, 0] * 1000., tmp[:, 1]
-        y, x = remove_outliers(y=y, x=x, n_sigma=0.2)  # spectra are very noisy...
+        y, x = remove_outliers(y=y, x=x, z_thresh=0.2)  # spectra are very noisy...
 
         spectrum = interp1d(x, np.transpose(y), kind="linear")(xq)  # too noisy to do cubic interpolation
 

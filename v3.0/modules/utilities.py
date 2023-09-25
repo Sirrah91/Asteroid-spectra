@@ -302,8 +302,8 @@ def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
 
     while True:
         deriv = np.diff(y_iterate) / np.diff(x_iterate)
-        ddof = np.min((len(deriv) - 1, 1))
-        z_score = (deriv - np.mean(deriv)) / np.std(deriv, ddof=ddof)
+        mu, sigma = return_mean_std(deriv)
+        z_score = (deriv - mu) / sigma
 
         positive = np.where(z_score > z_thresh + num_eps)[0]
         negative = np.where(-z_score > z_thresh + num_eps)[0]
@@ -472,8 +472,9 @@ def my_argextreme(min_or_max: Literal["min", "max"], x: np.ndarray, y: np.ndarra
         return x[ix0]
 
     # It is good to standardise the data
-    x_mean, y_mean = np.mean(x_ext), np.mean(y_ext)
-    x_std, y_std = np.std(x_ext), np.std(y_ext)
+    x_mean, x_std = return_mean_std(x_ext)
+    y_mean, y_std = return_mean_std(y_ext)
+
     x_fit = (x_ext - x_mean) / x_std
     y_fit = (y_ext - y_mean) / y_std
 

@@ -136,22 +136,14 @@ def stack(arrays: tuple | list, axis: int | None = None, reduce: bool = False) -
         return _stack(arrays, axis)
 
 
-def return_mean_std(array: np.ndarray, axis: int | None = None,
-                    ignore_nan: bool = True) -> tuple[np.ndarray, ...] | tuple[float, ...]:
-    if ignore_nan:
-        mean_value = np.nanmean(array, axis=axis)
-    else:
-        mean_value = np.mean(array, axis=axis)
+def return_mean_std(array: np.ndarray, axis: int | None = None) -> tuple[np.ndarray, ...] | tuple[float, ...]:
+    mean_value = np.nanmean(array, axis=axis)
 
     if axis is None:
         ddof = np.min((np.size(array) - 1, 1))
     else:
         ddof = np.min((np.shape(array)[axis] - 1, 1))
-
-    if ignore_nan:
-        std_value = np.nanstd(array, axis=axis, ddof=ddof)
-    else:
-        std_value = np.std(array, axis=axis, ddof=ddof)
+    std_value = np.nanstd(array, axis=axis, ddof=ddof)
 
     return mean_value, std_value
 

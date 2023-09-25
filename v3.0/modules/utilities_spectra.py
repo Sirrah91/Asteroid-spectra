@@ -269,16 +269,17 @@ def normalise_spectra(data: np.ndarray, wavelength: np.ndarray, wvl_norm_nm: flo
 def denoise_and_norm(data: np.ndarray, wavelength: np.ndarray,
                      denoising: bool = True, normalising: bool = True,
                      sigma_nm: float = 7.,
-                     wvl_norm_nm: float = 550.) -> np.ndarray:
+                     wvl_norm_nm: float = 550.,
+                     on_pixel: bool = True) -> np.ndarray:
     if np.ndim(data) == 1:
         data = np.reshape(data, (1, len(data)))
 
     if denoising:
-        data = denoise_spectra(data, wavelength, sigma_nm)
+        data = denoise_spectra(data, wavelength, sigma_nm=sigma_nm)
 
     # Normalised reflectance
     if normalising:
-        return normalise_spectra(data, wavelength, wvl_norm_nm)
+        return normalise_spectra(data, wavelength, wvl_norm_nm=wvl_norm_nm, on_pixel=on_pixel)
 
     return data
 
@@ -955,7 +956,7 @@ def collect_all_models(subfolder_model: str, prefix: str | None = None, suffix: 
 
 
 def remove_jumps_in_spectra(wavelengths: np.ndarray, reflectance: np.ndarray, jump_index: int,
-                            n_points: int = 2, shift: int = 0, deg: int = 1) -> float:
+                            n_points: int = 3, shift: int = 0, deg: int = 1) -> float:
     # fit n_points behind and after the jump
     # You can shift the points with "shift" if the values around the jump are damaged
 
@@ -970,15 +971,16 @@ def remove_jumps_in_spectra(wavelengths: np.ndarray, reflectance: np.ndarray, ju
     wvl_before, refl_before = wavelengths[start:stop], reflectance[start:stop]
     wvl_after, refl_after = wavelengths[jump_index:jump_index + n_points], reflectance[jump_index:jump_index + n_points]
 
-    fitted_no_shift = my_polyfit(wvl_before, refl_before, deg, return_fit_only=True, x_fit=wvl_after)
-    fitted_shift = my_polyfit(wvl_after, refl_after, deg, return_fit_only=True, x_fit=wvl_after)
+    wvl_fit = stack((wvl_before, wvl_after))
+
+    fitted_no_shift = my_polyfit(wvl_before, refl_before, deg, return_fit_only=True, x_fit=wvl_fit)
+    fitted_shift = my_polyfit(wvl_after, refl_after, deg, return_fit_only=True, x_fit=wvl_fit)
 
     return np.mean(fitted_no_shift / fitted_shift)
 
 
 def match_spectra(wavelengths: tuple[np.ndarray, ...], reflectance: tuple[np.ndarray, ...],
-                  n_points: int = 2, shift: int = 0, deg: int = 1) -> tuple[np.ndarray, ...]:
-
+                  min_points: int = 3, deg: int = 1) -> tuple[np.ndarray, ...]:
     # sort wavelength tuple first
     index, minimum = zip(*[(i, np.min(wvl)) for i, wvl in enumerate(wavelengths)])
     index, minimum = np.array(index), np.array(minimum)
@@ -989,15 +991,50 @@ def match_spectra(wavelengths: tuple[np.ndarray, ...], reflectance: tuple[np.nda
     reflectance = [reflectance[i] for i in index]
 
     wvl_joined, refl_joined = wavelengths[0], reflectance[0]
-    for i in range(len(wavelengths) - 1):
-        jump_index = len(wavelengths[i])
-        factor = remove_jumps_in_spectra(stack(wavelengths), stack(reflectance), jump_index,
-                                         n_points=n_points, shift=shift, deg=deg)
 
-        # remove overlap
-        mask = wavelengths[i + 1] > np.max(wavelengths[i])
-        wvl_joined = stack((wvl_joined, wavelengths[i + 1][mask]))
-        refl_joined = stack((refl_joined, reflectance[i + 1][mask] * factor))
+    for i in range(1, len(wavelengths)):
+        # common wavelengths
+        start = np.max([np.min(wavelength) for wavelength in [wvl_joined, wavelengths[i]]])
+        stop = np.min([np.max(wavelength) for wavelength in [wvl_joined, wavelengths[i]]])
+
+        if stop < start:
+            print("The spectra do not overlap.")
+
+            # stack spectra and remove possible jump
+            jump_index = len(wvl_joined)
+
+            wvl_joined = stack((wvl_joined, wavelengths[i]))
+            refl_joined = stack((refl_joined, reflectance[i]))
+
+            factor = remove_jumps_in_spectra(wvl_joined, refl_joined, jump_index)
+            refl_joined[jump_index:] *= factor
+
+        else:
+            mask1 = np.logical_and(start <= wvl_joined, wvl_joined <= stop)
+            mask2 = np.logical_and(start <= wavelengths[i], wavelengths[i] <= stop)
+
+            # ensure there are enough points
+            mask1[-min_points:] = True
+            mask2[:min_points] = True
+
+            wvl1, refl1 = wvl_joined[mask1], refl_joined[mask1]
+            wvl2, refl2 = wavelengths[i][mask2], reflectance[i][mask2]
+
+            wvl_fit = stack((wvl1, wvl2))
+
+            fit1 = my_polyfit(wvl1, refl1, deg, return_fit_only=True, x_fit=wvl_fit)
+            fit2 = my_polyfit(wvl2, refl2, deg, return_fit_only=True, x_fit=wvl_fit)
+
+            factor = np.mean(fit1 / fit2)
+
+            # stack spectra and remove possible jump
+            jump_index = len(wvl_joined)
+
+            wvl_joined = stack((wvl_joined, wavelengths[i][~mask2]))
+            refl_joined = stack((refl_joined, reflectance[i][~mask2] * factor))
+
+            factor = remove_jumps_in_spectra(wvl_joined, refl_joined, jump_index)
+            refl_joined[jump_index:] *= factor
 
     return wvl_joined, refl_joined
 

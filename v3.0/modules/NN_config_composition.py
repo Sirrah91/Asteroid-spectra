@@ -62,7 +62,7 @@ comp_model_setup = {
     "metrics": ["mse"],  # must be in custom_objects in custom_objects in NN_losses_metrics_activations.py
 
     # important for HP tuning and early stopping
-    "monitoring": {"objective": "val_loss",  # if is not loss, must be included in custom_objects
+    "monitoring": {"objective": "val_loss",  # if is not loss, must be included in custom_objects and metrics
                    "direction": "min"  # minimise or maximise the objective (for HP tuning)?
                    },
 

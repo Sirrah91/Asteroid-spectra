@@ -125,7 +125,7 @@ def load_txt(filename: str, subfolder: str = "", **kwargs) -> pd.DataFrame:
 def npz_to_dat(filename: str, data_in_columns: bool = True) -> None:
     data = load_npz(filename, subfolder="")
 
-    # save spectra
+    # save wavelengths spectra
     spectra = stack((data[_wavelengths_name], data[_spectra_name]), axis=0)
     spectra_dat = filename.replace(".npz", ".dat")
     fmt = "%.5f"

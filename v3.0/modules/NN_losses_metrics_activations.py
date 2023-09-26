@@ -239,7 +239,7 @@ def my_focal_loss(gamma: float = 2., use_weights: bool = True) -> Callable[[Eage
     @tf.function
     def focal_loss(y_true: EagerTensor, y_pred: EagerTensor) -> EagerTensor:
         weights = create_class_weight(y_true=y_true) if use_weights else 1.
-        return K.sum(weights * K.pow(1 - y_pred, gamma) * cross_entropy_base(y_true, y_pred), axis=-1)
+        return K.sum(weights * K.pow(1. - y_pred, gamma) * cross_entropy_base(y_true, y_pred), axis=-1)
 
     return focal_loss
 
@@ -399,7 +399,9 @@ def my_r2(used_minerals: np.ndarray | None = None, used_endmembers: list[list[bo
         SS_res = tnp.nansum(K.square(yt - yp), axis=0)
         SS_tot = tnp.nansum(K.square(yt - tnp.nanmean(yt, axis=0)), axis=0)
 
-        return 1.0 - SS_res / (SS_tot + K.epsilon())
+        SS_tot = K.clip(SS_tot, K.epsilon(), None)
+
+        return 1.0 - SS_res / SS_tot
 
     return r2
 
@@ -412,11 +414,12 @@ def my_sam(used_minerals: np.ndarray | None = None, used_endmembers: list[list[b
     def sam(y_true: EagerTensor, y_pred: EagerTensor) -> EagerTensor:
         yt, yp = clean_ytrue_ypred(y_true, y_pred, used_minerals, used_endmembers, cleaning, all_to_one)
 
-        s1_norm = K.sqrt(tnp.nansum(K.square(yt), axis=0))
-        s2_norm = K.sqrt(tnp.nansum(K.square(yp), axis=0))
+        s1_s2_norm = K.sqrt(tnp.nansum(K.square(yt), axis=0)) * K.sqrt(tnp.nansum(K.square(yp), axis=0))
         sum_s1_s2 = tnp.nansum(yt * yp, axis=0)
 
-        return tf.math.acos(sum_s1_s2 / (s1_norm * s2_norm + K.epsilon()))
+        s1_s2_norm = K.clip(s1_s2_norm, K.epsilon(), None)
+
+        return tf.math.acos(sum_s1_s2 / s1_s2_norm)
 
     return sam
 
@@ -463,7 +466,8 @@ def my_relu(used_minerals: np.ndarray | None = None, used_endmembers: list[list[
 
         for start, stop in gimme_indices(used_minerals, used_endmembers):
             tmp = (relu(x[..., start:stop]) - relu(x[..., start:stop] - scale)) / scale  # to keep results between 0 and 1
-            tmp /= (K.sum(tmp, axis=-1, keepdims=True) + K.epsilon())  # normalisation to unit sum
+
+            tmp /= K.clip(K.sum(tmp, axis=-1, keepdims=True), K.epsilon(), None)  # normalisation to unit sum
 
             x_new = K.concatenate([x_new, K.softmax(x[..., start:stop])], axis=-1)
 
@@ -483,7 +487,7 @@ def my_sigmoid(used_minerals: np.ndarray | None = None, used_endmembers: list[li
 
         for start, stop in gimme_indices(used_minerals, used_endmembers):
             tmp = sigmoid(x[..., start:stop])
-            tmp /= (K.sum(tmp, axis=-1, keepdims=True) + K.epsilon())  # normalisation to unit sum
+            tmp /= K.clip(K.sum(tmp, axis=-1, keepdims=True), K.epsilon(), None)  # normalisation to unit sum
 
             x_new = K.concatenate([x_new, tmp], axis=-1)
 
@@ -506,7 +510,7 @@ def my_plu(used_minerals: np.ndarray | None = None, used_endmembers: list[list[b
         for start, stop in gimme_indices(used_minerals, used_endmembers):
             tmp = relu(x[..., start:stop] + c) - c - (1 - alpha) * relu(x[..., start:stop] - c) - alpha * relu(
                 -x[..., start:stop] - c)
-            tmp /= (K.sum(tmp, axis=-1, keepdims=True) + K.epsilon())  # normalisation to unit sum
+            tmp /= K.clip(K.sum(tmp, axis=-1, keepdims=True), K.epsilon(), None)  # normalisation to unit sum
 
             x_new = K.concatenate([x_new, tmp], axis=-1)
 
@@ -531,6 +535,7 @@ def gimme_taxonomy_loss(use_weights: bool | None = None):
 
     loss_taxonomy = my_focal_loss(gamma=2., use_weights=use_weights)
     return loss_taxonomy
+
 
 def gimme_metrics(metrics: list | tuple, used_minerals: np.ndarray | None = None,
                   used_endmembers: list[list[bool]] | None = None,

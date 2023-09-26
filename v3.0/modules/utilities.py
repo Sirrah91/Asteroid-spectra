@@ -256,7 +256,7 @@ def safe_arange(start: float, stop: float | None = None, step: float = 1.0, dtyp
 
     start, stop, step = float(start), float(stop), float(step)
 
-    one_over_step = step ** (-1)  # step**(-1) is better in rounding
+    one_over_step = step ** (-1.)  # step**(-1) is better in rounding
 
     if linspace_like:
         n = (stop - start) * one_over_step + float(endpoint == True)
@@ -294,13 +294,15 @@ def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
     inds = np.argsort(x)
     x_iterate, y_iterate = x[inds], y[inds]
 
+    z_thresh = np.clip(z_thresh, a_min=num_eps, a_max=None)
+
     while True:
         deriv = np.diff(y_iterate) / np.diff(x_iterate)
         mu, sigma = return_mean_std(deriv)
         z_score = (deriv - mu) / sigma
 
-        positive = np.where(z_score > z_thresh + num_eps)[0]
-        negative = np.where(-z_score > z_thresh + num_eps)[0]
+        positive = np.where(z_score > z_thresh)[0]
+        negative = np.where(-z_score > z_thresh)[0]
 
         # noise -> the points are next to each other (overlap if compensated for "diff" shift)
         outliers = stack((np.intersect1d(positive, negative + 1), np.intersect1d(negative, positive + 1)))

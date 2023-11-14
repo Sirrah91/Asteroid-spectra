@@ -14,7 +14,7 @@ from modules.NN_evaluate import evaluate_test_data
 
 from modules.NN_accuracy_test import split_data_for_testing, gimme_info, save_results, gimme_method, shuffle_data
 
-from modules._constants import _metadata_key_name, _label_key_name, _sep_out, _sep_in
+from modules._constants import _metadata_key_name, _label_key_name, _sep_out, _sep_in, _wp
 
 from modules.NN_config_range_test import model_subdirs, model_names, range_grids
 
@@ -23,7 +23,7 @@ from modules.NN_config_composition import comp_output_setup
 
 if __name__ == "__main__":
 
-    max_splits = 2
+    max_splits = 20
     num_models = 1
 
     load_data = load_composition_data
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         normalised_at = wavelengths[is_constant(x_train, constant=1.0, axis=0)]
         if np.size(normalised_at) == 0: normalised_at = None
 
-        grid_setup["wvl_grid"], grid_setup["wvl_norm"] = wavelengths, normalised_at
+        grid_setup["wvl_grid"], grid_setup["wvl_norm"] = np.array(wavelengths, dtype=_wp), normalised_at
         model_setup["model_subdir"], model_setup["model_subdir"] = model_subdir, model_name
 
         info = gimme_info(taxonomy=False, model_option=(method, K, num_models), output_setup=output_setup,

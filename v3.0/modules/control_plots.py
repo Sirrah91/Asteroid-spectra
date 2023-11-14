@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from keras.models import Functional
+from tensorflow.keras.models import Model
 
 from modules.NN_losses_metrics_activations import my_quantile
 
@@ -140,7 +140,8 @@ def plot_scatter_plots(y_true: np.ndarray, y_pred: np.ndarray,
                         for k, endmembers in enumerate(used_endmembers)]
 
     RMSE, R2, SAM = compute_metrics(y_true, y_pred, return_r2=True, return_sam=True, used_minerals=used_minerals,
-                                    used_endmembers=used_endmembers, round=True)
+                                    used_endmembers=used_endmembers)
+    RMSE, R2, SAM = np.round(RMSE, 1), np.round(R2, 2), np.round(SAM, 1)
 
     actual_errorbar = np.array([3.])  # pp
 
@@ -709,7 +710,7 @@ def plot_error_evaluation_class(y_true: np.ndarray, y_pred: np.ndarray,
     change_params(offset, reset=True)
 
 
-def plot_model_history(model: Functional, offset: float = 0., quiet: bool = False) -> None:
+def plot_model_history(model: Model, offset: float = 0., quiet: bool = False) -> None:
     if not quiet:
         print("Model history")
 
@@ -835,7 +836,7 @@ def plot_model_layer(model_name: str, subfolder_model: str = "", layer: str = "C
 
     blk = best_blk(np.shape(weights)[1])
 
-    fig, ax = plt.subplots(blk[0], blk[1], figsize=(4 * blk[0], 4 * blk[1]))
+    fig, ax = plt.subplots(blk[0], blk[1], figsize=(4 * blk[0], 4 * blk[1]), sharex=True, squeeze=False)
 
     c = 0
     for row in range(blk[0]):
@@ -884,7 +885,7 @@ def plot_corr_matrix(labels: np.ndarray, corr_matrix: pd.DataFrame,
 
     # polynom to adjust font size for various corr_matrix sizes
     x, y = [0., 16., 40.], [0.5, 1., 2.]
-    fs_multiply = my_polyfit(x, y, 2, return_fit_only=True, x_fit=len(labels))
+    fs_multiply = np.polyval(my_polyfit(x, y, 2), len(labels))
 
     fs_text = SMALL_SIZE * fs_multiply
     fs_small = SMALL_SIZE * fs_multiply

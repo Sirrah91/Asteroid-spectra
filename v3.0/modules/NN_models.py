@@ -1,7 +1,6 @@
-from keras.layers import Input, Dense, Conv1D
-from keras.layers import Flatten, BatchNormalization, Dropout, Activation
-from keras.models import Model, Functional
-from keras import regularizers
+from tensorflow.keras.layers import Input, Dense, Conv1D, Flatten, BatchNormalization, Dropout, Activation
+from tensorflow.keras.models import Model
+from tensorflow.keras import regularizers
 import tensorflow.keras.backend as K
 import tensorflow.keras.optimizers as opt
 from tensorflow.keras.constraints import MaxNorm
@@ -65,20 +64,16 @@ class MyHyperModel(HyperModel):
                                       max_value=np.max(self._params["dropout_hidden_output"]), step=0.1)
 
         if self._for_tuning:
-            min_value = np.max((K.epsilon(), np.min(self._params["L1_trade_off"])))
-            max_value = np.max((min_value, np.max(self._params["L2_trade_off"])))
-            self._l1 = hp.Float("L1_trade_off", min_value=min_value, max_value=max_value, sampling="log")
-
-            min_value = np.max((K.epsilon(), np.min(self._params["L1_trade_off"])))
-            max_value = np.max((min_value, np.max(self._params["L2_trade_off"])))
-            self._l2 = hp.Float("L2_trade_off", min_value=min_value, max_value=max_value, sampling="log")
+            L1_trade_off = np.clip(self._params["L1_trade_off"], a_min=K.epsilon(), a_max=None)
+            L2_trade_off = np.clip(self._params["L2_trade_off"], a_min=K.epsilon(), a_max=None)
+            sampling = "log"
         else:
-            self._l1 = hp.Float("L1_trade_off",
-                                min_value=np.min(self._params["L1_trade_off"]),
-                                max_value=np.max(self._params["L1_trade_off"]))
-            self._l2 = hp.Float("L2_trade_off",
-                                min_value=np.min(self._params["L2_trade_off"]),
-                                max_value=np.max(self._params["L2_trade_off"]))
+            L1_trade_off = self._params["L1_trade_off"]
+            L2_trade_off = self._params["L2_trade_off"]
+            sampling = "linear"  # Allow for zero min_value
+
+        self._l1 = hp.Float("L1_trade_off", min_value=np.min(L1_trade_off), max_value=np.max(L1_trade_off), sampling=sampling)
+        self._l2 = hp.Float("L2_trade_off", min_value=np.min(L2_trade_off), max_value=np.max(L2_trade_off), sampling=sampling)
 
         self._max_norm = hp.Float("max_norm", min_value=np.min(self._params["max_norm"]),
                                   max_value=np.max(self._params["max_norm"]))
@@ -156,14 +151,13 @@ class MyHyperModel(HyperModel):
                     np.sum(gimme_endmember_counts(self._used_endmembers)) > 0):
 
                 if self._for_tuning:
-                    min_value = np.max((K.epsilon(), np.min(self._params["alpha"])))
-                    max_value = np.max((min_value, np.max(self._params["alpha"])))
-                    self._alpha = hp.Float("alpha", min_value=min_value, max_value=max_value, sampling="log")
-
+                    alpha = np.clip(self._params["alpha"], a_min=K.epsilon(), a_max=None)
+                    sampling = "log"
                 else:
-                    self._alpha = hp.Float("alpha",
-                                        min_value=np.min(self._params["alpha"]),
-                                        max_value=np.max(self._params["alpha"]))
+                    alpha = self._params["alpha"]
+                    sampling = "linear"  # Allow for zero min_value
+
+                self._alpha = hp.Float("alpha", min_value=np.min(alpha), max_value=np.max(alpha), sampling=sampling)
 
             else:  # If not true, the loss does not use alpha. Single-value choice to simplify HP tuning
                 self._alpha = hp.Choice("alpha", values=[1.])
@@ -312,7 +306,7 @@ class MyHyperModel(HyperModel):
 
         return model
 
-    def fit(self, hp, model: Functional, *args, **kwargs):
+    def fit(self, hp, model: Model, *args, **kwargs):
         return model.fit(
             *args,
             # Tune batch size

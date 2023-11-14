@@ -9,7 +9,7 @@ import re
 from pandas.core.common import flatten
 from typing import Literal, Iterable, Callable
 from time import time
-from keras.models import Functional
+from tensorflow.keras.models import Model
 from sklearn.decomposition import PCA
 from sklearn.linear_model import HuberRegressor, RANSACRegressor, TheilSenRegressor
 from sklearn.preprocessing import PolynomialFeatures
@@ -149,9 +149,8 @@ def return_mean_std(array: np.ndarray, axis: int | None = None) -> tuple[np.ndar
 
 
 def my_polyfit(x: np.ndarray | list[float], y: np.ndarray | list[float], deg: int,
-               method: Literal["huber", "ransac", "theilsen", "numpy"] = "ransac", rnd_seed: int | None = _rnd_seed,
-               return_fit: bool = False, return_fit_only: bool = False,
-               x_fit: np.ndarray | None = None) -> np.ndarray | tuple[np.ndarray, ...]:
+               method: Literal["huber", "ransac", "theilsen", "numpy"] = "ransac",
+               rnd_seed: int | None = _rnd_seed) -> np.ndarray | tuple[np.ndarray, ...]:
 
     if len(y) < deg + 1:
         warnings.warn("Polyfit may be poorly conditioned")
@@ -176,15 +175,6 @@ def my_polyfit(x: np.ndarray | list[float], y: np.ndarray | list[float], deg: in
                           'Using ransac.')
             p = ransac_fit(x, y, deg, rnd_seed=rnd_seed)
 
-    if return_fit or return_fit_only:
-        if x_fit is None:
-            x_fit = x
-        y_fit = np.polyval(p, x_fit)
-
-    if return_fit:
-        return p, y_fit
-    if return_fit_only:
-        return y_fit
     return p
 
 
@@ -425,6 +415,10 @@ def to_list(param) -> list:
     return param if isinstance(param, list) else [param]
 
 
+def is_sorted(array: np.ndarray) -> bool:
+    return np.all(array[:-1] <= array[1:])
+
+
 def my_argextreme(min_or_max: Literal["min", "max"], x: np.ndarray, y: np.ndarray,
                   x0: float | None = None, dx: float = 50.,
                   n_points: int = 3,
@@ -634,13 +628,50 @@ def sliding_window(image: np.ndarray, kernel: np.ndarray, func: str | Callable, 
     return cropND(result, (out_h, out_w))
 
 
-def best_blk(num: int) -> tuple[int, int]:
+def best_blk(num: int, cols_to_rows: float = 4. / 3.) -> tuple[int, int]:
+    # Function finds the best rectangle with an area lower or equal to num
+    # Useful for subplot layouts
+
+    if cols_to_rows < 1.:  # do always more columns and flip at the end if more rows are needed
+        target_ratio = 1. / cols_to_rows
+    else:
+        target_ratio = 1. * cols_to_rows
+
+    min_cols = np.ceil(np.sqrt(num))
+    cols = np.arange(min_cols, num + 1)
+    rows = np.ceil(num / cols)
+    ratio = cols / rows
+
+    # select 20% of blocks that are closest to the targeted ratio
+    mask = np.abs(ratio - target_ratio) <= np.percentile(np.abs(ratio - target_ratio), 20., method="median_unbiased")
+    cols, rows, ratio = cols[mask], rows[mask], ratio[mask]
+
+    # minimise this function
+    best = np.argmin(np.abs(rows * cols - num) / num + np.abs(ratio - target_ratio) / target_ratio)
+
+    rows, cols = int(rows[best]), int(cols[best])
+
+    # remove blank rows and columns; does not keep the targeted ratio
+    # remove blank rows
+    while rows * cols - num >= cols:
+        rows -= 1
+    # remove blank columns
+    while rows * cols - num >= rows:
+        cols -= 1
+
+    if cols_to_rows < 1.:  # more rows -> switch rows and columns
+        return cols, rows
+
+    return rows, cols
+
+
+def best_blk_2(num: int) -> tuple[int, int]:
     # Function finds the best rectangle with an area lower or equal to num
     # Useful for subplot layouts
     col1 = np.ceil(np.sqrt(num))
     row1 = np.ceil(num / col1)
 
-    col2 = np.ceil(np.sqrt(num)) + 1
+    col2 = col1 + 1
     row2 = np.ceil(num / col2)
 
     if col1 * row1 <= col2 * row2:
@@ -880,7 +911,7 @@ def display_top(snapshot, traced_memory, key_type: str = "lineno", limit: int = 
     print(f"Peak allocated size: {np.round(traced_memory[1] * coef, 1):.1f} {memory_format}")
 
 
-def get_weights_from_model(model: Functional) -> dict[str, np.ndarray]:
+def get_weights_from_model(model: Model) -> dict[str, np.ndarray]:
     layer_names = np.array([layer["class_name"] for layer in model.get_config()["layers"]])
     weights = {f"{name}_{i}": model.layers[i].get_weights() for i, name in enumerate(layer_names)}
 
@@ -915,14 +946,18 @@ def kernel_density_estimation_1d(y_true_part: np.ndarray, y_pred_part: np.ndarra
     return xi, zi
 
 
-def round_data_with_errors(data: np.ndarray, errors: np.ndarray, n_valid: int = 2) -> tuple[np.ndarray, ...]:
-    n = n_valid - np.ceil(np.log10(errors))  # rounding to n_valid numbers
+def round_data_with_errors(data: np.ndarray, errors: np.ndarray, n_valid: int = 2,
+                           return_precision: bool = False) -> tuple[np.ndarray, ...]:
+    n = n_valid - np.floor(np.log10(errors) + 1.)  # rounding to n_valid numbers
     n[~np.isfinite(n)] = n_valid
+    # n[n < 0.] = 0.  # can cause problems when you print automatic format, e.g. f"{x:.{n}f} and n < 0
     n = np.array(n, dtype=int)
 
     data_rounded = np.array([np.round(d, prec) for d, prec in zip(data, n)])
     errors_rounded = np.array([np.round(e, prec) for e, prec in zip(errors, n)])
 
+    if return_precision:
+        return data_rounded, errors_rounded, n
     return data_rounded, errors_rounded
 
 

@@ -5,15 +5,18 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from functools import reduce
 from scipy.interpolate import interp1d
+from scipy.integrate import simps
 from scipy.stats import norm
-from keras.utils import np_utils
+from tensorflow.keras.utils import to_categorical
 from typing import Literal
 import warnings
 
 from modules.utilities import normalise_in_rows, normalise_array, stack, safe_arange, my_polyfit, is_empty
 
 from modules.utilities_spectra import gimme_indices, used_indices, normalise_spectra, if_no_test_data
-from modules.utilities_spectra import join_data, load_npz, apply_transmission, normalise_spectrum_at_wvl
+from modules.utilities_spectra import join_data, load_npz, apply_transmission
+
+from modules.NN_data_grids import normalise_spectrum_at_wvl
 
 from modules.NN_config_parse import gimme_minerals_all, gimme_num_minerals
 
@@ -47,8 +50,8 @@ def load_composition_data(filename_data: str, clean_dataset: bool = True, keep_a
     data = load_npz(filename_data, subfolder=subfolder_data)
 
     # Select training data
-    wavelengths = deepcopy(np.array(data[_wavelengths_name], dtype=np.float32))
-    x_train = deepcopy(np.array(data[_spectra_name], dtype=np.float32))
+    wavelengths = deepcopy(np.array(data[_wavelengths_name], dtype=_wp))
+    x_train = deepcopy(np.array(data[_spectra_name], dtype=_wp))
     y_train = join_data(data, "labels")  # DataFrame with header
     meta = join_data(data, "meta")
 
@@ -80,6 +83,7 @@ def load_composition_data(filename_data: str, clean_dataset: bool = True, keep_a
 
     # convert data to working precision
     x_train, y_train = np.array(x_train, dtype=_wp), np.array(y_train, dtype=_wp)
+    wavelengths = np.array(wavelengths, dtype=_wp)
 
     if return_meta:
         if return_wavelengths:
@@ -110,8 +114,8 @@ def load_taxonomy_data(filename_data: str, clean_dataset: bool = True, return_me
     data = load_npz(filename_data, subfolder=subfolder_data)
 
     # Select training data
-    wavelengths = deepcopy(np.array(data[_wavelengths_name], dtype=np.float32))
-    x_train = deepcopy(np.array(data[_spectra_name], dtype=np.float32))
+    wavelengths = deepcopy(np.array(data[_wavelengths_name], dtype=_wp))
+    x_train = deepcopy(np.array(data[_spectra_name], dtype=_wp))
     y_train = deepcopy(np.array(data[_label_name], dtype=str))
     meta = join_data(data, "meta")
 
@@ -129,6 +133,7 @@ def load_taxonomy_data(filename_data: str, clean_dataset: bool = True, return_me
 
     # convert data to working precision
     x_train, y_train = np.array(x_train, dtype=_wp), np.array(y_train, dtype=_wp)
+    wavelengths = np.array(wavelengths, dtype=_wp)
 
     if return_meta:
         if return_wavelengths:
@@ -405,14 +410,18 @@ def reinterpolate_data(x_data: np.ndarray, wvl_old: np.ndarray, wvl_new: np.ndar
         else:
             raise ValueError("Unknown instrument.")
 
-        return np.array(wvl_new, dtype=np.float32), np.array(filtered_data, dtype=_wp)
+        return np.array(wvl_new, dtype=_wp), np.array(filtered_data, dtype=_wp)
 
     if wvl_new is not None:
-        m, M, res = np.min(wvl_new), np.max(wvl_new), np.mean(np.diff(wvl_new))
+        m, M = int(np.round(np.min(wvl_new))), int(np.round(np.max(wvl_new)))
+        res = int(np.round(np.mean(np.diff(wvl_new))))
+
         if wvl_new_norm is not None:
-            model_grid = _sep_in.join(str(int(x)) for x in np.round([m, M, res, wvl_new_norm]))
+            norm_for_grid = int(np.round(wvl_new_norm))
         else:
-            model_grid = _sep_in.join(str(int(x)) for x in np.round([m, M, res]))
+            norm_for_grid = None
+
+        model_grid = _sep_in.join(str(x) for x in [m, M, res, norm_for_grid])
         print(f"Re-interpolating the data to the {model_grid} grid.")
 
         # new resolution
@@ -424,10 +433,10 @@ def reinterpolate_data(x_data: np.ndarray, wvl_old: np.ndarray, wvl_new: np.ndar
         if wvl_new_norm is not None:
             x_data = normalise_spectra(x_data, wvl_new, wvl_norm_nm=wvl_new_norm)
 
-        return np.array(wvl_new, dtype=np.float32), np.array(x_data, dtype=_wp)
+        return np.array(wvl_new, dtype=_wp), np.array(x_data, dtype=_wp)
 
 
-    return np.array(wvl_old, dtype=np.float32), np.array(x_data, dtype=_wp)
+    return np.array(wvl_old, dtype=_wp), np.array(x_data, dtype=_wp)
 
 
 def apply_aspect_filter(wvl_data: np.ndarray, x_data: np.ndarray,
@@ -442,14 +451,10 @@ def apply_aspect_filter(wvl_data: np.ndarray, x_data: np.ndarray,
     nir2 = safe_arange(1200., 1600., targeted_resolution, endpoint=True)
     swir = safe_arange(1650., 2500., targeted_resolution, endpoint=True)
 
-    sigma_vis = my_polyfit([np.min(vis), np.max(vis)], (20., 20.), 1,
-                           return_fit_only=True, x_fit=vis) * fwhm_to_sigma
-    sigma_nir1 = my_polyfit([np.min(nir1), np.max(nir2)], (40., 27.), 1,
-                            return_fit_only=True, x_fit=nir1) * fwhm_to_sigma
-    sigma_nir2 = my_polyfit([np.min(nir1), np.max(nir2)], (40., 27.), 1,
-                            return_fit_only=True, x_fit=nir2) * fwhm_to_sigma
-    sigma_swir = my_polyfit([np.min(swir), np.max(swir)], (45., 45.), 1,
-                            return_fit_only=True, x_fit=swir) * fwhm_to_sigma
+    sigma_vis = np.polyval(my_polyfit([np.min(vis), np.max(vis)], (20., 20.), 1), vis) * fwhm_to_sigma
+    sigma_nir1 = np.polyval(my_polyfit([np.min(nir1), np.max(nir2)], (40., 27.), 1), nir1) * fwhm_to_sigma
+    sigma_nir2 = np.polyval(my_polyfit([np.min(nir1), np.max(nir2)], (40., 27.), 1), nir2) * fwhm_to_sigma
+    sigma_swir = np.polyval(my_polyfit([np.min(swir), np.max(swir)], (45., 45.), 1), swir) * fwhm_to_sigma
 
     wvl_new, sigma_new = np.array([]), np.array([])
 
@@ -484,9 +489,9 @@ def apply_aspect_filter(wvl_data: np.ndarray, x_data: np.ndarray,
     wvl_new, sort_index = np.unique(wvl_new, return_index=True)
     sigma_new = sigma_new[sort_index]
 
+    # this is here to delete channels which centres are not covered
     mask = np.logical_and.reduce((wvl_new >= np.min(wvl_data),
                                   wvl_new <= np.max(wvl_data)))
-
     wvl_new, sigma_new = wvl_new[mask], sigma_new[mask]
 
     gauss = np.transpose(norm.pdf(np.reshape(wvl_data, (len(wvl_data), 1)), wvl_new, sigma_new))  # one Gaussian per row
@@ -500,20 +505,26 @@ def apply_aspect_filter(wvl_data: np.ndarray, x_data: np.ndarray,
     if wvl_norm is not None:
         filtered_data = normalise_spectra(filtered_data, wvl_new, wvl_norm_nm=wvl_norm)
 
-    return np.array(wvl_new, dtype=np.float32), np.array(filtered_data, dtype=_wp)
+    return np.array(wvl_new, dtype=_wp), np.array(filtered_data, dtype=_wp)
 
 
 def apply_hyperscout_filter(wvl_data: np.ndarray, x_data: np.ndarray,
                             wvl_norm: float | str | None = None) -> tuple[np.ndarray, ...]:
     HS = load_npz(f"HS{_sep_in}H{_sep_out}transmission.npz", subfolder="HyperScout")
-    wvl_raw, transmissions = HS["wavelengths"], HS["transmissions"]
+    wvl_raw, transmissions = HS["wavelengths"], HS["transmissions"]  # wvl_raw are sorted
 
-    mask = np.logical_and.reduce((665. <= wvl_raw,  # or 650.?
-                                  wvl_raw <= 975.,  # or 960.?
-                                  wvl_raw >= np.min(wvl_data),
-                                  wvl_raw <= np.max(wvl_data)))
-
+    mask = 665. <= wvl_raw  # to remove additional peaks (done with broadband filter??)
     wvl_raw, transmissions = wvl_raw[mask], transmissions[:, mask]
+
+    areas = simps(y=transmissions, x=wvl_raw)
+
+    mask = np.logical_and.reduce((wvl_raw >= np.min(wvl_data),
+                                  wvl_raw <= np.max(wvl_data)))
+    wvl_raw, transmissions = wvl_raw[mask], transmissions[:, mask]
+
+    # this is here to delete channels which centres are not covered
+    mask =  simps(y=transmissions, x=wvl_raw) / areas >= 0.5
+    transmissions = transmissions[mask]
 
     x_data = interp1d(wvl_data, x_data, kind="cubic")(wvl_raw)
 
@@ -526,7 +537,7 @@ def apply_hyperscout_filter(wvl_data: np.ndarray, x_data: np.ndarray,
     if wvl_norm is not None:
         filtered_data = normalise_spectra(filtered_data, wvl_central, wvl_norm_nm=wvl_norm)
 
-    return np.array(wvl_central, dtype=np.float32), np.array(filtered_data, dtype=_wp)
+    return np.array(wvl_central, dtype=_wp), np.array(filtered_data, dtype=_wp)
 
 
 def remove_redundant_labels(y_data: np.ndarray,
@@ -791,7 +802,7 @@ def labels_to_categories(y_data: np.ndarray,
             warnings.warn(f"Labels \"{', '.join(unused_labels)}\" are not used. Check the data and config.")
 
     try:
-        return np_utils.to_categorical(y_data, num_labels, dtype=_wp)
+        return to_categorical(y_data, num_labels, dtype=_wp)
     except IndexError:
         raise IndexError("There are more categories in your data than what is defined in the config or they have "
                          "higher indices. Check the data and config.")
@@ -808,9 +819,9 @@ def apply_aspect_fwhm(x_data: np.ndarray, wvl_old: np.ndarray, wvl_new: np.ndarr
                       wvl_norm: float) -> tuple[np.ndarray, ...]:
     fwhm_to_sigma = 1. / np.sqrt(8. * np.log(2.))
 
-    fwhm_vis = my_polyfit((400., 850.), (20., 20.), 1)
+    fwhm_vis = my_polyfit((400., 850.), (20., 20.), 1)  # no overlap with nir1
     fwhm_nir = my_polyfit((850., 1600.), (40., 27.), 1)
-    fwhm_swir = my_polyfit((1600., 2500.), (45., 45.), 1)
+    fwhm_swir = my_polyfit((1600., 2500.), (45., 45.), 1)  # no gap between nir2 ans swir
 
     filtered_data = np.zeros((len(x_data), len(wvl_new)))
 

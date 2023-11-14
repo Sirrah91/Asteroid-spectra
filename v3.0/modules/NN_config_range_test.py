@@ -3,7 +3,7 @@ from os import path
 from typing import Literal
 from functools import reduce
 
-from modules.utilities_spectra import normalise_spectrum_at_wvl
+from modules.NN_data_grids import normalise_spectrum_at_wvl
 from modules.utilities import stack, find_nearest, safe_arange
 from modules._constants import _sep_in, _sep_out
 
@@ -55,11 +55,16 @@ elif constant_range_or_spacing == "range":
 
     if instrument is None:
         stop = start + 2. * np.lcm.reduce(approx_resolution)
-
-    elif "swir" in instrument:  # ASPECT
-        stop = 2450.
-    else:  # ASPECT
-        stop = 1650.
+    elif "ASPECT" in instrument:
+        if "swir" in instrument:
+            stop = 2450.
+        else:
+            stop = 1650.
+    elif "HS-H" in instrument:
+        stop = 950.
+        approx_resolution = np.array([12], dtype=int)  # nm
+    else:
+        raise ValueError("Unknown instrument.")
 
     # define ranges
     num_ranges = len(approx_resolution)
@@ -77,8 +82,11 @@ elif constant_range_or_spacing == "range":
         model_grids = [_sep_in.join(str(int(x)) for x in np.round([wvl_range[0], wvl_range[1], spac, norm]))
                        for wvl_range, spac, norm in zip(ranges, spacing, norm_at)]
         instruments = [None for _ in range(num_ranges)]
-    else:
+    elif "ASPECT" in instrument:
         model_grids = [_sep_out.join((instrument, str(int(res)))) for res in approx_resolution]
+        instruments = model_grids
+    else:  # HS-H
+        model_grids = [instrument for res in approx_resolution]
         instruments = model_grids
 
 elif constant_range_or_spacing == "window":
@@ -146,8 +154,8 @@ elif constant_range_or_spacing == "normalisation":
 else:
     raise ValueError('Unknown "constant_range_or_spacing" settings')
 
-if instrument is not None and "ASPECT" not in instrument:
-    raise ValueError('Unknown instrument. Must be "None" or contain "ASPECT".')
+if not (instrument is None or "ASPECT" in instrument or "HS-H" in instrument):
+    raise ValueError('Unknown instrument. Must be "None" or contain "ASPECT" or "HS-H".')
 
 # model subdirs
 model_subdirs = [path.join(model_basedir, constant_range_or_spacing, model_grid) for model_grid in model_grids]

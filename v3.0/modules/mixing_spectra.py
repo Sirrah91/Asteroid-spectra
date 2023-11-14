@@ -214,7 +214,7 @@ def load_spectra() -> Iterator[np.ndarray, ...]:
         else:
             raise ValueError("Unknown mineral.")
 
-        yield spectra[inds], labels[inds], np.array(meta[["MinSize", "MaxSize"]].iloc[inds], dtype=np.float32), wavelengths
+        yield spectra[inds], labels[inds], np.array(meta[["MinSize", "MaxSize"]].iloc[inds], dtype=_wp), wavelengths
 
 
 def mixing_coefficients(type_of_mixture: str, used_minerals: list[bool], rnd_seed: int | None = None) -> np.ndarray:
@@ -245,10 +245,17 @@ def mixing_coefficients(type_of_mixture: str, used_minerals: list[bool], rnd_see
         else:
             coefs = np.zeros(np.sum(used_coefs))
             for i in range(np.sum(used_coefs) - 1):
-                coefs[i] = rng.uniform(0, 1 - np.sum(coefs))
-            coefs[-1] = 1 - np.sum(coefs)
+                coefs[i] = rng.uniform(0., 1. - np.sum(coefs))
+            coefs[-1] = 1. - np.sum(coefs)
 
-            coefs = np.array([coefs[int(np.sum(used_coefs[:i]))] if coef else 0 for i, coef in enumerate(used_coefs)])
+            tmp = np.zeros(len(used_coefs))
+            tmp[used_coefs] = coefs
+            coefs = tmp
+
+            """
+            coefs = np.array([coefs[int(np.sum(used_coefs[:i]))] 
+                              if coef else 0. for i, coef in enumerate(used_coefs)])
+            """
 
             coefs[used_coefs] = rng.permutation(coefs[used_coefs])
 

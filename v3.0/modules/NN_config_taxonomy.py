@@ -16,14 +16,15 @@ tax_grid_setup = {
 
     # used when "instrument" is None and interpolate_to is unknown
     "wvl_grid": safe_arange(650., 2450., 30., endpoint=True),
-    "wvl_norm": 650.  # float, None, or "adaptive"
+    # used when interpolate_to is unknown
+    "wvl_norm": "adaptive"  # float or "adaptive" (there are no non-normalised data for training)
 }
 
 tax_filtering_setup = {}
 
 tax_data_split_setup = {
     "val_portion": 0.2,  # Set the fraction of data for validation
-    "test_portion": 0.0  # Set the fraction of data for tests
+    "test_portion": 0.2  # Set the fraction of data for tests
 }
 
 tax_model_setup = {

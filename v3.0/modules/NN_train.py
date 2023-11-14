@@ -1,7 +1,10 @@
+from os import environ
+environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from keras.callbacks import EarlyStopping, TerminateOnNaN, ReduceLROnPlateau
+from tensorflow.keras.callbacks import EarlyStopping, TerminateOnNaN, ReduceLROnPlateau
 from pprint import pprint
 import json
 import warnings
@@ -11,18 +14,18 @@ from itertools import chain
 
 from keras_tuner.tuners import BayesianOptimization, RandomSearch
 import keras_tuner as kt
-from keras.models import Functional
+from tensorflow.keras.models import Model
 
 from modules.NN_models import MyHyperModel
 
 from modules.control_plots import plot_model_history, plot_corr_matrix, plot_model_layer
-from modules.utilities_spectra import gimme_model_specification, print_header, print_info, gimme_bin_code_from_name
+from modules.utilities_spectra import gimme_model_specification, print_header, print_info, gimme_bin_code_from_name, load_txt
 from modules.utilities import check_dir, is_empty, sort_df_with_keys
 
 from modules.NN_HP import gimme_hyperparameters
 
-from modules._constants import (_path_model, _path_hp_tuning, _model_suffix, _sep_out, _quiet, _verbose,
-                                _show_control_plot, _project_dir)
+from modules._constants import (_path_model, _path_hp_tuning, _model_suffix, _sep_out, _sep_in, _quiet, _verbose,
+                                _show_control_plot)
 
 # defaults only
 from modules.NN_config_composition import comp_model_setup
@@ -83,7 +86,7 @@ def train(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np
 
     if show_control_plot:
         plot_model_history(model, quiet=_quiet)
-        plot_model_layer(model_name, subfolder_model=model_subdir, layer="Conv1D", suf="_kernels", quiet=_quiet)
+        plot_model_layer(model_name, subfolder_model=model_subdir, layer="Conv1D", suf=f"{_sep_out}kernels", quiet=_quiet)
 
     if not _quiet:
         print_header(bin_code=bin_code)
@@ -94,11 +97,11 @@ def train(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np
     return model_name
 
 
-def fit_model(model: Functional,
+def fit_model(model: Model,
               x_train: np.ndarray, y_train: np.ndarray,
               x_val: np.ndarray, y_val: np.ndarray,
               params: dict[str, str | int | float | bool | list[int]],
-              monitoring: dict[str, str], verbose: int = 2) -> Functional:
+              monitoring: dict[str, str], verbose: int = 2) -> Model:
     # visualise the model
     # visualizer(model, filename="architecture", format="png", view=True)
 
@@ -281,7 +284,7 @@ def hp_tuner(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val:
         best_model = tuner.get_best_models(num_models=np.min((N, max_trials)))  # raises warnings
 
     final_suffix = "" if _model_suffix == "SavedModel" else f".{_model_suffix}"
-    model_names = [f"{model_name}_{dt_string}_Tuner_{i}{final_suffix}" for i in range(len(best_model))]
+    model_names = [f"{model_name}{_sep_out}{dt_string}{_sep_out}Tuner{_sep_in}{i}{final_suffix}" for i in range(len(best_model))]
 
     for name, model in zip(model_names, best_model):
         # Save top models to project dir with a timestamp
@@ -298,11 +301,10 @@ def hp_tuner(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val:
 
 
 def prepare_hp_for_corr_plot(hp_dirname: str, method: str) -> None:
-
     file = path.join(_path_hp_tuning, method, f"{hp_dirname}.csv")
 
     if path.isfile(file):
-        data = pd.read_csv(file, sep="\t")
+        data = load_txt(file, sep="\t")
 
         # put metric and val_metric next to each other
         metrics_all = list(data.keys()[["val_" in key for key in data.keys()]])
@@ -367,4 +369,4 @@ def do_corr_plots(df: pd.DataFrame, method: str = "Unknown") -> None:
             data_corr = data_part.corr(numeric_only=True)
             data_keys = np.array(data_corr.keys(), dtype=str)
 
-            plot_corr_matrix(data_keys, data_corr, suf=f"_Tuner_{method}_{model_type}")
+            plot_corr_matrix(data_keys, data_corr, suf=f"{_sep_out}Tuner{_sep_out}{method}{_sep_out}{model_type}")

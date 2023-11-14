@@ -5,16 +5,16 @@ from copy import deepcopy
 from typing import Callable, Literal
 import numpy as np
 import pandas as pd
-from keras.models import load_model, Functional
+from tensorflow.keras.models import load_model, Sequential, Model
 from pathlib import Path
 from scipy.interpolate import interp1d
+from scipy.integrate import simps
 from scipy.spatial import ConvexHull
 from glob import glob
 import h5py
 
-from modules.utilities import (check_dir, flatten_list, normalise_in_rows, denoise_array, safe_arange, find_nearest,
-                               is_empty, split_path, argnearest, my_argmax, return_mean_std, my_polyfit, check_file,
-                               stack)
+from modules.utilities import (check_dir, flatten_list, normalise_in_rows, denoise_array, safe_arange, is_empty, stack,
+                               split_path, argnearest, my_argmax, return_mean_std, my_polyfit, check_file, is_sorted)
 
 from modules.NN_config_parse import (gimme_minerals_all, gimme_num_minerals, gimme_endmember_counts, bin_to_used,
                                      bin_to_cls)
@@ -44,8 +44,8 @@ def save_data(final_name: str, spectra: np.ndarray, wavelengths: np.ndarray, met
     final_name = path.join(_path_data, subfolder, final_name)
 
     # collect data and metadata
-    data_and_metadata = {_spectra_name: np.array(spectra, dtype=np.float32),  # save spectra
-                         _wavelengths_name: np.array(wavelengths, dtype=np.float32),  # save wavelengths
+    data_and_metadata = {_spectra_name: np.array(spectra, dtype=_wp),  # save spectra
+                         _wavelengths_name: np.array(wavelengths, dtype=_wp),  # save wavelengths
                          _metadata_name: np.array(metadata, dtype=object)}  # save metadata
 
     if metadata_key is not None:
@@ -58,7 +58,7 @@ def save_data(final_name: str, spectra: np.ndarray, wavelengths: np.ndarray, met
         if np.shape(labels)[1] == 1:  # taxonomy class
             data_and_metadata[_label_name] = np.array(labels, dtype=str)  # save labels
         else:  # composition
-            data_and_metadata[_label_name] = np.array(labels, dtype=np.float32)  # save labels
+            data_and_metadata[_label_name] = np.array(labels, dtype=_wp)  # save labels
 
         if labels_key is not None:
             data_and_metadata[_label_key_name] = np.array(labels_key, dtype=str)
@@ -97,7 +97,7 @@ def load_h5(filename: str, subfolder: str = "", list_keys: list[str] | None = No
 
 
 def load_keras_model(filename: str, subfolder: str = "", custom_objects: dict | None = None,
-                     compile: bool = True, **kwargs) -> Functional:
+                     compile: bool = True, **kwargs) -> Model:
     if custom_objects is None: custom_objects = gimme_custom_objects(model_name=filename)
 
     filename = check_file(filename, _path_model, subfolder)
@@ -233,8 +233,11 @@ def join_data(data: np.lib.npyio.NpzFile | np.ndarray, header: str | np.ndarray)
         return pd.DataFrame(data=data, columns=header)
 
 
-def denoise_spectra(data: np.ndarray, wavelength: np.ndarray, sigma_nm: float = 7.) -> np.ndarray:
-    if sigma_nm <= 0:
+def denoise_spectra(data: np.ndarray, wavelength: np.ndarray, sigma_nm: float | None = 7.) -> np.ndarray:
+    if sigma_nm is None:
+        return deepcopy(data)
+
+    if sigma_nm <= 0.:
         raise ValueError(f'"sigma_nm" must be positive float but equals {sigma_nm}')
 
     if np.ndim(data) == 1:
@@ -246,8 +249,11 @@ def denoise_spectra(data: np.ndarray, wavelength: np.ndarray, sigma_nm: float = 
     return denoise_array(data, sigma_px=sigma_px)
 
 
-def normalise_spectra(data: np.ndarray, wavelength: np.ndarray, wvl_norm_nm: float = 550.,
+def normalise_spectra(data: np.ndarray, wavelength: np.ndarray, wvl_norm_nm: float | None = 550.,
                       on_pixel: bool = True, fun: Callable[[float], float] | None = None) -> np.ndarray:
+    if wvl_norm_nm is None:
+        return deepcopy(data)
+
     if np.ndim(data) == 1:
         data = np.reshape(data, (1, len(data)))
 
@@ -281,7 +287,7 @@ def denoise_and_norm(data: np.ndarray, wavelength: np.ndarray,
     if normalising:
         return normalise_spectra(data, wavelength, wvl_norm_nm=wvl_norm_nm, on_pixel=on_pixel)
 
-    return data
+    return deepcopy(data)
 
 
 def denoise_and_norm_file(file: str, denoising: bool, normalising: bool, sigma_nm: float = 7.,
@@ -302,20 +308,6 @@ def denoise_and_norm_file(file: str, denoising: bool, normalising: bool, sigma_n
     save_data(final_name, spectra=spectra, wavelengths=xq, labels=data[_label_name],
               metadata=data[_metadata_name], labels_key=data[_label_key_name], metadata_key=data[_metadata_key_name],
               denoised=denoising, normalised=normalise, subfolder=subfolder)
-
-
-def normalise_spectrum_at_wvl(wavelength: list[float] | np.ndarray) -> float:
-    # based on minimum RMSE + maximum within 10 tests (with outliers)
-    where_norm = np.array([2350., 550., 1550., 1450., 650., 750., 2450., 2150., 450., 1650., 1850.,
-                           2050., 2250., 1950., 1750., 850., 950., 1150., 1350., 1250., 1050.])
-
-    wavelength = np.array(wavelength)
-
-    for wvl in where_norm:
-        if np.min(wavelength) <= wvl <= np.max(wavelength):
-            return find_nearest(wavelength, wvl)
-
-    return wavelength[0]
 
 
 def clean_and_resave(filename: str, reinterpolate: bool = False, used_minerals: np.ndarray | None = None,
@@ -353,13 +345,23 @@ def apply_transmission(spectra: np.ndarray,
                        transmission: np.ndarray,
                        wvl_transmission: np.ndarray,
                        wvl_cen_method: Literal["argmax", "dot"] = "argmax") -> tuple[np.ndarray, ...]:
-    transmission = normalise_in_rows(transmission)
+
+    if np.ndim(transmission) == 1:  # need num_transmissions x num_wavelengths
+        transmission = np.reshape(transmission, (1, -1))
+
+    # sort wavelengths first
+    idx = np.argsort(wvl_transmission)
+    wvl_transmission, transmission = wvl_transmission[idx], transmission[:, idx]
+
+    transmission = normalise_in_rows(transmission, simps(y=transmission, x=wvl_transmission))
+    # transmission = normalise_in_rows(transmission)
 
     if wvl_cen_method == "argmax":
         wvl_central = np.array([my_argmax(wvl_transmission, transm, fit_method="ransac") for transm in transmission])
 
     elif wvl_cen_method == "dot":
-        wvl_central = np.dot(transmission, wvl_transmission)
+        wvl_central = simps(y=transmission * wvl_transmission, x=wvl_transmission)
+        # wvl_central = np.dot(transmission, wvl_transmission)
 
     else:
         raise ValueError('Unknown method how to estimate central wavelengths. Available methods are "argmax" and "dot".')
@@ -367,14 +369,20 @@ def apply_transmission(spectra: np.ndarray,
     index_sort = np.argsort(wvl_central)
     wvl_central, transmission = wvl_central[index_sort], transmission[index_sort]
 
-    return wvl_central, spectra @ np.transpose(transmission)
+    final_spectra = simps(y=np.einsum('ij, kj -> ikj', spectra, transmission), x=wvl_transmission)
+    # final_spectra = spectra @ np.transpose(transmission)
+
+    wvl_central, final_spectra = np.array(wvl_central, dtype=_wp), np.array(final_spectra, dtype=_wp)
+
+    return wvl_central, final_spectra
 
 
 def compute_metrics(y_true: np.ndarray, y_pred: np.ndarray,
                     used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None,
                     cleaning: bool = True, all_to_one: bool = False,
                     return_r2: bool = False, return_sam: bool = False, return_mae: bool = False,
-                    round: bool = True, return_dict: bool = False) -> tuple[np.ndarray, ...] | dict[str, np.ndarray]:
+                    remove_px_outliers: bool = False,
+                    return_dict: bool = False) -> tuple[np.ndarray, ...] | dict[str, np.ndarray]:
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
 
@@ -383,41 +391,29 @@ def compute_metrics(y_true: np.ndarray, y_pred: np.ndarray,
     if np.any(y_true > 1.) or np.any(y_pred > 1.):
         y_true, y_pred = y_true / 100., y_pred / 100.
 
+    if remove_px_outliers:
+        ind_outliers = find_outliers(y_true, y_pred, used_minerals=used_minerals, used_endmembers=used_endmembers,
+                                     px_only=True)
+        y_true, y_pred = np.delete(y_true, ind_outliers, axis=0), np.delete(y_pred, ind_outliers, axis=0)
+
     metric = my_rmse(used_minerals=used_minerals, used_endmembers=used_endmembers,
                      cleaning=cleaning, all_to_one=all_to_one)(y_true, y_pred).numpy()
-
-    if round:
-        results = {"RMSE (pp)": np.round(metric, 1)}
-    else:
-        results = {"RMSE (pp)": metric}
+    results = {"RMSE (pp)": metric}
 
     if return_r2:
         metric = my_r2(used_minerals=used_minerals, used_endmembers=used_endmembers,
                        cleaning=cleaning, all_to_one=all_to_one)(y_true, y_pred).numpy()
-
-        if round:
-            results["R2"] = np.round(metric, 2)
-        else:
-            results["R2"] = metric
+        results["R2"] = metric
 
     if return_sam:
         metric = np.rad2deg(my_sam(used_minerals=used_minerals, used_endmembers=used_endmembers,
                                    cleaning=cleaning, all_to_one=all_to_one)(y_true, y_pred).numpy())
-
-        if round:
-            results["SAM (deg)"] = np.round(metric, 1)
-        else:
-            results["SAM (deg)"] = metric
+        results["SAM (deg)"] = metric
 
     if return_mae:
         metric = my_mae(used_minerals=used_minerals, used_endmembers=used_endmembers,
                         cleaning=cleaning, all_to_one=all_to_one)(y_true, y_pred).numpy()
-
-        if round:
-            results["MAE (pp)"] = np.round(metric, 1)
-        else:
-            results["MAE (pp)"] = metric
-
+        results["MAE (pp)"] = metric
 
     if return_dict:
         return results
@@ -429,7 +425,8 @@ def compute_within(y_true: np.ndarray, y_pred: np.ndarray, error_limit: tuple[fl
                    used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None,
                    cleaning: bool = True, all_to_one: bool = False,
                    step_percentile: float | None = 0.1,
-                   round: bool = True, return_dict: bool = False) -> tuple[np.ndarray, ...] | dict[str, np.ndarray]:
+                   remove_px_outliers: bool = False,
+                   return_dict: bool = False) -> tuple[np.ndarray, ...] | dict[str, np.ndarray]:
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
 
@@ -438,6 +435,10 @@ def compute_within(y_true: np.ndarray, y_pred: np.ndarray, error_limit: tuple[fl
     if np.any(y_true > 1.) or np.any(y_pred > 1.):
         y_true, y_pred = y_true / 100., y_pred / 100.
 
+    if remove_px_outliers:
+        ind_outliers = find_outliers(y_true, y_pred, used_minerals=used_minerals, used_endmembers=used_endmembers,
+                                     px_only=True)
+        y_true, y_pred = np.delete(y_true, ind_outliers, axis=0), np.delete(y_pred, ind_outliers, axis=0)
 
     if step_percentile is None:
         ae = my_ae(used_minerals=used_minerals, used_endmembers=used_endmembers,
@@ -449,11 +450,9 @@ def compute_within(y_true: np.ndarray, y_pred: np.ndarray, error_limit: tuple[fl
         quantile = my_quantile(percentile=percentile, used_minerals=used_minerals, used_endmembers=used_endmembers,
                                cleaning=cleaning, all_to_one=all_to_one)(y_true, y_pred).numpy()
 
+        # quantiles are always sorted
         within = np.transpose([np.interp(error_limit, quantile[:, i], percentile, left=0., right=100.)
                                for i in range(np.shape(quantile)[1])])
-
-    if round:
-        within = np.round(within, 1)
 
     if return_dict:
         return {f"within {limit} pp": within_limit for limit, within_limit in zip(error_limit, within)}
@@ -464,7 +463,7 @@ def compute_within(y_true: np.ndarray, y_pred: np.ndarray, error_limit: tuple[fl
 def compute_one_sigma(y_true: np.ndarray, y_pred: np.ndarray,
                       used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None,
                       cleaning: bool = True, all_to_one: bool = False,
-                      round: bool = True) -> tuple[np.ndarray, ...]:
+                      remove_px_outliers: bool = False) -> tuple[np.ndarray, ...]:
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
 
@@ -473,11 +472,13 @@ def compute_one_sigma(y_true: np.ndarray, y_pred: np.ndarray,
     if np.any(y_true > 1.) or np.any(y_pred > 1.):
         y_true, y_pred = y_true / 100., y_pred / 100.
 
+    if remove_px_outliers:
+        ind_outliers = find_outliers(y_true, y_pred, used_minerals=used_minerals, used_endmembers=used_endmembers,
+                                     px_only=True)
+        y_true, y_pred = np.delete(y_true, ind_outliers, axis=0), np.delete(y_pred, ind_outliers, axis=0)
+
     one_sigma = my_quantile(percentile=68.27, used_minerals=used_minerals, used_endmembers=used_endmembers,
                             cleaning=cleaning, all_to_one=all_to_one)(y_true, y_pred).numpy()
-
-    if round:
-        one_sigma = np.round(one_sigma, 1)
 
     return one_sigma
 
@@ -507,16 +508,24 @@ def gimme_model_grid_from_name(model_name: str) -> str:
 
 def gimme_grid_setup_from_name(model_name: str) -> dict:
     model_grid = gimme_model_grid_from_name(model_name)
-    instrument = None
-    if "ASPECT" in model_grid: instrument = "ASPECT"
-    if "HS-H" in model_grid: instrument = "HS-H"
+    if "ASPECT" in model_grid or "HS-H" in model_grid:
+        instrument = model_grid
+    else:
+        instrument = None
 
     if instrument is not None:
         new_wvl_grid = None
         new_wvl_grid_normalisation = "adaptive"
     else:
         new_wvl_grid = safe_arange(*model_grid.split(_sep_in)[:-1], endpoint=True, dtype=_wp)
-        new_wvl_grid_normalisation = float(model_grid.split(_sep_in)[-1])
+        new_wvl_grid_normalisation = model_grid.split(_sep_in)[-1]
+
+        if new_wvl_grid_normalisation == "None":
+            new_wvl_grid_normalisation = None
+        elif new_wvl_grid_normalisation == "adaptive":
+            pass
+        else:
+            new_wvl_grid_normalisation = float(new_wvl_grid_normalisation)
 
     return {"model_grid": model_grid,
             "instrument": instrument,
@@ -528,7 +537,7 @@ def gimme_used_from_name(model_name: str) -> tuple[np.ndarray, list[list[bool]]]
     return bin_to_used(bin_code=gimme_bin_code_from_name(model_name=model_name))
 
 
-def is_taxonomical(model: str | Functional | None = None, bin_code: str | None = None) -> bool:
+def is_taxonomical(model: str | Model | Sequential | None = None, bin_code: str | None = None) -> bool:
     if isinstance(model, str):
         bare_name = split_path(model)[1]
         bin_code = gimme_bin_code_from_name(bare_name)
@@ -536,7 +545,7 @@ def is_taxonomical(model: str | Functional | None = None, bin_code: str | None =
     if bin_code is not None:
         return len(bin_code.split(_sep_in)) == 2
 
-    if isinstance(model, Functional):  # model was compiled when loaded
+    if isinstance(model, Model | Sequential):  # model was compiled when loaded
         if model.metrics_names:
             possible_taxonomy_metrics = ["categorical_accuracy", "f1_score"]
             return np.any([metric in model.metrics_names for metric in possible_taxonomy_metrics])
@@ -603,10 +612,10 @@ def remove_continuum(filename: str, subfolder: str = "", saving: bool = False) -
             x_fit, y_fit = xq[[hull[j], hull[j + 1]]], spectrum[[hull[j], hull[j + 1]]]
             if j == 0 and hull[j] != 0:
                 x_new = xq[:hull[j + 1] + 1]
-                continuum[:hull[j + 1] + 1] = my_polyfit(x_fit, y_fit, 1, return_fit_only=True, x_fit=x_new)
+                continuum[:hull[j + 1] + 1] = np.polval(my_polyfit(x_fit, y_fit, 1), x_new)
             else:
                 x_new = xq[hull[j]:hull[j + 1] + 1]
-                continuum[hull[j]:hull[j + 1] + 1] = my_polyfit(x_fit, y_fit, 1, return_fit_only=True, x_fit=x_new)
+                continuum[hull[j]:hull[j + 1] + 1] = np.polyval(my_polyfit(x_fit, y_fit, 1), x_new)
 
         rectified_spectra[i] = spectrum / continuum
         rectified_spectra = np.round(rectified_spectra, 5)
@@ -977,8 +986,8 @@ def remove_jumps_in_spectra(wavelengths: np.ndarray, reflectance: np.ndarray, ju
 
     wvl_fit = stack((wvl_before, wvl_after))
 
-    fitted_no_shift = my_polyfit(wvl_before, refl_before, deg, return_fit_only=True, x_fit=wvl_fit)
-    fitted_shift = my_polyfit(wvl_after, refl_after, deg, return_fit_only=True, x_fit=wvl_fit)
+    fitted_no_shift = np.polyval(my_polyfit(wvl_before, refl_before, deg), wvl_fit)
+    fitted_shift = np.polyval(my_polyfit(wvl_after, refl_after, deg), wvl_fit)
 
     return np.mean(fitted_no_shift / fitted_shift)
 
@@ -1030,8 +1039,8 @@ def match_spectra(wavelengths: tuple[np.ndarray, ...], reflectance: tuple[np.nda
 
             wvl_fit = stack((wvl1, wvl2))
 
-            fit1 = my_polyfit(wvl1, refl1, deg, return_fit_only=True, x_fit=wvl_fit)
-            fit2 = my_polyfit(wvl2, refl2, deg, return_fit_only=True, x_fit=wvl_fit)
+            fit1 = np.polyval(my_polyfit(wvl1, refl1, deg), wvl_fit)
+            fit2 = np.polyval(my_polyfit(wvl2, refl2, deg), wvl_fit)
 
             factor = np.mean(fit1 / fit2)
 

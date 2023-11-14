@@ -10,8 +10,8 @@ from tqdm import tqdm
 
 from modules.decorators import timing
 from modules.utilities_spectra import load_h5
-from modules.utilities import stack, safe_arange, normalise_array
-from modules._constants import _path_data, _spectra_name, _wavelengths_name, _coordinates_name, _sep_out
+from modules.utilities import stack, safe_arange, normalise_array, is_sorted
+from modules._constants import _path_data, _spectra_name, _wavelengths_name, _coordinates_name, _sep_out, _wp
 
 # ------------------------------------------------------------------------------------------------------------------------
 what_to_run = "averaging"  # can be either "indices", "averaging", or "both"
@@ -26,7 +26,8 @@ dlon_half, dlat_half = dlon / 2., dlat / 2.
 lon_grid, lat_grid = safe_arange(0., 360., dlon, endpoint=False), safe_arange(-90., 90., dlat, endpoint=True)
 
 # interpolation method
-# Linear is much faster; cubic interpolation may cause troubles if there are wider gaps in spectra
+# linear is much faster for sorted wavelengths
+# cubic interpolation may cause troubles if there are wider gaps in spectra
 interp_method = "linear"
 
 # data polygon vs. point or patch polygon
@@ -494,7 +495,7 @@ def filtering_data(asteroid_name: str, df: np.ndarray, combined: np.ndarray) -> 
 
     filtered_spectra = np.array(filtered_spectra, dtype=object)
     filtered_poly_coords = np.array(filtered_poly_coords, dtype=object)
-    filtered_pt_coords = np.array(filtered_pt_coords, dtype=np.float32)
+    filtered_pt_coords = np.array(filtered_pt_coords, dtype=_wp)
 
     inds_to_delete = [ind for ind, filtered_spectrum in enumerate(filtered_spectra) if len(filtered_spectrum) == 0]
     filtered_spectra = np.delete(filtered_spectra, inds_to_delete)
@@ -513,7 +514,7 @@ def interp_and_norm(filtered_spectra: np.ndarray, wvl_old: np.ndarray,
     for i, filtered_spectrum in enumerate(filtered_spectra):
         spectra = len(filtered_spectrum) * [0]
         for j, single_spectrum in enumerate(filtered_spectrum):
-            if interp_method == "linear":
+            if interp_method == "linear" and is_sorted(wvl_old) and is_sorted(wvl_new):
                 spectrum = np.interp(wvl_new, wvl_old, single_spectrum)
                 norm_reflectance = np.interp(norm_at, wvl_new, spectrum)
             else:

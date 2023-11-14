@@ -16,7 +16,7 @@ def usage(composition_or_taxonomy: Literal["composition", "taxonomy"],
           grid_option: str) -> dict[str, str | int | float | bool | list[int]]:
     if "composition" in composition_or_taxonomy:
 
-        if grid_option == f"450{_sep_in}2450{_sep_in}5{_sep_in}550":
+        if f"450{_sep_in}2450{_sep_in}5" in grid_option:
             p = {
                 "model_type": "CNN",  # Convolutional (CNN) or dense (MLP)
                 "num_layers": 2,  # Number of hidden layers
@@ -40,13 +40,13 @@ def usage(composition_or_taxonomy: Literal["composition", "taxonomy"],
                 "model_usage": "composition"  # type of model
             }
 
-        elif grid_option == f"820{_sep_in}2080{_sep_in}20{_sep_in}1500":
-            p = usage(composition_or_taxonomy="composition", grid_option=f"450{_sep_in}2450{_sep_in}5{_sep_in}550")
+        elif f"820{_sep_in}2080{_sep_in}20" in grid_option:
+            p = usage(composition_or_taxonomy="composition", grid_option=f"450{_sep_in}2450{_sep_in}5")
 
-        elif grid_option == f"820{_sep_in}2360{_sep_in}20{_sep_in}1300":
-            p = usage(composition_or_taxonomy="composition", grid_option=f"450{_sep_in}2450{_sep_in}5{_sep_in}550")
+        elif f"820{_sep_in}2360{_sep_in}20" in grid_option:
+            p = usage(composition_or_taxonomy="composition", grid_option=f"450{_sep_in}2450{_sep_in}5")
 
-        elif grid_option == f"650{_sep_in}1600{_sep_in}25{_sep_in}700":
+        elif f"650{_sep_in}1600{_sep_in}25" in grid_option:
             p = {
                 "model_type": "CNN",  # Convolutional (CNN) or dense (MLP)
                 "num_layers": 2,  # Number of hidden layers
@@ -70,11 +70,14 @@ def usage(composition_or_taxonomy: Literal["composition", "taxonomy"],
                 "model_usage": "composition"  # type of model
             }
 
-        elif grid_option == f"750{_sep_in}1350{_sep_in}25{_sep_in}750":
-            p = usage(composition_or_taxonomy="composition", grid_option=f"650{_sep_in}1600{_sep_in}25{_sep_in}700")
+        elif f"750{_sep_in}1350{_sep_in}25" in grid_option:
+            p = usage(composition_or_taxonomy="composition", grid_option=f"650{_sep_in}1600{_sep_in}25")
+
+        elif f"750{_sep_in}1550{_sep_in}20" in grid_option:
+            p = usage(composition_or_taxonomy="composition", grid_option=f"650{_sep_in}1600{_sep_in}25")
 
         elif "ASPECT" in grid_option:
-            p = usage(composition_or_taxonomy="composition", grid_option=f"650{_sep_in}1600{_sep_in}25{_sep_in}700")
+            p = usage(composition_or_taxonomy="composition", grid_option=f"650{_sep_in}1600{_sep_in}25")
 
         elif "HS-H" in grid_option:
             p = {
@@ -102,12 +105,12 @@ def usage(composition_or_taxonomy: Literal["composition", "taxonomy"],
 
         else:
             warn('Unknown "grid_option". Using default settings (see "NN_HP.py")')
-            p = usage(composition_or_taxonomy="composition", grid_option=f"450{_sep_in}2450{_sep_in}5{_sep_in}550")
+            p = usage(composition_or_taxonomy="composition", grid_option=f"450{_sep_in}2450{_sep_in}5")
 
 
     elif "taxonomy" in composition_or_taxonomy:
 
-        if grid_option == f"450{_sep_in}2450{_sep_in}5{_sep_in}550":
+        if f"450{_sep_in}2450{_sep_in}5" in grid_option:
             p = {
                 "model_type": "CNN",  # Convolutional (CNN) or dense (MLP)
                 "num_layers": 1,  # Number of hidden layers (CNN, FC);  scalar for CNN or FC
@@ -131,7 +134,7 @@ def usage(composition_or_taxonomy: Literal["composition", "taxonomy"],
                 "model_usage": "taxonomy"  # type of model
             }
 
-        elif grid_option == f"820{_sep_in}2080{_sep_in}20{_sep_in}1500":
+        elif f"820{_sep_in}2080{_sep_in}20" in grid_option:
             p = {
                 "model_type": "CNN",  # Convolutional (CNN) or dense (MLP)
                 "num_layers": 1,  # Number of hidden layers (CNN, FC);  scalar for CNN or FC
@@ -155,10 +158,10 @@ def usage(composition_or_taxonomy: Literal["composition", "taxonomy"],
                 "model_usage": "taxonomy"  # type of model
             }
 
-        elif grid_option == f"820{_sep_in}2360{_sep_in}20{_sep_in}1300":
-            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"820{_sep_in}2080{_sep_in}20{_sep_in}1500")
+        elif f"820{_sep_in}2360{_sep_in}20" in grid_option:
+            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"820{_sep_in}2080{_sep_in}20")
 
-        elif grid_option == f"500{_sep_in}900{_sep_in}10{_sep_in}550":
+        elif f"500{_sep_in}900{_sep_in}10" in grid_option:
             p = {
                 "model_type": "CNN",  # Convolutional (CNN) or dense (MLP)
                 "num_layers": 1,  # Number of hidden layers (CNN, FC);  scalar for CNN or FC
@@ -182,10 +185,10 @@ def usage(composition_or_taxonomy: Literal["composition", "taxonomy"],
                 "model_usage": "taxonomy"  # type of model
             }
 
-        elif grid_option == f"670{_sep_in}950{_sep_in}10{_sep_in}700":
-            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"500{_sep_in}900{_sep_in}10{_sep_in}550")
+        elif f"670{_sep_in}950{_sep_in}10" in grid_option:
+            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"500{_sep_in}900{_sep_in}10")
 
-        elif grid_option == f"650{_sep_in}1600{_sep_in}25{_sep_in}700":
+        elif f"650{_sep_in}1600{_sep_in}25" in grid_option:
             p = {
                 "model_type": "CNN",  # Convolutional (CNN) or dense (MLP)
                 "num_layers": 1,  # Number of hidden layers
@@ -210,17 +213,17 @@ def usage(composition_or_taxonomy: Literal["composition", "taxonomy"],
             }
 
         elif "ASPECT" in grid_option and "swir" not in grid_option:
-            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"650{_sep_in}1600{_sep_in}25{_sep_in}700")
+            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"650{_sep_in}1600{_sep_in}25")
 
         elif "ASPECT" in grid_option and "swir" in grid_option:
-            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"820{_sep_in}2080{_sep_in}20{_sep_in}1500")
+            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"820{_sep_in}2080{_sep_in}20")
 
         elif "HS-H" in grid_option:
-            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"500{_sep_in}900{_sep_in}10{_sep_in}550")
+            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"500{_sep_in}900{_sep_in}10")
 
         else:
             warn('Unknown "grid_option". Using default settings (see "NN_HP.py")')
-            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"450{_sep_in}2450{_sep_in}5{_sep_in}550")
+            p = usage(composition_or_taxonomy="taxonomy", grid_option=f"450{_sep_in}2450{_sep_in}5")
 
     else:
         raise ValueError('"composition_or_taxonomy" must contain "composition" or "taxonomy".')
@@ -250,8 +253,8 @@ def tuning(model_usage: Literal["composition", "taxonomy"]) -> dict:
         "batch_size": [4, 512],  # Bath size
         "bs_norm_before_activation": [True, False],
         # IF YOU USE VAL_LOSS AS A MONITORING QUANTITY, YOU SHOULD NOT USE ALPHA AND USE_WEIGHTS IN HP TUNING
-        "alpha": [0.1],  # Trade-off between modal and chemical misfits
-        "use_weights": [True, False],  # Use weighted-class loss function or not
+        "alpha": [0.1],  # Trade-off between modal and chemical misfits; composition model only
+        "use_weights": [True, False],  # Use weighted-class loss function or not; taxonomy model only
         "num_epochs": 500,  # Number of epochs
         "model_usage": model_usage,  # "composition" or "taxonomy"
         "tuning_method": "Random",  # "Bayes", "Random"

@@ -20,7 +20,7 @@ from modules.NN_train import train
 from modules.NN_evaluate import evaluate_test_data
 
 from modules._constants import _path_accuracy_tests, _spectra_name, _wavelengths_name, _metadata_name, _sep_out, _sep_in
-from modules._constants import _metadata_key_name, _label_key_name, _label_true_name, _label_pred_name, _config_name
+from modules._constants import _metadata_key_name, _label_key_name, _label_true_name, _label_pred_name, _config_name, _wp
 
 # defaults only
 from modules.NN_config_composition import minerals_used, endmembers_used, comp_model_setup, comp_filtering_setup
@@ -94,10 +94,10 @@ def save_results(final_name: str, spectra: np.ndarray, wavelengths: np.ndarray, 
         filename += ".npz"
 
     # collect data and metadata
-    data_and_metadata = {_spectra_name: np.array(spectra, dtype=np.float32),  # save spectra
-                         _wavelengths_name: np.array(wavelengths, dtype=np.float32),  # save wavelengths
-                         _label_true_name: np.array(y_true, dtype=np.float32),  # save labels
-                         _label_pred_name: np.array(y_pred, dtype=np.float32),  # save labels
+    data_and_metadata = {_spectra_name: np.array(spectra, dtype=_wp),  # save spectra
+                         _wavelengths_name: np.array(wavelengths, dtype=_wp),  # save wavelengths
+                         _label_true_name: np.array(y_true, dtype=_wp),  # save labels
+                         _label_pred_name: np.array(y_pred, dtype=_wp),  # save labels
                          _metadata_name: np.array(metadata, dtype=object),  # save metadata
                          _config_name: config_setup}  # save config file
 
@@ -199,7 +199,7 @@ if __name__ == "__main__":
     normalised_at = wavelengths[is_constant(x_train, constant=1.0, axis=0)]
     if np.size(normalised_at) == 0: normalised_at = None
 
-    grid_setup["wvl_grid"], grid_setup["wvl_norm"] = wavelengths, normalised_at
+    grid_setup["wvl_grid"], grid_setup["wvl_norm"] = np.array(wavelengths, dtype=_wp), normalised_at
     model_setup["model_subdir"] = model_subdir
 
     info = gimme_info(taxonomy=taxonomy, model_option=(method, K, num_models), output_setup=output_setup,

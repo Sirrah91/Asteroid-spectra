@@ -3,12 +3,14 @@ import pandas as pd
 from sklearn.metrics import classification_report
 from tensorflow_addons.metrics import CohenKappa
 
-from modules.utilities import round_data_with_errors, normalise_array, flatten_list, stack
+from modules.NN_evaluate import spectrum_error_transfer
+
+from modules.utilities import round_data_with_errors, normalise_array, flatten_list, stack, return_mean_std, safe_arange
 from modules.utilities_spectra import find_outliers, return_mineral_position, unique_indices, used_indices, join_data
 from modules.utilities_spectra import load_npz, gimme_predicted_class, compute_mean_predictions
-from modules.utilities_spectra import compute_within, compute_metrics, compute_one_sigma
+from modules.utilities_spectra import compute_within, compute_metrics, compute_one_sigma, gimme_bin_code_from_name
 
-from modules.NN_config_parse import gimme_num_minerals, gimme_endmember_counts
+from modules.NN_config_parse import gimme_num_minerals, gimme_endmember_counts, bin_to_used
 
 from modules.NN_config_composition import mineral_names_short, endmember_names
 
@@ -64,7 +66,8 @@ def accuracy_table(y_true: np.ndarray, y_pred: np.ndarray, used_minerals: np.nda
     if used_endmembers is None: used_endmembers = endmembers_used
 
     RMSE, R2, SAM = compute_metrics(y_true, y_pred, return_r2=True, return_sam=True, used_minerals=used_minerals,
-                                    used_endmembers=used_endmembers, round=True)
+                                    used_endmembers=used_endmembers)
+    RMSE, R2, SAM = np.round(RMSE, 1), np.round(R2, 2), np.round(SAM, 1)
 
     print("-------------------------- ALL DATA ------------------------------")
     print(f"RMSE: [{', '.join(f'{acc:4.1f}' for acc in RMSE)}]")
@@ -77,7 +80,8 @@ def accuracy_table(y_true: np.ndarray, y_pred: np.ndarray, used_minerals: np.nda
     y_true, y_pred = np.delete(y_true, inds_to_delete, axis=0), np.delete(y_pred, inds_to_delete, axis=0)
 
     RMSE, R2, SAM = compute_metrics(y_true, y_pred, return_r2=True, return_sam=True, used_minerals=used_minerals,
-                                    used_endmembers=used_endmembers, round=True)
+                                    used_endmembers=used_endmembers)
+    RMSE, R2, SAM = np.round(RMSE, 1), np.round(R2, 2), np.round(SAM, 1)
 
     print("------------------------- NO OUTLIERS ----------------------------")
     print(f"RMSE: [{', '.join(f'{acc:4.1f}' for acc in RMSE)}]")
@@ -96,14 +100,20 @@ def quantile_table(y_true: np.ndarray, y_pred: np.ndarray,
     error_limit = (5., 10., 15., 20.)
 
     within = compute_within(y_true, y_pred, error_limit=error_limit, used_minerals=used_minerals,
-                            used_endmembers=used_endmembers, round=True)
+                            used_endmembers=used_endmembers)
+    within = np.round(within, 1)
+
     within_all = compute_within(y_true, y_pred, error_limit=error_limit, used_minerals=used_minerals,
-                                used_endmembers=used_endmembers, all_to_one=True, round=True)
+                                used_endmembers=used_endmembers, all_to_one=True)
+    within_all = np.round(within_all, 1)
 
     one_sigma = compute_one_sigma(y_true, y_pred, used_minerals=used_minerals,
-                                  used_endmembers=used_endmembers, round=True)
+                                  used_endmembers=used_endmembers)
+    one_sigma = np.round(one_sigma, 1)
+
     one_sigma_all = compute_one_sigma(y_true, y_pred, used_minerals=used_minerals,
-                                      used_endmembers=used_endmembers, all_to_one=True, round=True)
+                                      used_endmembers=used_endmembers, all_to_one=True)
+    one_sigma_all = np.round(one_sigma_all, 1)
 
     if latex_output:
         table = np.zeros((np.shape(y_true)[1] + 1, len(error_limit)), dtype="<U100")
@@ -506,3 +516,182 @@ def taxonomy_class_of_mineral_types(types: list[str] | np.ndarray, y_true: np.nd
         winning_classes[sample_type] = dict(zip(*np.unique(pred_taxonomy, return_counts=True)))
 
     return mean_classes, winning_classes
+
+
+def print_grid_test_stats_norm_window(x: np.ndarray, y: np.ndarray) -> None:
+    titles_all = np.array(["Olivine", "Orthopyroxene", "Clinopyroxene", "Fa",
+                           "Fs (OPX)", "Fs (CPX)", "En (CPX)", "Wo (CPX)"], dtype=str)
+
+    name = "Window" if isinstance(x[0], str) else "Normalisation"
+
+    print(f"{name} minimum: {x[np.argmin(y[0])]}, {np.round(np.min(y[0]), 1)}")
+    print(f"{name} maximum: {x[np.argmax(y[0])]}, {np.round(np.max(y[0]), 1)}")
+    print(f"{name} mean: {np.round(np.mean(y[0]), 1)}")
+
+    norm = np.mean(y[1:], axis=1)
+    print(f"{name} minimum: {titles_all[np.argmin(norm)]}, {np.round(np.min(norm), 1)}")
+    print(f"{name} maximum: {titles_all[np.argmax(norm)]}, {np.round(np.max(norm), 1)}")
+
+
+def print_grid_test_stats_spacing(y: np.ndarray) -> None:
+    titles_all = np.array(["Olivine", "Orthopyroxene", "Clinopyroxene", "Fa",
+                           "Fs (OPX)", "Fs (CPX)", "En (CPX)", "Wo (CPX)"], dtype=str)
+
+    curves = np.array(["650--1850 nm", "650--2450 nm", "ASPECT 650--1600 nm", "ASPECT 650--2450 nm"])
+
+    print("No ASPECT minimum", np.round(np.min((y[0][0], y[1][0])), 1))
+    print("no ASPECT maximum", np.round(np.max((y[0][0], y[1][0])), 1))
+    print("ASPECT minimum", np.round(np.min((y[2][0], y[3][0])), 1))
+    print("ASPECT maximum", np.round(np.max((y[2][0], y[3][0])), 1))
+
+    # 1 + i to skip "All"
+    trend = np.array([[np.polyfit(np.arange(10, 51, 10), error[1 + i], deg=1)[0] for i in range(8)] for error in y])
+    const = np.array([[np.polyfit(np.arange(10, 51, 10), error[1 + i], deg=1)[1] for i in range(8)] for error in y])
+
+    def print_trends(which: str) -> None:
+        if which == "max":
+            func = np.max
+        else:
+            func = np.min
+
+        icurve, ititle = np.where(trend == func(trend))
+        quantity = titles_all[ititle][0]
+        curve = curves[icurve][0]
+
+        print(f"Trend {which}: {quantity}, {curve}, {np.round(func(trend * 10), 2)}")
+        print(f"Trend {which} avg: {np.round(np.diff(np.polyval(np.concatenate((trend[icurve, ititle], const[icurve, ititle])), [10, 50]))[0], 1)}")
+
+    print_trends("max")
+    print_trends("min")
+
+
+def print_grid_test_stats_range(error_mat: np.ndarray, lim_from: tuple[int, ...] | int, lim_to: tuple[int, ...] | int,
+                                start: np.ndarray | None = None, stop: np.ndarray | None = None,
+                                name: str = "") -> None:
+
+    if start is None: start = safe_arange(450, 2350, 100, endpoint=True, dtype=int)
+
+    if stop is None: stop = safe_arange(550, 2450, 100, endpoint=True, dtype=int)
+
+    if isinstance(lim_from, tuple | list):
+        if isinstance(lim_to, tuple | list):
+            mat_cut = error_mat[np.where(stop == lim_to[0])[0][0]:np.where(stop == lim_to[1])[0][0] + 1,
+                      np.where(start == lim_from[0])[0][0]:np.where(start == lim_from[1])[0][0] + 1]
+        else:  # lim_to is bounded from bottom only
+            mat_cut = error_mat[np.where(stop == lim_to)[0][0]:,
+                      np.where(start == lim_from[0])[0][0]:np.where(start == lim_from[1])[0][0] + 1]
+    else:  # lim_from is bounded from above only
+        if isinstance(lim_to, tuple | list):
+            mat_cut = error_mat[np.where(stop == lim_to[0])[0][0]:np.where(stop == lim_to[1])[0][0] + 1,
+                      :np.where(start == lim_from)[0][0] + 1]
+        else:  # lim_to is bounded from bottom only
+            mat_cut = error_mat[np.where(stop == lim_to)[0][0]:,
+                      :np.where(start == lim_from)[0][0] + 1]
+
+    mn, std = return_mean_std(mat_cut)
+    print(f"{name} mean ± std: {np.round(mn, 1)} ± {np.round(std, 1)}")
+
+
+def print_grid_test_stats_table(norm: np.ndarray, window: np.ndarray, spacing: np.ndarray, latex_output: bool = False) -> None:
+    titles_all = np.array(["All", "Olivine", "Orthopyroxene", "Clinopyroxene", "Fa",
+                           "Fs (OPX)", "Fs (CPX)", "En (CPX)", "Wo (CPX)"], dtype=str)
+
+    data_names = ["Normalisation", "Window", "Spacing"]
+    print("-" * 50)
+
+    for i, quantity in enumerate([norm, window, spacing]):
+        mn, std = return_mean_std(quantity, axis=1)
+
+        if not latex_output:
+            for index in [1, 2, 4, 5]:  # OL, OPX, Fa, Fs (OPX)
+                print(f"{data_names[i]} {titles_all[index]:14}: "
+                      f"{np.round(mn[index], 1)} ± {np.round(std[index], 1)}")
+        else:
+
+            std_to_print = [f"{np.round(s, 1):.1f}" for s in std]
+            std_to_print = np.array([s.replace("0.", "").replace(".", "") for s in std_to_print])
+
+            print("&", " & ".join([f"{np.round(mn[index], 1):.1f}({std_to_print[index]})" for index in [1, 2, 4, 5]]), "\\\\")
+        print("-" * 50)
+
+
+def print_model_to_model_variations() -> None:
+    filenames = ["/home/dakorda/Python/NN/accuracy_tests/range_test/normalisation/composition_450-2450-10-550_1110-11-110-111-000_20230704150150.npz",
+                 "/home/dakorda/Python/NN/accuracy_tests/range_test/spacing/composition_450-2450-10-550_1110-11-110-111-000_20230709032616.npz",
+                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016111014.npz",
+                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016111656.npz",
+                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016153911.npz",
+                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016153728.npz",
+                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016193822.npz",
+                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016194425.npz",
+                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016234622.npz",
+                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016235128.npz"]
+
+    used_minerals, used_endmembers = bin_to_used(gimme_bin_code_from_name(filenames[0]))
+
+    names = ["RMSE", "Within"]
+
+    rmse = []
+    within = []
+
+    for filename in filenames:
+        data = load_npz(filename)
+        y_true, y_pred = data["labels_true"], data["labels_predicted"]
+
+        tmp, = compute_metrics(y_true, y_pred, remove_px_outliers=True)
+        rmse.append(tmp)
+
+        tmp, = compute_within(y_true, y_pred, error_limit=(10.,), remove_px_outliers=True)
+        within.append(tmp)
+
+    rmse = np.array(rmse)
+    within = np.array(within)
+
+    indices = unique_indices(used_minerals, used_endmembers)
+
+    for i, quantity in enumerate([rmse, within]):
+        mn, std = return_mean_std(quantity, axis=0)
+        mn, std, prec = round_data_with_errors(mn, std, return_precision=True)
+        mn, std, prec = mn[indices], std[indices], prec[indices]
+        prec[prec < 0] = 0
+
+        std_to_print = np.array(np.round(std * 10**prec), dtype=int)
+        print(f"{names[i]} &", " & ".join([f'{m:.{n}f}({s})' for m, s, n in zip(mn, std_to_print, prec)]), "\\\\")
+
+
+def ASPECT_metrics_variations(snrs: tuple[float, ...]) -> None:
+    n_trials = 200
+    rnd_seed = 42
+
+    model_names = ["/home/dakorda/Python/NN/models/composition/ASPECT_vis-nir1-nir2_30/CNN_ASPECT_vis-nir1-nir2_30_1110-11-110-111-000_20231015114247.h5",
+                   "/home/dakorda/Python/NN/models/composition/ASPECT_vis-nir1-nir2-swir_30/CNN_ASPECT_vis-nir1-nir2-swir_30_1110-11-110-111-000_20231015114247.h5"]
+    used_minerals, used_endmembers = bin_to_used(gimme_bin_code_from_name(model_names[0]))
+
+    to_print = []
+
+    indices = unique_indices(used_minerals, used_endmembers)
+
+    for model_name in model_names:
+        for snr in snrs:
+            res = spectrum_error_transfer(model_name, snr=snr, n_trials=n_trials, rnd_seed=rnd_seed)
+
+            for quantity in ["rmse", "within"]:
+                if quantity == "rmse":
+                    mn = res["RMSE noise"]["mean (pp)"] - res["RMSE base"]["mean (pp)"]
+                    std = res["RMSE noise"]["std (pp)"]
+                    name = "$\\Delta$~RMSE"
+                else:
+                    mn = res["within 10 noise"]["mean (%)"] - res["within 10 base"]["mean (%)"]
+                    std = res["within 10 noise"]["std (pp)"]
+                    name = "$\\Delta$~Within"
+
+                mn, std, prec = round_data_with_errors(mn, std, return_precision=True)
+                mn, std, prec = mn[indices], std[indices], prec[indices]
+                prec[prec < 0] = 0
+
+                std_to_print = np.array(np.round(std * 10 ** prec), dtype=int)
+                to_print.append(" ".join((f"& {name} &", " & ".join([f'{m:.{n}f}({s})' for m, s, n in zip(mn, std_to_print, prec)]), "\\\\")))
+
+        to_print.append("-" * 100)
+
+    print("\n".join(to_print))

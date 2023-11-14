@@ -4,11 +4,11 @@ from typing import Literal
 import numpy as np
 from copy import deepcopy
 import matplotlib.patches as patches
-from matplotlib.ticker import FormatStrFormatter
 import cv2
 from glob import glob
 from os import path
 from scipy.interpolate import interp1d
+# from matplotlib.ticker import FormatStrFormatter
 
 from modules.BAR_BC_method import calc_BAR_BC, calc_composition, filter_data_mask
 
@@ -53,7 +53,7 @@ def plot_PC1_PC2_NN(y_pred: np.ndarray, offset: float = 0.) -> None:
     inds[types == "Sq:"] = False
 
     # unique, counts = np.unique(types[inds], return_counts=True)
-    PCA = np.array(metadata[["PC1", "PC2"]], dtype=np.float64)[inds]
+    PCA = np.array(metadata[["PC1", "PC2"]], dtype=float)[inds]
     predictions = y_pred[inds] * 100.
 
     labels = np.core.defchararray.add("$", types[inds])
@@ -139,7 +139,7 @@ def plot_PC1_PC2_BAR(offset: float = 0.) -> None:
 
     x_data = data[inds]
 
-    PCA = np.array(metadata[["PC1", "PC2"]], dtype=np.float64)[inds]
+    PCA = np.array(metadata[["PC1", "PC2"]], dtype=float)[inds]
 
     labels = np.core.defchararray.add("$", types)
     labels = np.core.defchararray.add(labels, "$")
@@ -153,10 +153,10 @@ def plot_PC1_PC2_BAR(offset: float = 0.) -> None:
     types = types[mask]
     PCA = PCA[mask]
 
-    OL_fraction, Fs, Wo = calc_composition(BAR, BIC, BIIC, types, method="biic")
+    OL_fraction, Fs, Wo = calc_composition(BAR, BIC, BIIC, types, method="bic")
 
     # filter the data
-    mask = filter_data_mask(OL_fraction, Fs, Wo)
+    mask = filter_data_mask(OL_fraction, Fs, Wo, modal_only=True)
     OL_fraction = OL_fraction[mask]
     labels = labels[mask]
     # types = types[mask]
@@ -200,7 +200,8 @@ def plot_PC1_PC2_BAR(offset: float = 0.) -> None:
 
     cax = divider.append_axes(**{'position': 'right', 'size': '5%', 'pad': 1})
     SP = deepcopy(sp)
-    SP.set_cmap("viridis")
+    cmap_reverse = cmap.replace("_r", "") if "_r" in cmap else f"{cmap}_r"
+    SP.set_cmap(cmap_reverse)
     SP.set_clim(vmin=vmax, vmax=vmin)
     cbar = plt.colorbar(SP, ax=ax, cax=cax)
     cbar.ax.set_ylabel("Pyroxene abundance (vol\%)")
@@ -648,9 +649,7 @@ def plot_spectra_1(x_data: np.ndarray, y_data: np.ndarray, offset: float = 0.) -
 
     ast_data = data[_spectra_name][inds]
 
-    fig, ax = plt.subplots(m, n, figsize=(4.7 * n, 4.7 * m), sharex=True, sharey=True)
-
-    ax = np.reshape(ax, (m, n))
+    fig, ax = plt.subplots(m, n, figsize=(4.7 * n, 4.7 * m), sharex=True, sharey=True, squeeze=False)
 
     inds = np.where(np.sum(y_data[:, :3] > 0, axis=1) > 1)[0]
     # urceno z konkretnich dat (90, 63)
@@ -723,10 +722,9 @@ def plot_spectra_2(offset: float = 0.) -> None:
     titles.append("Eros")
     titles.append("Itokawa")
 
-    m, n = best_blk(len(titles))
+    m, n = best_blk(len(titles), cols_to_rows=6. / 3.)
 
-    fig, ax = plt.subplots(m, n, figsize=(6 * n, 8 * m), sharey=True)
-    ax = np.reshape(ax, (m, n))
+    fig, ax = plt.subplots(m, n, figsize=(6 * n, 8 * m), sharey=True, squeeze=False)
 
     for k, unique_type in enumerate(np.unique(types)):
         inds_class = np.array([unique_type == ast_type for ast_type in types])
@@ -1348,7 +1346,7 @@ def plot_surface_spectra_shapeViewer(asteroid_name: str, what_prediction: str | 
             fig.savefig(path.join(outdir_surfaces, fig_name), format=fig_format, **savefig_kwargs, **pil_kwargs)
             plt.close(fig)
 
-    change_params(offset, reset= True)
+    change_params(offset, reset=True)
 
 
 def plot_average_surface_spectra(y_pred: np.ndarray, asteroid_name: str,
@@ -1938,7 +1936,8 @@ def plot_OC_distance(y_pred: np.ndarray, meta: pd.DataFrame, used_minerals: np.n
     change_params(offset, reset=True)
 
 
-def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False, offset: float = 0.) -> list[np.ndarray]:
+def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
+                      offset: float = 0.) -> tuple[np.ndarray, ...]:
     change_params(offset)
 
     if "outliers" in error_type.lower():
@@ -1961,7 +1960,6 @@ def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False, o
 
         else:
             raise ValueError("Unknown error type.")
-
 
     # fill error mat
     def fill_mat(start: np.ndarray, stop: np.ndarray, value: np.ndarray) -> tuple[np.ndarray, ...]:
@@ -2011,7 +2009,7 @@ def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False, o
         error_type, limit = process_error_type(error_type)
 
         if error_type == "RMSE":
-            from modules.NN_losses_metrics_activations import my_rmse
+            from modules.utilities_spectra import compute_metrics
         elif error_type == "Within":
             from modules.utilities_spectra import compute_within
         elif error_type == "outliers":
@@ -2054,13 +2052,16 @@ def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False, o
                 y_pred = np.delete(y_pred, inds_outliers, axis=0)
 
             if error_type == "RMSE":
-                calc = lambda x: my_rmse(used_minerals=used_minerals, used_endmembers=used_endmembers,
-                                         cleaning=True, all_to_one=x)(y_true, y_pred).numpy()
+                calc = lambda x: compute_metrics(y_true, y_pred, used_minerals=used_minerals,
+                                                 used_endmembers=used_endmembers,
+                                                 cleaning=True, all_to_one=x,
+                                                 remove_px_outliers=remove_outliers)[0]
                 error[i, 0], error[i, 1:] = calc(True), calc(False)[unique_indices(used_minerals, used_endmembers)]
 
             elif error_type == "Within":
                 calc = lambda x: compute_within(y_true, y_pred, error_limit=limit, used_minerals=used_minerals,
-                                                used_endmembers=used_endmembers, all_to_one=x)[0]
+                                                used_endmembers=used_endmembers, all_to_one=x,
+                                                remove_px_outliers=remove_outliers)[0]
                 error[i, 0], error[i, 1:] = calc(True), calc(False)[unique_indices(used_minerals, used_endmembers)]
 
             elif error_type == "outliers":
@@ -2115,7 +2116,7 @@ def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False, o
             if limit is None:
                 error_label = f"{error_type} (pp; {titles_all[q]})"
             else:
-                error_label = f"{error_type} ({limit[0]} pp; {titles_all[q]})"
+                error_label = f"{error_type} (\%; {titles_all[q]})"
 
         for iax, ax in enumerate(axes):
             if iax == 0:  # line plots
@@ -2156,18 +2157,19 @@ def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False, o
                           ncol=best_blk(num_colors)[1])
 
             else:  # mat plot
+                cmap = "viridis"
                 if error_type == "RMSE":
                     vmin = np.nanmin(error_mat[q])
                     vmax = np.nanmin((np.nanmax(error_mat[q]), np.nanmin(error_mat[q]) + 10.))
-                    cmap = "jet_r"
+                    cmap += "_r"
+                    
                 elif error_type == "Within":
                     vmin = np.nanmax((np.nanmin(error_mat[q]), np.nanmax(error_mat[q]) - 20.))
                     vmax = np.nanmax(error_mat[q])
-                    cmap = "jet"
+                    
                 elif error_type == "outliers":
                     vmin = np.nanmin(error_mat[q])
                     vmax = np.nanmin((np.nanmax(error_mat[q]), np.nanmin(error_mat[q]) + 10.))
-                    cmap = "jet"
 
                 if vmin == vmax:
                     im = ax.imshow(error_mat[q], aspect="auto", cmap=cmap)
@@ -2249,10 +2251,11 @@ def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False, o
 
     change_params(offset, reset=True)
 
-    return error_line
+    return wvl_start, wvl_stop, error_mat
 
 
-def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False, offset: float = 0.) -> tuple:
+def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False,
+                    offset: float = 0.) -> tuple[np.ndarray, ...]:
     change_params(offset)
 
     if "outliers" in error_type.lower():
@@ -2281,7 +2284,7 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False, off
         error_type, limit = process_error_type(error_type)
 
         if error_type == "RMSE":
-            from modules.NN_losses_metrics_activations import my_rmse
+            from modules.utilities_spectra import compute_metrics
         elif error_type == "Within":
             from modules.utilities_spectra import compute_within
         elif error_type == "outliers":
@@ -2323,13 +2326,16 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False, off
                 error = np.zeros((len(filenames), np.sum(unique_indices(used_minerals, used_endmembers)) + 1))
 
             if error_type == "RMSE":
-                calc = lambda x: my_rmse(used_minerals=used_minerals, used_endmembers=used_endmembers,
-                                         cleaning=True, all_to_one=x)(y_true, y_pred).numpy()
+                calc = lambda x: compute_metrics(y_true, y_pred, used_minerals=used_minerals,
+                                                 used_endmembers=used_endmembers,
+                                                 cleaning=True, all_to_one=x,
+                                                 remove_px_outliers=remove_outliers)[0]
                 error[i, 0], error[i, 1:] = calc(True), calc(False)[unique_indices(used_minerals, used_endmembers)]
 
             elif error_type == "Within":
                 calc = lambda x: compute_within(y_true, y_pred, error_limit=limit, used_minerals=used_minerals,
-                                                used_endmembers=used_endmembers, all_to_one=x)[0]
+                                                used_endmembers=used_endmembers, all_to_one=x,
+                                                remove_px_outliers=remove_outliers)[0]
                 error[i, 0], error[i, 1:] = calc(True), calc(False)[unique_indices(used_minerals, used_endmembers)]
 
             elif error_type == "outliers":
@@ -2341,20 +2347,25 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False, off
         inds = np.argsort(wvl_step)
         wvl_step, error = wvl_step[inds], np.transpose(error[inds])
 
-        if "ASPECT" in filename:  # this is here to "fix" 'dot' approximation of ASPECT in legend label
+        if "ASPECT" in filename:  # this is here to get nice limits in labels
             if "swir" in filename:
                 label = f"ASPECT {650}\u2013{2450} nm"
             else:
                 label = f"ASPECT {650}\u2013{1600} nm"
+        elif "HS-H" in filename:
+            label = f"HS-H {650}\u2013{950} nm"
         else:
             label = f"{int(np.min(wavelengths))}\u2013{int(np.max(wavelengths))} nm"
 
         return wvl_step, error, label
 
-    prefs = [path.join(_path_accuracy_tests, "range_test/range/composition_650-1850*.npz"),
-             path.join(_path_accuracy_tests, "range_test/range/composition_650-2450*.npz"),
-             path.join(_path_accuracy_tests, "range_test/range/composition_ASPECT_vis-nir1-nir2_*.npz"),
-             path.join(_path_accuracy_tests, "range_test/range/composition_ASPECT_vis-nir1-nir2-swir_*.npz")]
+    prefs = [
+        path.join(_path_accuracy_tests, "range_test/range/composition_650-1850*.npz"),
+        path.join(_path_accuracy_tests, "range_test/range/composition_650-2450*.npz"),
+        path.join(_path_accuracy_tests, "range_test/range/composition_ASPECT_vis-nir1-nir2_*.npz"),
+        path.join(_path_accuracy_tests, "range_test/range/composition_ASPECT_vis-nir1-nir2-swir_*.npz"),
+        # path.join(_path_accuracy_tests, "range_test/range/composition_HS-H*.npz")
+             ]
 
     num_colors = len(prefs)
 
@@ -2379,15 +2390,17 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False, off
     fig, axes = plt.subplots(*best_blk(len(error[0])), figsize=(24, 12), sharex=True)
     axes = np.ravel(axes)
 
-    for q, ax in enumerate(axes):
-        if num_colors > 1:
-            ax.set_prop_cycle(color=cm(np.linspace(0., 1., num_colors)))
+    colors = cm(np.linspace(0., 1., num_colors))
 
+    for q, ax in enumerate(axes):
         for i in range(len(error)):
             if q == 0:
-                ax.plot(wvl_step[i], error[i][q], marker='o', linestyle="--", label=label[i])
+                ax.plot(wvl_step[i], error[i][q], marker='o', linestyle="--", label=label[i], color=colors[i])
             else:
-                ax.plot(wvl_step[i], error[i][q], marker='o', linestyle="--")
+                ax.plot(wvl_step[i], error[i][q], marker='o', linestyle="--", color=colors[i])
+
+            if i in [2, 3]:  # highlight ASPECT targeted spacing
+                ax.plot(wvl_step[i][2], error[i][q][2], marker='o', color=colors[i], markersize=13)
 
         ax.set_title(titles_all[q])
 
@@ -2400,7 +2413,7 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False, off
             if limit is None:
                 ax.set_ylabel(f"{error_type} (pp)")
             else:
-                ax.set_ylabel(f"{error_type} ({limit[0]} pp)")
+                ax.set_ylabel(f"{error_type} (\%)")
 
         lim = ax.get_ylim()
         if lim[1] - lim[0] > 16.:
@@ -2416,7 +2429,7 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False, off
         yticks = yticks[np.logical_and(yticks >= lim[0], yticks <= lim[1])]
 
         ax.set_yticks(yticks)
-        ax.yaxis.set_major_formatter(FormatStrFormatter("%.1f"))
+        # ax.yaxis.set_major_formatter(FormatStrFormatter("%.1f"))
         ax.set_ylim(lim)
 
     if limit is None:
@@ -2438,10 +2451,11 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False, off
 
     change_params(offset, reset=True)
 
-    return error
+    return wvl_step, error
 
 
-def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = False, offset: float = 0.) -> np.ndarray:
+def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = False,
+                            offset: float = 0.) -> tuple[np.ndarray, ...]:
     change_params(offset)
 
     if "outliers" in error_type.lower():
@@ -2470,7 +2484,7 @@ def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = Fa
         error_type, limit = process_error_type(error_type)
 
         if error_type == "RMSE":
-            from modules.NN_losses_metrics_activations import my_rmse
+            from modules.utilities_spectra import compute_metrics
         elif error_type == "Within":
             from modules.utilities_spectra import compute_within
         elif error_type == "outliers":
@@ -2512,13 +2526,16 @@ def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = Fa
                 error = np.zeros((len(filenames), np.sum(unique_indices(used_minerals, used_endmembers)) + 1))
 
             if error_type == "RMSE":
-                calc = lambda x: my_rmse(used_minerals=used_minerals, used_endmembers=used_endmembers,
-                                         cleaning=True, all_to_one=x)(y_true, y_pred).numpy()
+                calc = lambda x: compute_metrics(y_true, y_pred, used_minerals=used_minerals,
+                                                 used_endmembers=used_endmembers,
+                                                 cleaning=True, all_to_one=x,
+                                                 remove_px_outliers=remove_outliers)[0]
                 error[i, 0], error[i, 1:] = calc(True), calc(False)[unique_indices(used_minerals, used_endmembers)]
 
             elif error_type == "Within":
                 calc = lambda x: compute_within(y_true, y_pred, error_limit=limit, used_minerals=used_minerals,
-                                                used_endmembers=used_endmembers, all_to_one=x)[0]
+                                                used_endmembers=used_endmembers, all_to_one=x,
+                                                remove_px_outliers=remove_outliers)[0]
                 error[i, 0], error[i, 1:] = calc(True), calc(False)[unique_indices(used_minerals, used_endmembers)]
 
             elif error_type == "outliers":
@@ -2593,7 +2610,7 @@ def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = Fa
             ax.set_ylabel(f"{error_type} (pp)")
             fig_name = f"normalisation_{error_type}.{fig_format}"
         else:
-            ax.set_ylabel(f"{error_type} ({limit[0]} pp)")
+            ax.set_ylabel(f"{error_type} (\%)")
             fig_name = f"normalisation_{error_type}{_sep_in}{limit[0]}.{fig_format}"
 
     plt.draw()
@@ -2604,10 +2621,11 @@ def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = Fa
 
     change_params(offset, reset=True)
 
-    return error
+    return wvl_norm, error
 
 
-def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False, offset: float = 0.) -> np.ndarray:
+def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False,
+                     offset: float = 0.) -> tuple[np.ndarray, ...]:
     change_params(offset)
 
     if "outliers" in error_type.lower():
@@ -2636,7 +2654,7 @@ def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False, of
         error_type, limit = process_error_type(error_type)
 
         if error_type == "RMSE":
-            from modules.NN_losses_metrics_activations import my_rmse
+            from modules.utilities_spectra import compute_metrics
         elif error_type == "Within":
             from modules.utilities_spectra import compute_within
         elif error_type == "outliers":
@@ -2681,13 +2699,16 @@ def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False, of
                 error = np.zeros((len(filenames), np.sum(unique_indices(used_minerals, used_endmembers)) + 1))
 
             if error_type == "RMSE":
-                calc = lambda x: my_rmse(used_minerals=used_minerals, used_endmembers=used_endmembers,
-                                         cleaning=True, all_to_one=x)(y_true, y_pred).numpy()
+                calc = lambda x: compute_metrics(y_true, y_pred, used_minerals=used_minerals,
+                                                 used_endmembers=used_endmembers,
+                                                 cleaning=True, all_to_one=x,
+                                                 remove_px_outliers=remove_outliers)[0]
                 error[i, 0], error[i, 1:] = calc(True), calc(False)[unique_indices(used_minerals, used_endmembers)]
 
             elif error_type == "Within":
                 calc = lambda x: compute_within(y_true, y_pred, error_limit=limit, used_minerals=used_minerals,
-                                                used_endmembers=used_endmembers, all_to_one=x)[0]
+                                                used_endmembers=used_endmembers, all_to_one=x,
+                                                remove_px_outliers=remove_outliers)[0]
                 error[i, 0], error[i, 1:] = calc(True), calc(False)[unique_indices(used_minerals, used_endmembers)]
 
             elif error_type == "outliers":
@@ -2739,7 +2760,7 @@ def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False, of
         if limit is None:
             ax.set_ylabel(f"{error_type} (pp)")
         else:
-            ax.set_ylabel(f"{error_type} ({limit[0]} pp)")
+            ax.set_ylabel(f"{error_type} (\%)")
 
     lim = ax.get_ylim()
     if lim[1] - lim[0] > 16.:
@@ -2775,4 +2796,4 @@ def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False, of
 
     change_params(offset, reset=True)
 
-    return error
+    return window_range, error

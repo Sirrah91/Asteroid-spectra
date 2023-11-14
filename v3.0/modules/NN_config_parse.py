@@ -1,7 +1,7 @@
 import numpy as np
 from warnings import warn
 from modules.utilities import safe_arange, flatten_list
-from modules.NN_data_grids import data_grids, check_grid
+from modules.NN_data_grids import data_grids, check_grid, normalise_spectrum_at_wvl
 from modules.NN_classes import gimme_list_of_classes
 
 from modules._constants import _wp, _sep_in
@@ -84,7 +84,8 @@ def gimme_endmember_counts(used_endmembers: list[list[bool]]) -> np.ndarray:
 
 
 def gimme_model_grid(instrument: str | None, interpolate_to: str | None,
-                     wvl_grid: np.ndarray, wvl_norm: float) -> dict:
+                     wvl_grid: np.ndarray, wvl_norm: float | None) -> dict:
+
     if instrument is None:
         if interpolate_to in data_grids.keys():
             grid = data_grids[interpolate_to]
@@ -95,14 +96,23 @@ def gimme_model_grid(instrument: str | None, interpolate_to: str | None,
         else:
             new_wvl_grid, new_wvl_grid_normalisation = np.array(wvl_grid, dtype=_wp), wvl_norm
 
-        m, M, res = np.min(new_wvl_grid), np.max(new_wvl_grid), np.mean(np.diff(new_wvl_grid))
-        norm = new_wvl_grid_normalisation
-        model_grid = _sep_in.join(str(int(x)) for x in np.round([m, M, res, norm]))
+        m, M = int(np.round(np.min(new_wvl_grid))), int(np.round(np.max(new_wvl_grid)))
+        res = int(np.round(np.mean(np.diff(new_wvl_grid))))
+
+        if new_wvl_grid_normalisation == "adaptive":
+            new_wvl_grid_normalisation = normalise_spectrum_at_wvl(new_wvl_grid)
+
+        if new_wvl_grid_normalisation is None:
+            norm_for_grid = None
+        else:
+            norm_for_grid = int(np.round(new_wvl_grid_normalisation))
+
+        model_grid = _sep_in.join(str(x) for x in [m, M, res, norm_for_grid])
+
     else:
         model_grid = instrument
         new_wvl_grid = None
-        new_wvl_grid_normalisation = "adaptive"
-
+        new_wvl_grid_normalisation = wvl_norm
 
     return {"model_grid": model_grid,
             "instrument": instrument,

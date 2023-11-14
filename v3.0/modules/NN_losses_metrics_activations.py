@@ -2,8 +2,8 @@ import numpy as np
 import tensorflow as tf
 import tensorflow.keras.backend as K
 import tensorflow.experimental.numpy as tnp
+from tensorflow.keras.activations import relu, sigmoid, softmax
 from tensorflow.python.framework.ops import EagerTensor
-from keras.activations import relu, sigmoid
 from sklearn.metrics import f1_score as f1_sklearn
 from typing import Callable
 from collections import Counter
@@ -116,7 +116,7 @@ def penalisation_function(y_true: EagerTensor, y_pred: EagerTensor, penalised_mi
                                                                                used_minerals=used_minerals,
                                                                                used_endmembers=used_endmembers)
 
-    if mineral_position < 0:
+    if mineral_position < 0:  # no minerals
         w_true = 1.
     else:
         w_true = y_true[:, mineral_position]
@@ -446,7 +446,7 @@ def my_softmax(used_minerals: np.ndarray | None = None, used_endmembers: list[li
         x_new = K.zeros_like(x[:, 0:0])
 
         for start, stop in gimme_indices(used_minerals, used_endmembers):
-            tmp = K.softmax(x[..., start:stop])
+            tmp = softmax(x[..., start:stop])
             x_new = K.concatenate([x_new, tmp], axis=-1)
 
         return x_new
@@ -461,15 +461,13 @@ def my_relu(used_minerals: np.ndarray | None = None, used_endmembers: list[list[
 
     @tf.function
     def relu_norm(x: EagerTensor) -> EagerTensor:
-        scale = 5.0
         x_new = K.zeros_like(x[:, 0:0])
 
         for start, stop in gimme_indices(used_minerals, used_endmembers):
-            tmp = (relu(x[..., start:stop]) - relu(x[..., start:stop] - scale)) / scale  # to keep results between 0 and 1
-
+            tmp = K.clip(relu(x[..., start:stop]), K.epsilon(), None)  # avoid zero sum
             tmp /= K.clip(K.sum(tmp, axis=-1, keepdims=True), K.epsilon(), None)  # normalisation to unit sum
 
-            x_new = K.concatenate([x_new, K.softmax(x[..., start:stop])], axis=-1)
+            x_new = K.concatenate([x_new, tmp], axis=-1)
 
         return x_new
 
@@ -486,6 +484,7 @@ def my_sigmoid(used_minerals: np.ndarray | None = None, used_endmembers: list[li
         x_new = K.zeros_like(x[:, 0:0])
 
         for start, stop in gimme_indices(used_minerals, used_endmembers):
+            # tmp = K.clip(sigmoid(x[..., start:stop]), K.epsilon(), None)  # avoid zero sum
             tmp = sigmoid(x[..., start:stop])
             tmp /= K.clip(K.sum(tmp, axis=-1, keepdims=True), K.epsilon(), None)  # normalisation to unit sum
 
@@ -496,7 +495,7 @@ def my_sigmoid(used_minerals: np.ndarray | None = None, used_endmembers: list[li
     return sigmoid_norm
 
 
-def my_plu(used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None
+def my_plu(alpha: float = 0.1, c: float = 1.0, used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None
            ) -> Callable[[EagerTensor], EagerTensor]:
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
@@ -504,13 +503,16 @@ def my_plu(used_minerals: np.ndarray | None = None, used_endmembers: list[list[b
     @tf.function
     def plu_norm(x: EagerTensor) -> EagerTensor:
         # https://arxiv.org/pdf/1809.09534.pdf
-        alpha, c = 0.1, 1.0
+        # This function does not return non-negative numbers. You should not use it for composition models.
+
         x_new = K.zeros_like(x[:, 0:0])
 
         for start, stop in gimme_indices(used_minerals, used_endmembers):
             tmp = relu(x[..., start:stop] + c) - c - (1 - alpha) * relu(x[..., start:stop] - c) - alpha * relu(
                 -x[..., start:stop] - c)
-            tmp /= K.clip(K.sum(tmp, axis=-1, keepdims=True), K.epsilon(), None)  # normalisation to unit sum
+            norm = K.sum(tmp, axis=-1, keepdims=True)
+            # clip all numbers that are close to zero to signed K.epsilon()
+            tmp /= tf.where(K.abs(norm) > K.epsilon(), norm, K.sign(norm) * K.epsilon())  # normalisation to unit sum
 
             x_new = K.concatenate([x_new, tmp], axis=-1)
 

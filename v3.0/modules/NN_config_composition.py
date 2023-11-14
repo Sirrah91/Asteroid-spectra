@@ -21,13 +21,14 @@ comp_output_setup = {
 
 # Re-interpolate input data to different resolutions (see reinterpolate_data in load_data.py)
 comp_grid_setup = {
-    "instrument": None,  # "ASPECT_vis-nir1-nir2-swir_30",
+    "instrument": "ASPECT_vis-nir1-nir2-swir_30",
 
     "interpolate_to": "full",  # "full", "Itokawa", "Eros"; only if "instrument" is None
 
     # used when "instrument" is None and interpolate_to is unknown
-    "wvl_grid": safe_arange(650., 2450., 30., endpoint=True),
-    "wvl_norm": 650.  # float, None, or "adaptive"
+    "wvl_grid": safe_arange(750., 1550., 20., endpoint=True),
+    # used when interpolate_to is unknown
+    "wvl_norm": "adaptive"  # float, None, or "adaptive" (don't use None unless you have a good reason for that)
 }
 
 comp_filtering_setup = {
@@ -55,7 +56,7 @@ comp_filtering_setup = {
 
 comp_data_split_setup = {
     "val_portion": 0.2,  # Set the fraction of data for validation
-    "test_portion": 0.0  # Set the fraction of data for tests
+    "test_portion": 0.2  # Set the fraction of data for tests
 }
 
 comp_model_setup = {

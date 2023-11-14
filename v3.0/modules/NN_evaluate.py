@@ -1,23 +1,29 @@
 import warnings
 import numpy as np
+from copy import deepcopy
 from scipy.stats import trim_mean
 from tqdm import tqdm
 
-from modules.utilities_spectra import (gimme_indices, normalise_spectrum_at_wvl, load_npz, load_keras_model, load_txt,
-                                       denoise_and_norm, join_data, compute_within, compute_metrics, is_taxonomical,
+from modules.utilities_spectra import (gimme_indices, load_npz, load_keras_model, load_txt,
+                                       denoise_and_norm, compute_within, compute_metrics, is_taxonomical,
                                        gimme_model_specification, gimme_bin_code_from_name, print_header, print_info,
-                                       gimme_custom_objects)
+                                       gimme_custom_objects, normalise_spectra, gimme_grid_setup_from_name)
+
+from modules.NN_data_grids import normalise_spectrum_at_wvl
 
 from modules.control_plots import result_plots
 
-from modules.utilities import normalise_in_rows, is_empty, safe_arange, return_mean_std, to_list
+from modules.utilities import normalise_in_rows, is_empty, return_mean_std, to_list
+
+from modules.NN_data import load_composition_data as load_data
+from modules.NN_data import split_composition_data_proportional as split_data_proportional
 
 from modules.NN_config_parse import bin_to_used
 
-from modules._constants import _wp, _spectra_name, _wavelengths_name, _sep_in, _quiet, _show_control_plot, _show_result_plot
+from modules._constants import _wp, _spectra_name, _sep_in, _quiet, _show_control_plot, _show_result_plot
 
 # defaults only
-from modules.NN_config_composition import comp_model_setup, comp_filtering_setup
+from modules.NN_config_composition import comp_model_setup, comp_filtering_setup, comp_data_split_setup
 from modules.NN_config_taxonomy import tax_model_setup
 
 
@@ -38,7 +44,7 @@ def average_and_normalise(predictions: np.ndarray, bin_code: str, proportiontocu
             predictions[:, start:stop] = normalise_in_rows(predictions[:, start:stop])
 
 
-    return np.array(predictions, dtype=np.float32)
+    return np.array(predictions, dtype=_wp)
 
 
 def check_models(model_names: list[str]) -> None:
@@ -218,68 +224,57 @@ def evaluate_test_data(model_names: list[str], x_test: np.ndarray, y_test: np.nd
     return predictions, acc
 
 
-def spectrum_error_transfer(model_name: str, filename_data: str,
+def spectrum_error_transfer(model_name: str, filename_data: str | None = None,
                             snr: float | str | np.ndarray = 50.,
                             filtering_setup: dict | None = None,
+                            data_split_setup: dict | None = None,
                             n_trials: int = 100,
                             rnd_seed: int | None = None,
-                            subfolder_model: str = "") -> dict[str, np.ndarray]:
-    from modules.NN_data import reinterpolate_data, clean_data, remove_redundant_labels
-
+                            subfolder_model: str = "") -> dict:
     if filtering_setup is None: filtering_setup = comp_filtering_setup
+    if data_split_setup is None: data_split_setup = comp_data_split_setup
+
+    if filename_data is None:
+        if is_taxonomical(model_name):
+            raise ValueError("Only composition models are allowed at this moment.")
+        else:
+            filename_data = "mineral-spectra_denoised.npz"
 
     if snr == "ASPECT":
         snr = 50.
 
-    specification = gimme_model_specification(model_name)
-    bin_code = gimme_bin_code_from_name(model_name)
-
     custom_objects = gimme_custom_objects(model_name=model_name)
     model = load_keras_model(model_name, subfolder=subfolder_model, custom_objects=custom_objects)
 
-    # Non-normalised data should be loaded
-    data = load_npz(filename_data, subfolder=subfolder_model)
-    spectra, wavelengths = data[_spectra_name], data[_wavelengths_name]
-    y_true = join_data(data, "labels")  # DataFrame with header
+    used_minerals, used_endmembers = bin_to_used(bin_code=gimme_bin_code_from_name(model_name), separator=_sep_in)
+    data_grid = gimme_grid_setup_from_name(model_name)
+    instrument, wvl_grid, wvl_norm = data_grid["instrument"], data_grid["wvl_grid"], data_grid["wvl_norm"]
 
+    # Non-normalised data should be loaded
+    data_grid["wvl_norm"] = None
+    x_train, y_train, wavelengths = load_data(filename_data, clean_dataset=True,
+                                              used_minerals=used_minerals, used_endmembers=used_endmembers,
+                                              grid_setup=data_grid, filtering_setup=filtering_setup,
+                                              return_wavelengths=True)
+
+    _, _, _, _, spectra, y_true = split_data_proportional(x_train, y_train,
+                                                          val_portion=data_split_setup["val_portion"],
+                                                          test_portion=data_split_setup["test_portion"],
+                                                          used_minerals=used_minerals)
     if np.any(spectra > 1.):
         warnings.warn("You should add noise to non-normalised data.")
 
-    # select quantities and re-normalise labels
-    used_minerals, used_endmembers = bin_to_used(bin_code=bin_code, separator=_sep_in)
-
-    spectra, y_true = clean_data(spectra, y_true, filtering_setup=filtering_setup,
-                                 used_minerals=used_minerals, used_endmembers=used_endmembers)
-
-    y_true = remove_redundant_labels(y_true, used_minerals=used_minerals, used_endmembers=used_endmembers)
-
-    for start, stop in gimme_indices(used_minerals, used_endmembers):
-        norm = np.sum(y_true[:, start:stop], axis=1)
-        non_zeros = np.where(norm > 0.)[0]
-        y_true[non_zeros, start:stop] = normalise_in_rows(y_true[non_zeros, start:stop])
-
-    if "ASPECT" in specification:
-        wvl_new = None
-        instrument = specification[:specification.rfind("_")]
-
-    else:
-        grid = specification[:specification.rfind("_")].split(_sep_in)
-        wvl_new = safe_arange(start=float(grid[0]), stop=float(grid[1]), step=float(grid[2]), endpoint=True)
-        wvl_norm = float(grid[3])
-        instrument = None
-
-    wavelengths, spectra = reinterpolate_data(x_data=spectra, wvl_old=wavelengths, wvl_new=wvl_new, wvl_new_norm=None,
-                                              instrument=instrument)
-
-    if "ASPECT" in specification:
+    if wvl_norm == "adaptive":
         wvl_norm = normalise_spectrum_at_wvl(wavelengths)
-
-    spectra_norm = denoise_and_norm(spectra, wavelengths, denoising=False, normalising=True, wvl_norm_nm=wvl_norm)
+    if wvl_norm is not None:
+        spectra_norm = normalise_spectra(spectra, wavelengths, wvl_norm_nm=wvl_norm)
+    else:  # This does not have to be here. If wvl_norm_nm == None, normalisation does not do anything
+        spectra_norm = deepcopy(spectra)
 
     calc_rmse = lambda yt, yp: compute_metrics(yt, yp, used_minerals=used_minerals,
-                                               used_endmembers=used_endmembers, round=False)
+                                               used_endmembers=used_endmembers,)
     calc_within = lambda yt, yp: compute_within(yt, yp, error_limit=(10., 20.), used_minerals=used_minerals,
-                                                used_endmembers=used_endmembers, round=False)
+                                                used_endmembers=used_endmembers)
 
     y_pred_base = np.array(model.predict(spectra_norm, verbose=0), dtype=_wp)
     RMSE_base, = calc_rmse(y_true, y_pred_base)
@@ -311,9 +306,14 @@ def spectrum_error_transfer(model_name: str, filename_data: str,
     within10_mean, within10_std = return_mean_std(within10_noise, axis=0)
     within20_mean, within20_std = return_mean_std(within20_noise, axis=0)
 
-    return {"RMSE base (pp)": np.round(RMSE_base, 1),
-            "RMSE noise (pp)": np.round(RMSE_mean, 1),
-            "within 10 base (pp)": np.round(within10_base, 1),
-            "within 10 noise (pp)": np.round(within10_mean, 1),
-            "within 20 base (pp)": np.round(within20_base, 1),
-            "within 20 noise (pp)": np.round(within20_mean, 1)}
+    return {"RMSE base": {"mean (pp)": RMSE_base},
+            "within 10 base": {"mean (%)": within10_base},
+            "within 20 base": {"mean (%)": within20_base},
+
+            "RMSE noise": {"mean (pp)": RMSE_mean,
+                           "std (pp)": RMSE_std},
+            "within 10 noise": {"mean (%)": within10_mean,
+                                "std (pp)": within10_std},
+            "within 20 noise": {"mean (%)": within20_mean,
+                                "std (pp)": within20_std}
+            }

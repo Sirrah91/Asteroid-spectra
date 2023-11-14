@@ -140,7 +140,7 @@ def collect_data_RELAB(start_line_number: tuple[int, ...] | int, end_line_number
                 elif filename.endswith(".asc"):
                     with open(filename, "r") as f:
                         n_lines = int(f.readline())  # First line contains info about the length of the data
-                        data = np.array([np.array(f.readline().split()[:2], dtype=np.float64) for _ in range(n_lines)])
+                        data = np.array([np.array(f.readline().split()[:2], dtype=float) for _ in range(n_lines)])
                         to_nm = 1.
 
             else:  # download the data
@@ -155,7 +155,7 @@ def collect_data_RELAB(start_line_number: tuple[int, ...] | int, end_line_number
                         # Remove the header and the blank line at the end
                         spectrum = spectrum[2:-1]
 
-                        data = np.array([np.array(line.split("\t")[:2], dtype=np.float64) for line in spectrum])
+                        data = np.array([np.array(line.split("\t")[:2], dtype=float) for line in spectrum])
                         to_nm = 1000.
                     elif filename.endswith(".asc"):
                         spectrum = urlopen(url).read().decode("utf-8").split("\r\n")  # splitlines() can be better
@@ -163,7 +163,7 @@ def collect_data_RELAB(start_line_number: tuple[int, ...] | int, end_line_number
                         nlines = int(spectrum[0])
                         spectrum = spectrum[1:nlines + 1]
 
-                        data = np.array([np.array(line.split()[:2], dtype=np.float64) for line in spectrum])
+                        data = np.array([np.array(line.split()[:2], dtype=float) for line in spectrum])
                         to_nm = 1.
                 except:
                     print(f"Spectrum {filename} does not exist and cannot be downloaded.")
@@ -1140,6 +1140,10 @@ def resave_HyperScout_transmission() -> None:
     transmissions = load_xlsx(filename, sheet_name="Sheet1").to_numpy()
 
     wavelengths, transmissions = transmissions[:, 0], np.transpose(transmissions[:, 1:])
+
+    # sort wavelengths
+    idx = np.argsort(wavelengths)
+    wavelengths, transmissions = wavelengths[idx], transmissions[:, idx]
 
     transmissions = {"wavelengths": wavelengths,
                      "transmissions": transmissions}

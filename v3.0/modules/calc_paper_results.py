@@ -10,6 +10,8 @@ from modules.NN_evaluate import evaluate_test_data, evaluate
 
 from modules.tables import mean_asteroid_type, accuracy_table, quantile_table, mean_S_asteroid_type
 from modules.tables import taxonomy_metrics, taxonomy_class_of_mineral_types, chelyabinsk_sw, kachr_sw, kachr_sw_laser
+from modules.tables import print_grid_test_stats_norm_window, print_grid_test_stats_spacing, print_grid_test_stats_range
+from modules.tables import print_grid_test_stats_table, print_model_to_model_variations, ASPECT_metrics_variations
 
 from modules.control_plots import plot_corr_matrix, plot_error_density_plots, result_plots
 
@@ -17,6 +19,7 @@ from modules.paper_plots import plot_PC1_PC2_NN, plot_Fa_vs_Fs_ast_only, plot_EI
 from modules.paper_plots import plot_PC1_PC2_BAR, plot_scatter_NN_BC, plot_ast_type_histogram, plot_Sq_histogram
 
 from modules.paper_plots import plot_surface_spectra, plot_surface_spectra_shapeViewer, plot_Fa_vs_Fs
+from modules.paper_plots import plot_test_spacing, plot_test_range, plot_test_window, plot_test_normalisation
 from modules.collect_data import resave_data_for_shapeViewer
 
 from modules.utilities_spectra import collect_all_models, combine_composition_and_taxonomy_predictions
@@ -329,3 +332,56 @@ def paper_2_taxonomy(asteroid_name: str = "full") -> None:
             y_pred_E = evaluate(model_names, filename_data, proportiontocut=0.2, subfolder_model=subfolder_model)
 
             plot_EI_type_hist(y_pred_E, y_pred_taxonomy, tax_type="S+", used_classes=used_classes)  # Eros first
+
+
+def paper_3() -> None:
+    remove_outliers = True
+
+    for error_type in ["rmse", "within 10"]:
+        wvl_norm, normalisation = plot_test_normalisation(error_type, remove_outliers=remove_outliers)
+        window_range, window = plot_test_window(error_type, remove_outliers=remove_outliers)
+        wvl_step, spacing = plot_test_spacing(error_type, remove_outliers=remove_outliers)
+        start, stop, ranges = plot_test_range(error_type, remove_outliers=remove_outliers)
+
+        print("-" * 50)
+        print("-" * ((50 - len(error_type))//2 - 1), error_type, "-" * (50 - ((50 - len(error_type))//2) - len(error_type) - 1))
+        print("-" * 50)
+
+        print_grid_test_stats_norm_window(wvl_norm, normalisation)
+        print("-" * 50)
+
+        print_grid_test_stats_norm_window(window_range, window)
+        print("-" * 50)
+
+        print_grid_test_stats_spacing(spacing)
+        print("-" * 50)
+
+        print_grid_test_stats_range(ranges[1], lim_from=750, lim_to=1050, name="OL (best)")
+        print_grid_test_stats_range(ranges[1], lim_from=(850, 1050), lim_to=2250, name="OL (good)")
+        print("-" * 50)
+
+        print_grid_test_stats_range(ranges[2], lim_from=750, lim_to=1250, name="OPX (best)")
+        print_grid_test_stats_range(ranges[2], lim_from=(950, 950), lim_to=(1250, 1250), name="OPX (good)")
+        print("-" * 50)
+
+        print_grid_test_stats_range(ranges[4], lim_from=750, lim_to=1550, name="Fa (best)")
+        print_grid_test_stats_range(ranges[4], lim_from=(850, 1150), lim_to=1550, name="Fa (good)")
+        print_grid_test_stats_range(ranges[4], lim_from=(950, 950), lim_to=(1250, 1250), name="Fa (BIC)")
+        print("-" * 50)
+
+        print_grid_test_stats_range(ranges[5], lim_from=750, lim_to=1350, name="Fs (best)")
+        print_grid_test_stats_range(ranges[5], lim_from=1750, lim_to=2250, name="Fs (good)")
+        print_grid_test_stats_range(ranges[5], lim_from=(850, 1150), lim_to=(1850, 2150), name="Fs (centre)")
+        print_grid_test_stats_range(ranges[5], lim_from=750, lim_to=(1350, 1650), name="Fs (1 μm)")
+        print_grid_test_stats_range(ranges[5], lim_from=(1650, 1750), lim_to=2250, name="Fs (2 μm)")
+        print_grid_test_stats_range(ranges[5], lim_from=750, lim_to=2250, name="Fs (1 + 2 μm)")
+        print("-" * 50)
+
+        print_grid_test_stats_table(normalisation, window, spacing[0], latex_output=False)
+        print("-" * 50)
+
+    print_model_to_model_variations()
+    print("-" * 50)
+
+    ASPECT_metrics_variations(snrs=(30., 40., 50., 60.))
+    print("-" * 50)

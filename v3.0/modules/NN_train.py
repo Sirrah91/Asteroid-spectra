@@ -326,10 +326,10 @@ def prepare_hp_for_corr_plot(hp_dirname: str, method: str) -> None:
         with open(json_name(0), "r") as f:
             stored_json = json.load(f)
 
-        metrics_all = np.array(list(stored_json["metrics"]["metrics"].keys()))
+        metrics_all = list(stored_json["metrics"]["metrics"].keys())
 
         # put metric and val_metric next to each other
-        metrics_all = list(metrics_all[["val_" in key for key in metrics_all]])
+        metrics_all = [metric for metric in metrics_all if "val_" in metric]
         metrics_all = list(chain.from_iterable((metric.replace("val_", ""), metric) for metric in metrics_all))
 
         loss_metrics = np.zeros((max_trials, len(metrics_all)))

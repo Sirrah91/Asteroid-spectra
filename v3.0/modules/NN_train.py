@@ -306,8 +306,9 @@ def prepare_hp_for_corr_plot(hp_dirname: str, method: str) -> None:
     if path.isfile(file):
         data = load_txt(file, sep="\t")
 
-        # put metric and val_metric next to each other
-        metrics_all = list(data.keys()[["val_" in key for key in data.keys()]])
+        # remove other keys and put metric and val_metric next to each other
+        metrics_all = list(data.keys())
+        metrics_all = [metric for metric in metrics_all if "val_" in metric]
         metrics_all = list(chain.from_iterable((metric.replace("val_", ""), metric) for metric in metrics_all))
 
     else:

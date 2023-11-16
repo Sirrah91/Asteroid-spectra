@@ -113,7 +113,6 @@ def evaluate(model_names: list[str], filename_or_data: str | np.ndarray,
 
     # Calc average prediction over the models
     for idx, model_name in enumerate(model_names):
-
         model = load_keras_model(model_name, subfolder=subfolder_model, custom_objects=custom_objects)
 
         if idx == 0:

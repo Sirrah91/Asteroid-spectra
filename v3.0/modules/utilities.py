@@ -665,23 +665,6 @@ def best_blk(num: int, cols_to_rows: float = 4. / 3.) -> tuple[int, int]:
     return rows, cols
 
 
-def best_blk_2(num: int) -> tuple[int, int]:
-    # Function finds the best rectangle with an area lower or equal to num
-    # Useful for subplot layouts
-    col1 = np.ceil(np.sqrt(num))
-    row1 = np.ceil(num / col1)
-
-    col2 = col1 + 1
-    row2 = np.ceil(num / col2)
-
-    if col1 * row1 <= col2 * row2:
-        row, col = int(row1), int(col1)
-    else:
-        row, col = int(row2), int(col2)
-
-    return row, col
-
-
 def distance(rectangle: np.ndarray, point: np.ndarray) -> np.ndarray:
     # distance(rectangle, point) computes the distance between the rectangle and the point p
     # rectangle[0, 0] = x.min, rectangle[0, 1] = x.max

@@ -55,6 +55,10 @@ def load_composition_data(filename_data: str, clean_dataset: bool = True, keep_a
     y_train = join_data(data, "labels")  # DataFrame with header
     meta = join_data(data, "meta")
 
+    if np.ndim(x_train) == 1 or np.ndim(y_train) == 1 or np.ndim(meta) == 1:
+        x_train, y_train = np.reshape(x_train, (1, -1)), np.reshape(y_train, (1, -1))
+        meta = np.reshape(meta, (1, -1))
+
     if clean_dataset:  # original data are filtered; after normalisation, there can be some red spectra
         x_train, y_train, inds = clean_data(x_train, y_train, filtering_setup=filtering_setup,
                                             used_minerals=used_minerals, used_endmembers=used_endmembers,
@@ -118,6 +122,10 @@ def load_taxonomy_data(filename_data: str, clean_dataset: bool = True, return_me
     x_train = deepcopy(np.array(data[_spectra_name], dtype=_wp))
     y_train = deepcopy(np.array(data[_label_name], dtype=str))
     meta = join_data(data, "meta")
+
+    if np.ndim(x_train) == 1 or np.ndim(y_train) == 1 or np.ndim(meta) == 1:
+        x_train, y_train = np.reshape(x_train, (1, -1)), np.reshape(y_train, (1, -1))
+        meta = np.reshape(meta, (1, -1))
 
     if clean_dataset:
         # metadata contains original taxonomy types even for "-reduced" data

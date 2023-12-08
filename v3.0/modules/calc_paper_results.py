@@ -10,8 +10,9 @@ from modules.NN_evaluate import evaluate_test_data, evaluate
 
 from modules.tables import mean_asteroid_type, accuracy_table, quantile_table, mean_S_asteroid_type
 from modules.tables import taxonomy_metrics, taxonomy_class_of_mineral_types, chelyabinsk_sw, kachr_sw, kachr_sw_laser
-from modules.tables import print_grid_test_stats_norm_window, print_grid_test_stats_spacing, print_grid_test_stats_range
+from modules.tables import print_grid_test_stats_norm_window, print_grid_test_stats_step, print_grid_test_stats_range
 from modules.tables import print_grid_test_stats_table, print_model_to_model_variations, ASPECT_metrics_variations
+from modules.tables import print_range_test_table, print_grid_test_significance_table
 
 from modules.control_plots import plot_corr_matrix, plot_error_density_plots, result_plots
 
@@ -19,7 +20,7 @@ from modules.paper_plots import plot_PC1_PC2_NN, plot_Fa_vs_Fs_ast_only, plot_EI
 from modules.paper_plots import plot_PC1_PC2_BAR, plot_scatter_NN_BC, plot_ast_type_histogram, plot_Sq_histogram
 
 from modules.paper_plots import plot_surface_spectra, plot_surface_spectra_shapeViewer, plot_Fa_vs_Fs
-from modules.paper_plots import plot_test_spacing, plot_test_range, plot_test_window, plot_test_normalisation
+from modules.paper_plots import plot_test_step, plot_test_range, plot_test_window, plot_test_normalisation
 from modules.collect_data import resave_data_for_shapeViewer
 
 from modules.utilities_spectra import collect_all_models, combine_composition_and_taxonomy_predictions
@@ -337,23 +338,35 @@ def paper_2_taxonomy(asteroid_name: str = "full") -> None:
 def paper_3() -> None:
     remove_outliers = True
 
+    # to load config
+    data = load_npz("/home/dakorda/Python/NN/accuracy_tests/range_test/step/composition_HS-H_1110-11-110-111-000_20231012122642.npz")
+    used_minerals = data["config"][()]["output_setup"]["used_minerals"]
+    used_endmembers = data["config"][()]["output_setup"]["used_endmembers"]
+
+    # based on the models prepared for S/N test
+    filtering_setup = data["config"][()]["filtering_setup"]
+    data_split_setup = {"val_portion": 0.2, "test_portion": 0.2}
+
+
     for error_type in ["rmse", "within 10"]:
-        wvl_norm, normalisation = plot_test_normalisation(error_type, remove_outliers=remove_outliers)
-        window_range, window = plot_test_window(error_type, remove_outliers=remove_outliers)
-        wvl_step, spacing = plot_test_spacing(error_type, remove_outliers=remove_outliers)
-        start, stop, ranges = plot_test_range(error_type, remove_outliers=remove_outliers)
+        wvl_norm, normalisation = plot_test_normalisation(error_type, remove_outliers=remove_outliers, offset=5)
+        window_range, window = plot_test_window(error_type, remove_outliers=remove_outliers, offset=3)
+        wvl_step, step = plot_test_step(error_type, remove_outliers=remove_outliers, offset=7)
+        start, stop, ranges = plot_test_range(error_type, remove_outliers=remove_outliers, offset=5)
 
         print("-" * 50)
         print("-" * ((50 - len(error_type))//2 - 1), error_type, "-" * (50 - ((50 - len(error_type))//2) - len(error_type) - 1))
         print("-" * 50)
 
-        print_grid_test_stats_norm_window(wvl_norm, normalisation)
+        print_grid_test_stats_norm_window(wvl_norm, normalisation, used_minerals=used_minerals,
+                                          used_endmembers=used_endmembers)
         print("-" * 50)
 
-        print_grid_test_stats_norm_window(window_range, window)
+        print_grid_test_stats_norm_window(window_range, window, used_minerals=used_minerals,
+                                          used_endmembers=used_endmembers)
         print("-" * 50)
 
-        print_grid_test_stats_spacing(spacing)
+        print_grid_test_stats_step(step, used_minerals=used_minerals, used_endmembers=used_endmembers)
         print("-" * 50)
 
         print_grid_test_stats_range(ranges[1], lim_from=750, lim_to=1050, name="OL (best)")
@@ -377,11 +390,37 @@ def paper_3() -> None:
         print_grid_test_stats_range(ranges[5], lim_from=750, lim_to=2250, name="Fs (1 + 2 μm)")
         print("-" * 50)
 
-        print_grid_test_stats_table(normalisation, window, spacing[0], latex_output=False)
+        print_grid_test_stats_table(normalisation, ranges, window, step[0], used_minerals=used_minerals,
+                                    used_endmembers=used_endmembers, latex_output=False)
+        print("-" * 50)
+
+        print_grid_test_significance_table(normalisation, ranges, window, step[0],
+                                           error_type=error_type, used_minerals=used_minerals,
+                                           used_endmembers=used_endmembers, latex_output=False)
+        print("-" * 50)
+
+        print_range_test_table(ranges, start=750, stop=1050)
+        print("-" * 50)
+
+        print_range_test_table(ranges, start=750, stop=1250)
+        print("-" * 50)
+
+        print_range_test_table(ranges, start=750, stop=1350)
+        print("-" * 50)
+
+        print_range_test_table(ranges, start=750, stop=1550)
+        print("-" * 50)
+
+        print_range_test_table(ranges, start=650, stop=1650)
+        print("-" * 50)
+
+        print_range_test_table(ranges, start=650, stop=2450)
         print("-" * 50)
 
     print_model_to_model_variations()
     print("-" * 50)
 
-    ASPECT_metrics_variations(snrs=(30., 40., 50., 60.))
+    ASPECT_metrics_variations(snrs=(30., 40., 50., 60.),
+                              filtering_setup=filtering_setup,
+                              data_split_setup=data_split_setup)
     print("-" * 50)

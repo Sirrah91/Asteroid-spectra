@@ -1,10 +1,11 @@
 import warnings
 import numpy as np
+import pandas as pd
 from copy import deepcopy
 from scipy.stats import trim_mean
 from tqdm import tqdm
 
-from modules.utilities_spectra import (gimme_indices, load_npz, load_keras_model, load_txt,
+from modules.utilities_spectra import (gimme_indices, load_npz, load_keras_model, load_txt, gimme_keys_from_name,
                                        denoise_and_norm, compute_within, compute_metrics, is_taxonomical,
                                        gimme_model_specification, gimme_bin_code_from_name, print_header, print_info,
                                        gimme_custom_objects, normalise_spectra, gimme_grid_setup_from_name)
@@ -13,7 +14,7 @@ from modules.NN_data_grids import normalise_spectrum_at_wvl
 
 from modules.control_plots import result_plots
 
-from modules.utilities import normalise_in_rows, is_empty, return_mean_std, to_list
+from modules.utilities import normalise_in_rows, is_empty, return_mean_std, to_list, stack
 
 from modules.NN_data import load_composition_data as load_data
 from modules.NN_data import split_composition_data_proportional as split_data_proportional
@@ -229,7 +230,7 @@ def spectrum_error_transfer(model_name: str, filename_data: str | None = None,
                             data_split_setup: dict | None = None,
                             n_trials: int = 100,
                             rnd_seed: int | None = None,
-                            subfolder_model: str = "") -> dict:
+                            subfolder_model: str = "") -> pd.DataFrame:
     if filtering_setup is None: filtering_setup = comp_filtering_setup
     if data_split_setup is None: data_split_setup = comp_data_split_setup
 
@@ -242,6 +243,7 @@ def spectrum_error_transfer(model_name: str, filename_data: str | None = None,
     if snr == "ASPECT":
         snr = 50.
 
+    label_keys = gimme_keys_from_name(model_name=model_name)
     custom_objects = gimme_custom_objects(model_name=model_name)
     model = load_keras_model(model_name, subfolder=subfolder_model, custom_objects=custom_objects)
 
@@ -305,14 +307,12 @@ def spectrum_error_transfer(model_name: str, filename_data: str | None = None,
     within10_mean, within10_std = return_mean_std(within10_noise, axis=0)
     within20_mean, within20_std = return_mean_std(within20_noise, axis=0)
 
-    return {"RMSE base": {"mean (pp)": RMSE_base},
-            "within 10 base": {"mean (%)": within10_base},
-            "within 20 base": {"mean (%)": within20_base},
-
-            "RMSE noise": {"mean (pp)": RMSE_mean,
-                           "std (pp)": RMSE_std},
-            "within 10 noise": {"mean (%)": within10_mean,
-                                "std (pp)": within10_std},
-            "within 20 noise": {"mean (%)": within20_mean,
-                                "std (pp)": within20_std}
-            }
+    return pd.DataFrame(stack((RMSE_base, within10_base, within20_base,
+                               RMSE_mean, RMSE_std,
+                               within10_mean, within10_std,
+                               within20_mean, within20_std), axis=1),
+                        index=label_keys,
+                        columns=["RMSE mean (pp)", "within 10 pp mean (%)", "within 20 pp mean (%)",
+                                 "RMSE mean noisy (pp)", "RMSE std noisy (pp)",
+                                 "within 10 pp mean noisy (pp)", "within 10 pp std noisy (pp)",
+                                 "within 20 pp mean noisy (pp)", "within 20 pp std noisy (pp)"])

@@ -17,6 +17,7 @@ from modules.NN_data import numbers_to_classes
 from modules.utilities import check_dir, best_blk, distance, stack, normalise_array, is_empty, find_all
 from modules.utilities_spectra import (error_estimation_bin_like, cut_error_bars, find_outliers, used_indices,
                                        unique_indices, join_data, load_npz, load_txt, normalise_spectra)
+from modules.tables import print_grid_test_stats_range
 
 from modules.NN_config_parse import gimme_num_minerals, gimme_endmember_counts
 
@@ -2083,7 +2084,66 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
 
         return line_stop, error_line, wvl_start, wvl_stop, error_mat, label
 
-    pref = path.join(_path_accuracy_tests, "range_test/spacing/*npz")
+    def box_properties(image_index: int) -> list[dict]:
+        if image_index == 1:  # olivine abundance
+            boxes = [[{"x0": (450, 750), "y0": (1050, 1250),  # blue wing of 1-μm band
+                       "edgecolor": "b", "shift": 0.1}, "1-\\textmu{}m blue shoulder"],
+                     [{"x0": (450, 750), "y0": (1350, 1750),  # whole 1-μm band
+                       "edgecolor": "tab:brown", "shift": 0.1}, "1-\\textmu{}m band"],
+                     [{"x0": (450, 750), "y0": (2250, 2450),  # both bands
+                       "edgecolor": "m", "shift": 0.1}, "1-\\textmu{}m and 2-\\textmu{}m bands"],
+                     ]
+
+        elif image_index == 2:  # orthopyroxene abundance
+            boxes = [[{"x0": (450, 750), "y0": (1050, 1250),  # blue wing of 1-μm band
+                       "edgecolor": "b", "shift": 0.1}, "1-\\textmu{}m blue shoulder"],
+                     [{"x0": (450, 750), "y0": (1350, 1750),  # whole 1-μm band
+                       "edgecolor": "tab:brown", "shift": 0.1}, "1-\\textmu{}m band"],
+                     [{"x0": (850, 950), "y0": (1350, 1750),  # red wing of 1-μm band
+                       "edgecolor": "r", "shift": 0.1}, "1-\\textmu{}m red shoulder"],
+                     [{"x0": (450, 750), "y0": (2250, 2450),  # both bands
+                       "edgecolor": "m", "shift": 0.1}, "1-\\textmu{}m and 2-\\textmu{}m bands"],
+                     ]
+
+        elif image_index == 4:  # Fa
+            boxes = [[{"x0": (450, 750), "y0": (1550, 1750),  # whole 1-μm band
+                       "edgecolor": "tab:brown", "shift": 0.1}, "1-\\textmu{}m band"],
+                     [{"x0": (950, 950), "y0": (1250, 1250),  # BIC
+                       "edgecolor": "y", "shift": 0.1}, "BIC"],
+                     [{"x0": (850, 1150), "y0": (1550, 1750),  # red wing of 1-μm band
+                       "edgecolor": "r", "shift": 0.1}, "1-\\textmu{}m red shoulder"],
+                     ]
+
+        elif image_index == 5:  # Fs (OPX)
+            boxes = [[{"x0": (450, 750), "y0": (1350, 1750),  # whole 1-μm band
+                       "edgecolor": "tab:brown", "shift": 0.1}, "1-\\textmu{}m band"],
+                     [{"x0": (950, 950), "y0": (1250, 1250),  # BIC
+                       "edgecolor": "y", "shift": 0.1}, "BIC"],
+                     [{"x0": (450, 750), "y0": (2250, 2450),  # both bands
+                       "edgecolor": "m", "shift": 0.1}, "1-\\textmu{}m and 2-\\textmu{}m bands"],
+                     [{"x0": (1950, 1950), "y0": (2350, 2350),  # BIIC
+                       "edgecolor": "k", "shift": 0.1}, "BIIC"]
+                     ]
+        else:
+            boxes = []
+
+        return boxes
+
+    def add_box(ax, x0: tuple[int, int], y0: tuple[int, int], shift: float = 0., **kwargs) -> tuple[float, float]:
+        x = np.where(wvl_start >= x0[0])[0][0] - 0.5
+        width = np.where(wvl_start >= x0[1])[0][0] - x + 0.5
+
+        y = np.where(wvl_stop >= y0[0])[0][0] - 0.5
+        height = np.where(wvl_stop >= y0[1])[0][0] - y + 0.5
+
+        patch = patches.Rectangle((x + shift, y + shift), width=width - 2 * shift, height=height - 2 * shift,
+                                  facecolor="none", **kwargs)
+        # Add the patch to the Axes
+        ax.add_patch(patch)
+
+        return x + width / 2, y + height / 2  # returns centre of the patch
+
+    pref = path.join(_path_accuracy_tests, "range_test/range/*npz")
 
     line_stop, error_line, wvl_start, wvl_stop, error_mat, label = load_data_for_plot(pref, error_type)
 
@@ -2105,6 +2165,16 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
     check_dir(outdir_range_tests)
 
     cm = plt.get_cmap("gist_rainbow")
+    arrowprops = {"color": "red",
+                  "shrink": 0.}
+    prec_shift = 2.5
+
+    if error_type == "RMSE":
+        unit1, unit2 = "pp", "pp"
+    elif error_type == "Within":
+        unit1, unit2 = "\%", "pp"
+    else:
+        unit1, unit2 = "", ""
 
     for q in range(len(titles_all)):
         fig, axes = plt.subplots(1, 2, figsize=(25, 10), gridspec_kw={"width_ratios": [2.3, 1]})
@@ -2116,7 +2186,7 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
             if limit is None:
                 error_label = f"{error_type} (pp; {titles_all[q]})"
             else:
-                error_label = f"{error_type} (\%; {titles_all[q]})"
+                error_label = f"{error_type} {limit[0]} pp (\%; {titles_all[q]})"
 
         for iax, ax in enumerate(axes):
             if iax == 0:  # line plots
@@ -2125,11 +2195,11 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
                 for i in range(len(error_line)):
                     ax.plot(line_stop[i], error_line[i][q, :], marker='o', linestyle="--", label=label[i])
 
-                ax.axvline(850., color="k", ls="--", zorder=100)
-                ax.axvline(1350., color="k", ls="--", zorder=100)
+                # ax.axvline(850., color="k", ls="--", zorder=100)
+                # ax.axvline(1350., color="k", ls="--", zorder=100)
 
-                ax.axvline(1650., color="k", ls="-.", zorder=100)
-                ax.axvline(2450., color="k", ls="-.", zorder=100)
+                # ax.axvline(1650., color="k", ls="-.", zorder=100)
+                # ax.axvline(2450., color="k", ls="-.", zorder=100)
 
                 ax.set_xticks(wvl_stop)
                 ax.set_xlabel("To wavelength (nm)")
@@ -2183,34 +2253,25 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
                 ax.set_xticklabels(wvl_start, rotation=90, ha="center")
                 ax.set_yticklabels(wvl_stop)
 
-                try:
-                    if wvl_start[0] <= 750. and np.max(wvl_stop) >= 1350.:
-                        x = -0.5
-                        width = np.where(wvl_start >= 750.)[0][0] - x + 0.5
+                # add_box(ax, (450, 750), (1350, 2450), linewidth=3, linestyle="-", edgecolor="k")
+                # add_box(ax, (450, 1550), (2450, 2450), linewidth=3, linestyle="-", edgecolor="k")
 
-                        y = np.where(wvl_stop >= 1350.)[0][0] - 0.5
-                        height = len(wvl_stop) - y + 0.5
+                boxes = box_properties(q)
 
-                        one_um = patches.Rectangle((x, y), width=width, height=height,
-                                                   linewidth=1.5, edgecolor="k", facecolor="none")
+                if boxes:
+                    for i, (box_prop, description) in enumerate(boxes):
+                        _mn, _std = print_grid_test_stats_range(error_mat[q],
+                                                                lim_from=box_prop["x0"], lim_to=box_prop["y0"],
+                                                                quiet=True)
+                        mn, std = np.round(_mn, 1), np.round(_std, 1)
 
-                        # Add the patch to the Axes
-                        ax.add_patch(one_um)
+                        text = f"{mn:.1f} {unit1} $\pm$ {std:.1f} {unit2}" if _std > 0 else f"{mn:.1f} {unit1}"
 
-                    if wvl_start[0] <= 1550. and np.max(wvl_stop) >= 2450.:
-                        x = -0.5
-                        width = np.where(wvl_start >= 1550.)[0][0] - x + 0.5
-
-                        y = np.where(wvl_stop >= 2450.)[0][0] - 0.5
-                        height = len(wvl_stop) - y + 0.5
-
-                        two_um = patches.Rectangle((x, y), width=width, height=height,
-                                                   linewidth=1.5, edgecolor="k", facecolor="none")
-
-                        # Add the patch to the Axes
-                        ax.add_patch(two_um)
-                except Exception:
-                    pass
+                        xc, yc = add_box(ax, **box_prop, linewidth=2, linestyle="--")
+                        ax.annotate(f"{description} \n {text}", xy=(xc, yc),
+                                    xytext=(4 + prec_shift * i, 2 + prec_shift * i),
+                                    fontsize=SMALL_SIZE - 3 + offset, color=box_prop["edgecolor"],
+                                    arrowprops=arrowprops | {"color": box_prop["edgecolor"]})
 
                 ax.set_xlabel("From wavelength (nm)")
                 ax.set_ylabel("To wavelength (nm)")
@@ -2239,9 +2300,155 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
                     cbar.set_ticks(yticks)
 
         if limit is None:
-            fig_name = f"spacing_{error_type}{_sep_out}{titles_all[q].replace(' ', _sep_in)}.{fig_format}"
+            fig_name = f"range_{error_type}{_sep_out}{titles_all[q].replace(' ', _sep_in)}.{fig_format}"
         else:
-            fig_name = f"spacing_{error_type}{_sep_in}{limit[0]}{_sep_out}{titles_all[q].replace(' ', _sep_in)}.{fig_format}"
+            fig_name = f"range_{error_type}{_sep_in}{limit[0]}{_sep_out}{titles_all[q].replace(' ', _sep_in)}.{fig_format}"
+
+        plt.draw()
+        plt.tight_layout()
+
+        fig.savefig(path.join(outdir_range_tests, fig_name), format=fig_format, **savefig_kwargs, **pil_kwargs)
+        plt.close(fig)
+
+    #### plot parts separately
+    for q in [1, 2, 4, 5]:
+        fig, ax = plt.subplots(1, 1, figsize=(18, 10))
+
+        if error_type == "outliers":
+            error_label = f"No. outliers ({titles_all[q]})"
+        else:
+            if limit is None:
+                error_label = f"{error_type} (pp; {titles_all[q]})"
+            else:
+                error_label = f"{error_type} {limit[0]} pp (\%; {titles_all[q]})"
+
+        ax.set_prop_cycle(color=cm(np.linspace(0., 1., num_colors)))
+
+        for i in range(len(error_line)):
+            ax.plot(line_stop[i], error_line[i][q, :], marker='o', linestyle="--", label=label[i])
+
+        # ax.axvline(850., color="k", ls="--", zorder=100)
+        # ax.axvline(1350., color="k", ls="--", zorder=100)
+
+        # ax.axvline(1650., color="k", ls="-.", zorder=100)
+        # ax.axvline(2450., color="k", ls="-.", zorder=100)
+
+        ax.set_xticks(wvl_stop)
+        ax.set_xlabel("To wavelength (nm)")
+        ax.set_ylabel(error_label)
+
+        lim = ax.get_ylim()
+        if lim[1] - lim[0] > 64.:
+            yticks = yticks10
+        elif lim[1] - lim[0] > 32.:
+            yticks = yticks5
+        elif lim[1] - lim[0] > 16.:
+            yticks = yticks2
+        elif lim[1] - lim[0] > 8.:
+            yticks = yticks1
+        elif lim[1] - lim[0] > 4.:
+            yticks = yticks05
+        else:
+            yticks = yticks02
+        yticks = yticks[np.logical_and(yticks >= lim[0], yticks <= lim[1])]
+        ax.set_yticks(yticks)
+        # ax.yaxis.set_major_formatter(FormatStrFormatter("%.1f"))
+        ax.set_ylim(lim)
+
+        ax.legend(bbox_to_anchor=(0., 1.02, 1., 0.2), loc="lower left", mode="expand", borderaxespad=0.,
+                  ncol=best_blk(num_colors)[1])
+
+        if limit is None:
+            fig_name = f"range_{error_type}{_sep_out}{titles_all[q].replace(' ', _sep_in)}_line.{fig_format}"
+        else:
+            fig_name = f"range_{error_type}{_sep_in}{limit[0]}{_sep_out}{titles_all[q].replace(' ', _sep_in)}_line.{fig_format}"
+
+        plt.draw()
+        plt.tight_layout()
+
+        fig.savefig(path.join(outdir_range_tests, fig_name), format=fig_format, **savefig_kwargs, **pil_kwargs)
+        plt.close(fig)
+
+        # mat plot
+        fig, ax = plt.subplots(1, 1, figsize=(12, 10))
+
+        cmap = "viridis"
+        if error_type == "RMSE":
+            vmin = np.nanmin(error_mat[q])
+            vmax = np.nanmin((np.nanmax(error_mat[q]), np.nanmin(error_mat[q]) + 10.))
+            cmap += "_r"
+
+        elif error_type == "Within":
+            vmin = np.nanmax((np.nanmin(error_mat[q]), np.nanmax(error_mat[q]) - 20.))
+            vmax = np.nanmax(error_mat[q])
+
+        elif error_type == "outliers":
+            vmin = np.nanmin(error_mat[q])
+            vmax = np.nanmin((np.nanmax(error_mat[q]), np.nanmin(error_mat[q]) + 10.))
+
+        if vmin == vmax:
+            im = ax.imshow(error_mat[q], aspect="auto", cmap=cmap)
+        else:
+            im = ax.imshow(error_mat[q], aspect="auto", cmap=cmap, vmin=vmin, vmax=vmax)
+
+        rows, cols = np.shape(error_mat[q])
+        ax.set_xticks(range(cols))
+        ax.set_yticks(range(rows))
+
+        ax.set_xticklabels(wvl_start, rotation=90, ha="center")
+        ax.set_yticklabels(wvl_stop)
+
+        # add_box(ax, (450, 750), (1350, 2450), linewidth=3, linestyle="-", edgecolor="k")
+        # add_box(ax, (450, 1550), (2450, 2450), linewidth=3, linestyle="-", edgecolor="k")
+
+        boxes = box_properties(q)
+
+        if boxes:
+            for i, (box_prop, description) in enumerate(boxes):
+                _mn, _std = print_grid_test_stats_range(error_mat[q],
+                                                        lim_from=box_prop["x0"], lim_to=box_prop["y0"],
+                                                        quiet=True)
+                mn, std = np.round(_mn, 1), np.round(_std, 1)
+
+                text = f"{mn:.1f} {unit1} $\pm$ {std:.1f} {unit2}" if _std > 0 else f"{mn:.1f} {unit1}"
+
+                xc, yc = add_box(ax, **box_prop, linewidth=2, linestyle="--")
+                ax.annotate(f"{description} \n {text}", xy=(xc, yc),
+                            xytext=(4 + prec_shift * i, 2 + prec_shift * i),
+                            fontsize=MEDIUM_SIZE + offset, color=box_prop["edgecolor"],
+                            arrowprops=arrowprops | {"color": box_prop["edgecolor"]})
+
+        ax.set_xlabel("From wavelength (nm)")
+        ax.set_ylabel("To wavelength (nm)")
+        ax.xaxis.set_label_position("bottom")
+        ax.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=False,
+                       bottom=True, top=False, left=True, right=False)
+        ax.axis("equal")
+
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes(**cbar_kwargs)
+        cbar = plt.colorbar(im, cax=cax)
+        cbar.ax.set_ylabel(error_label)
+
+        lim = (cbar.vmin, cbar.vmax)
+        if lim[1] - lim[0] > 32.:
+            yticks = yticks5
+        elif lim[1] - lim[0] > 16.:
+            yticks = yticks2
+        elif lim[1] - lim[0] > 8.:
+            yticks = yticks1
+        elif lim[1] - lim[0] > 4.:
+            yticks = yticks05
+        else:
+            yticks = yticks02
+        yticks = yticks[np.logical_and(yticks >= lim[0], yticks <= lim[1])]
+        if not is_empty(yticks):
+            cbar.set_ticks(yticks)
+
+        if limit is None:
+            fig_name = f"range_{error_type}{_sep_out}{titles_all[q].replace(' ', _sep_in)}_mat.{fig_format}"
+        else:
+            fig_name = f"range_{error_type}{_sep_in}{limit[0]}{_sep_out}{titles_all[q].replace(' ', _sep_in)}_mat.{fig_format}"
 
         plt.draw()
         plt.tight_layout()
@@ -2254,7 +2461,7 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
     return wvl_start, wvl_stop, error_mat
 
 
-def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False,
+def plot_test_step(error_type: str = "RMSE", remove_outliers: bool = False,
                     offset: float = 0.) -> tuple[np.ndarray, ...]:
     change_params(offset)
 
@@ -2360,10 +2567,10 @@ def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False,
         return wvl_step, error, label
 
     prefs = [
-        path.join(_path_accuracy_tests, "range_test/range/composition_650-1850*.npz"),
-        path.join(_path_accuracy_tests, "range_test/range/composition_650-2450*.npz"),
-        path.join(_path_accuracy_tests, "range_test/range/composition_ASPECT_vis-nir1-nir2_*.npz"),
-        path.join(_path_accuracy_tests, "range_test/range/composition_ASPECT_vis-nir1-nir2-swir_*.npz"),
+        path.join(_path_accuracy_tests, "range_test/step/composition_650-1850*.npz"),
+        path.join(_path_accuracy_tests, "range_test/step/composition_650-2450*.npz"),
+        path.join(_path_accuracy_tests, "range_test/step/composition_ASPECT_vis-nir1-nir2_*.npz"),
+        path.join(_path_accuracy_tests, "range_test/step/composition_ASPECT_vis-nir1-nir2-swir_*.npz"),
         # path.join(_path_accuracy_tests, "range_test/range/composition_HS-H*.npz")
              ]
 
@@ -2399,13 +2606,13 @@ def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False,
             else:
                 ax.plot(wvl_step[i], error[i][q], marker='o', linestyle="--", color=colors[i])
 
-            if i in [2, 3]:  # highlight ASPECT targeted spacing
+            if i in [2, 3]:  # highlight ASPECT targeted step
                 ax.plot(wvl_step[i][2], error[i][q][2], marker='o', color=colors[i], markersize=13)
 
         ax.set_title(titles_all[q])
 
         if q > 5:
-            ax.set_xlabel("Spacing (nm)")
+            ax.set_xlabel("Step (nm)")
 
         if error_type == "outliers":
             ax.set_ylabel("No. outliers")
@@ -2413,7 +2620,7 @@ def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False,
             if limit is None:
                 ax.set_ylabel(f"{error_type} (pp)")
             else:
-                ax.set_ylabel(f"{error_type} (\%)")
+                ax.set_ylabel(f"{error_type} {limit[0]} pp (\%)")
 
         lim = ax.get_ylim()
         if lim[1] - lim[0] > 16.:
@@ -2433,9 +2640,9 @@ def plot_test_spacing(error_type: str = "RMSE", remove_outliers: bool = False,
         ax.set_ylim(lim)
 
     if limit is None:
-        fig_name = f"range_{error_type}.{fig_format}"
+        fig_name = f"step_{error_type}.{fig_format}"
     else:
-        fig_name = f"range_{error_type}{_sep_in}{limit[0]}.{fig_format}"
+        fig_name = f"step_{error_type}{_sep_in}{limit[0]}.{fig_format}"
 
     plt.draw()
     plt.tight_layout()
@@ -2610,7 +2817,7 @@ def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = Fa
             ax.set_ylabel(f"{error_type} (pp)")
             fig_name = f"normalisation_{error_type}.{fig_format}"
         else:
-            ax.set_ylabel(f"{error_type} (\%)")
+            ax.set_ylabel(f"{error_type} {limit[0]} pp (\%)")
             fig_name = f"normalisation_{error_type}{_sep_in}{limit[0]}.{fig_format}"
 
     plt.draw()
@@ -2760,7 +2967,7 @@ def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False,
         if limit is None:
             ax.set_ylabel(f"{error_type} (pp)")
         else:
-            ax.set_ylabel(f"{error_type} (\%)")
+            ax.set_ylabel(f"{error_type} {limit[0]} pp (\%)")
 
     lim = ax.get_ylim()
     if lim[1] - lim[0] > 16.:

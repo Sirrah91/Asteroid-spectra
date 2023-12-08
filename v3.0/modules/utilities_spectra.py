@@ -16,12 +16,16 @@ import h5py
 from modules.utilities import (check_dir, flatten_list, normalise_in_rows, denoise_array, safe_arange, is_empty, stack,
                                split_path, argnearest, my_argmax, return_mean_std, my_polyfit, check_file, is_sorted)
 
+from modules.NN_classes import gimme_list_of_classes
+
 from modules.NN_config_parse import (gimme_minerals_all, gimme_num_minerals, gimme_endmember_counts, bin_to_used,
                                      bin_to_cls)
 
 from modules._constants import (_path_data, _path_model, _model_suffix, _spectra_name, _wavelengths_name, _wp,
                                 _metadata_name, _metadata_key_name, _label_name, _label_key_name, _path_catalogues,
                                 _sep_out, _sep_in)
+
+from modules.NN_config_composition import mineral_names, mineral_names_short, endmember_names
 
 # defaults only
 from modules.CD_parameters import denoise, normalise
@@ -454,6 +458,8 @@ def compute_within(y_true: np.ndarray, y_pred: np.ndarray, error_limit: tuple[fl
         within = np.transpose([np.interp(error_limit, quantile[:, i], percentile, left=0., right=100.)
                                for i in range(np.shape(quantile)[1])])
 
+    within = np.array(within, dtype=_wp)
+
     if return_dict:
         return {f"within {limit} pp": within_limit for limit, within_limit in zip(error_limit, within)}
 
@@ -499,6 +505,20 @@ def gimme_model_specification(model_name: str) -> str:
 def gimme_bin_code_from_name(model_name: str) -> str:
     specification = gimme_model_specification(model_name=model_name)
     return specification.split(_sep_out)[-1]
+
+
+def gimme_keys_from_name(model_name: str, short_names: bool = False) -> np.ndarray:
+    if is_taxonomical(model_name):
+        return np.array(gimme_list_of_classes(model_name))
+    else:
+        used_minerals, used_endmembers = gimme_used_from_name(model_name)
+        mask = stack((used_minerals, flatten_list(used_endmembers)))
+        if short_names:
+            names = stack((mineral_names_short, flatten_list(endmember_names)))
+        else:
+            names = stack((mineral_names, flatten_list(endmember_names)))
+
+        return names[mask]
 
 
 def gimme_model_grid_from_name(model_name: str) -> str:

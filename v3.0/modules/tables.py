@@ -7,17 +7,17 @@ from modules.NN_evaluate import spectrum_error_transfer
 
 from modules.utilities import round_data_with_errors, normalise_array, flatten_list, stack, return_mean_std, safe_arange
 from modules.utilities_spectra import find_outliers, return_mineral_position, unique_indices, used_indices, join_data
-from modules.utilities_spectra import load_npz, gimme_predicted_class, compute_mean_predictions
+from modules.utilities_spectra import load_npz, gimme_predicted_class, compute_mean_predictions, is_taxonomical
 from modules.utilities_spectra import compute_within, compute_metrics, compute_one_sigma, gimme_bin_code_from_name
 
 from modules.NN_config_parse import gimme_num_minerals, gimme_endmember_counts, bin_to_used
 
-from modules.NN_config_composition import mineral_names_short, endmember_names
+from modules.NN_config_composition import mineral_names_short, endmember_names, mineral_names
 
 from modules._constants import _label_name, _sep_out, _sep_in
 
 # defaults only
-from modules.NN_config_composition import minerals_used, endmembers_used
+from modules.NN_config_composition import minerals_used, endmembers_used, comp_filtering_setup, comp_data_split_setup
 from modules.NN_config_taxonomy import classes
 
 
@@ -518,9 +518,13 @@ def taxonomy_class_of_mineral_types(types: list[str] | np.ndarray, y_true: np.nd
     return mean_classes, winning_classes
 
 
-def print_grid_test_stats_norm_window(x: np.ndarray, y: np.ndarray) -> None:
-    titles_all = np.array(["Olivine", "Orthopyroxene", "Clinopyroxene", "Fa",
-                           "Fs (OPX)", "Fs (CPX)", "En (CPX)", "Wo (CPX)"], dtype=str)
+def print_grid_test_stats_norm_window(x: np.ndarray, y: np.ndarray, used_minerals: np.ndarray | None = None,
+                                      used_endmembers: list[list[bool]] | None = None) -> None:
+    if used_minerals is None: used_minerals = minerals_used
+    if used_endmembers is None: used_endmembers = endmembers_used
+
+    names = stack((mineral_names, flatten_list(endmember_names)))
+    titles_all = names[unique_indices(used_minerals=used_minerals, used_endmembers=used_endmembers, all_minerals=True)]
 
     name = "Window" if isinstance(x[0], str) else "Normalisation"
 
@@ -529,18 +533,22 @@ def print_grid_test_stats_norm_window(x: np.ndarray, y: np.ndarray) -> None:
     print(f"{name} mean: {np.round(np.mean(y[0]), 1)}")
 
     norm = np.mean(y[1:], axis=1)
-    print(f"{name} minimum: {titles_all[np.argmin(norm)]}, {np.round(np.min(norm), 1)}")
-    print(f"{name} maximum: {titles_all[np.argmax(norm)]}, {np.round(np.max(norm), 1)}")
+    print(f"{name} minimum: {titles_all[np.argmin(norm)].upper()}, {np.round(np.min(norm), 1)}")
+    print(f"{name} maximum: {titles_all[np.argmax(norm)].upper()}, {np.round(np.max(norm), 1)}")
 
 
-def print_grid_test_stats_spacing(y: np.ndarray) -> None:
-    titles_all = np.array(["Olivine", "Orthopyroxene", "Clinopyroxene", "Fa",
-                           "Fs (OPX)", "Fs (CPX)", "En (CPX)", "Wo (CPX)"], dtype=str)
+def print_grid_test_stats_step(y: np.ndarray,used_minerals: np.ndarray | None = None,
+                               used_endmembers: list[list[bool]] | None = None) -> None:
+    if used_minerals is None: used_minerals = minerals_used
+    if used_endmembers is None: used_endmembers = endmembers_used
+
+    names = stack((mineral_names, flatten_list(endmember_names)))
+    titles_all = names[unique_indices(used_minerals=used_minerals, used_endmembers=used_endmembers, all_minerals=True)]
 
     curves = np.array(["650--1850 nm", "650--2450 nm", "ASPECT 650--1600 nm", "ASPECT 650--2450 nm"])
 
     print("No ASPECT minimum", np.round(np.min((y[0][0], y[1][0])), 1))
-    print("no ASPECT maximum", np.round(np.max((y[0][0], y[1][0])), 1))
+    print("No ASPECT maximum", np.round(np.max((y[0][0], y[1][0])), 1))
     print("ASPECT minimum", np.round(np.min((y[2][0], y[3][0])), 1))
     print("ASPECT maximum", np.round(np.max((y[2][0], y[3][0])), 1))
 
@@ -554,12 +562,22 @@ def print_grid_test_stats_spacing(y: np.ndarray) -> None:
         else:
             func = np.min
 
-        icurve, ititle = np.where(trend == func(trend))
-        quantity = titles_all[ititle][0]
-        curve = curves[icurve][0]
+        for resolution in ["ideal", "aspect"]:
+            if resolution == "ideal":
+                trend_eval = trend[:2]
+                const_use = const[:2]
+                curves_use = curves[:2]
+            else:
+                trend_eval = trend[2:]
+                const_use = const[2:]
+                curves_use = curves[2:]
 
-        print(f"Trend {which}: {quantity}, {curve}, {np.round(func(trend * 10), 2)}")
-        print(f"Trend {which} avg: {np.round(np.diff(np.polyval(np.concatenate((trend[icurve, ititle], const[icurve, ititle])), [10, 50]))[0], 1)}")
+            icurve, ititle = np.where(trend_eval == func(trend_eval))
+            quantity = titles_all[ititle][0]
+            curve = curves_use[icurve][0]
+
+            print(f"Trend {which}: {quantity}, {curve}, {np.round(func(trend_eval * 10), 2)}")
+            print(f"Trend {which} avg: {np.round(np.diff(np.polyval(np.concatenate((trend_eval[icurve, ititle], const_use[icurve, ititle])), [10, 50]))[0], 1)}")
 
     print_trends("max")
     print_trends("min")
@@ -567,7 +585,7 @@ def print_grid_test_stats_spacing(y: np.ndarray) -> None:
 
 def print_grid_test_stats_range(error_mat: np.ndarray, lim_from: tuple[int, ...] | int, lim_to: tuple[int, ...] | int,
                                 start: np.ndarray | None = None, stop: np.ndarray | None = None,
-                                name: str = "") -> None:
+                                name: str = "", quiet: bool = False) -> tuple[float, ...]:
 
     if start is None: start = safe_arange(450, 2350, 100, endpoint=True, dtype=int)
 
@@ -589,21 +607,105 @@ def print_grid_test_stats_range(error_mat: np.ndarray, lim_from: tuple[int, ...]
                       :np.where(start == lim_from)[0][0] + 1]
 
     mn, std = return_mean_std(mat_cut)
-    print(f"{name} mean ± std: {np.round(mn, 1)} ± {np.round(std, 1)}")
+    if not quiet:
+        print(f"{name} mean ± std: {np.round(mn, 1)} ± {np.round(std, 1)}")
+
+    return mn, std
 
 
-def print_grid_test_stats_table(norm: np.ndarray, window: np.ndarray, spacing: np.ndarray, latex_output: bool = False) -> None:
-    titles_all = np.array(["All", "Olivine", "Orthopyroxene", "Clinopyroxene", "Fa",
-                           "Fs (OPX)", "Fs (CPX)", "En (CPX)", "Wo (CPX)"], dtype=str)
+def print_range_test_table(error_mat: np.ndarray, start: int, stop: int):
+    mns, _ = list(zip(*[print_grid_test_stats_range(rng, lim_from=(start, start), lim_to=(stop, stop), quiet=True)
+                        for rng in error_mat[1:]]))
 
-    data_names = ["Normalisation", "Window", "Spacing"]
+    print(f"{start}\u2013{stop} nm")
+    print(" & ".join((f"{np.round(mn, 1):.1f}" for mn in mns)), "\\\\")
+
+
+def print_grid_test_significance_table(norm: np.ndarray, error_mat: np.ndarray, window: np.ndarray, step: np.ndarray,
+                                       error_type: str, used_minerals: np.ndarray | None = None,
+                                       used_endmembers: list[list[bool]] | None = None,
+                                       latex_output: bool = False) -> None:
+    if used_minerals is None: used_minerals = minerals_used
+    if used_endmembers is None: used_endmembers = endmembers_used
+
+    mask = unique_indices(used_minerals=used_minerals, used_endmembers=used_endmembers)
+    names = stack((mineral_names_short, flatten_list(endmember_names)))
+    names = names[unique_indices(used_minerals=used_minerals, used_endmembers=used_endmembers, all_minerals=True)]
+
+    indices = np.array(stack((np.where("OL" == names)[0], np.where("OPX" == names)[0],
+                              np.where("Fa" == names)[0], np.where("Fs (OPX)" == names)[0])), dtype=int)
+
+    _, stds = print_model_to_model_variations(quiet=True)
+    std_rmse, std_within = stds
+
+    std_model = std_rmse if error_type == "rmse" else std_within
+
+    _, stds = list(zip(*[print_grid_test_stats_range(error_mat[indices[0] + 1], lim_from=(450, 750), lim_to=(1050, 1250), quiet=True),
+                         print_grid_test_stats_range(error_mat[indices[1] + 1], lim_from=(450, 750), lim_to=(1050, 1250), quiet=True),
+                         print_grid_test_stats_range(error_mat[indices[2] + 1], lim_from=(450, 750), lim_to=(1550, 1750), quiet=True),
+                         print_grid_test_stats_range(error_mat[indices[3] + 1], lim_from=(450, 750), lim_to=(1350, 1750), quiet=True)]))
+
+    std_range = np.zeros(len(std_rmse))
+    std_range[indices] = stds
+
+    std_model, std_range = std_model[mask], std_range[mask]
+
+    # already masked
+    _, stds = list(zip(*[return_mean_std(quantity, axis=1) for i, quantity in enumerate([norm, window, step])]))
+
+    std_norm, std_window, std_step = stds
+    std_norm, std_window, std_step = std_norm[1:], std_window[1:], std_step[1:]  # remove "All"
+
+    if not latex_output:
+        print("       ", "".join(f'{name.replace("(OPX)", "").replace("(CPX)", ""):5}' for name in names))
+        print(f"Norm.:  {', '.join([f'{sigma:.1f}' for sigma in np.round(std_norm / std_model, 1)])}")
+        print(f"Range:  {', '.join([f'{sigma:.1f}' for sigma in np.round(std_range / std_model, 1)])}")
+        print(f"Window: {', '.join([f'{sigma:.1f}' for sigma in np.round(std_window / std_model, 1)])}")
+        print(f"Step:   {', '.join([f'{sigma:.1f}' for sigma in np.round(std_step / std_model, 1)])}")
+    else:
+        print("&", f"{' & '.join([f'{sigma:.1f}' for sigma in np.round(std_norm / std_model, 1)[indices]])}", "\\\\")
+        print("-" * 50)
+        print("&", f"{' & '.join([f'{sigma:.1f}' for sigma in np.round(std_range / std_model, 1)[indices]])}", "\\\\")
+        print("-" * 50)
+        print("&", f"{' & '.join([f'{sigma:.1f}' for sigma in np.round(std_window / std_model, 1)[indices]])}", "\\\\")
+        print("-" * 50)
+        print("&", f"{' & '.join([f'{sigma:.1f}' for sigma in np.round(std_step / std_model, 1)[indices]])}", "\\\\")
+
+
+def print_grid_test_stats_table(norm: np.ndarray, error_mat: np.ndarray, window: np.ndarray,
+                                step: np.ndarray, used_minerals: np.ndarray | None = None,
+                                used_endmembers: list[list[bool]] | None = None,
+                                latex_output: bool = False) -> None:
+    if used_minerals is None: used_minerals = minerals_used
+    if used_endmembers is None: used_endmembers = endmembers_used
+
+    names = stack((mineral_names, flatten_list(endmember_names)))
+    titles_all = names[unique_indices(used_minerals=used_minerals, used_endmembers=used_endmembers, all_minerals=True)]
+    titles_all = stack((["All"], titles_all))
+
+    indices = np.array(stack((np.where("olivine" == titles_all)[0], np.where("orthopyroxene" == titles_all)[0],
+                              np.where("Fa" == titles_all)[0], np.where("Fs (OPX)" == titles_all)[0])), dtype=int)
+
+    data_names = ["Normalisation", "Range", "Window", "Step"]
     print("-" * 50)
 
-    for i, quantity in enumerate([norm, window, spacing]):
-        mn, std = return_mean_std(quantity, axis=1)
+    mns, stds = list(zip(*[print_grid_test_stats_range(error_mat[indices[0]], lim_from=(650, 650), lim_to=(1850, 1850), quiet=True),
+                           print_grid_test_stats_range(error_mat[indices[1]], lim_from=(650, 650), lim_to=(1850, 1850), quiet=True),
+                           print_grid_test_stats_range(error_mat[indices[2]], lim_from=(650, 650), lim_to=(1850, 1850), quiet=True),
+                           print_grid_test_stats_range(error_mat[indices[3]], lim_from=(650, 650), lim_to=(1850, 1850), quiet=True)]))
+    mn_range = np.zeros(len(titles_all))
+    std_range = np.zeros(len(titles_all))
+    mn_range[indices] = mns
+    std_range[indices] = stds
+
+    for i, quantity in enumerate([norm, error_mat, window, step]):
+        if quantity is error_mat:
+            mn, std = mn_range, std_range
+        else:
+            mn, std = return_mean_std(quantity, axis=1)
 
         if not latex_output:
-            for index in [1, 2, 4, 5]:  # OL, OPX, Fa, Fs (OPX)
+            for index in indices:  # OL, OPX, Fa, Fs (OPX)
                 print(f"{data_names[i]} {titles_all[index]:14}: "
                       f"{np.round(mn[index], 1)} ± {np.round(std[index], 1)}")
         else:
@@ -611,13 +713,13 @@ def print_grid_test_stats_table(norm: np.ndarray, window: np.ndarray, spacing: n
             std_to_print = [f"{np.round(s, 1):.1f}" for s in std]
             std_to_print = np.array([s.replace("0.", "").replace(".", "") for s in std_to_print])
 
-            print("&", " & ".join([f"{np.round(mn[index], 1):.1f}({std_to_print[index]})" for index in [1, 2, 4, 5]]), "\\\\")
+            print("&", " & ".join([f"{np.round(mn[index], 1):.1f}({std_to_print[index]})" for index in indices]), "\\\\")
         print("-" * 50)
 
 
-def print_model_to_model_variations() -> None:
+def print_model_to_model_variations(quiet: bool = False) -> tuple[np.ndarray, ...]:
     filenames = ["/home/dakorda/Python/NN/accuracy_tests/range_test/normalisation/composition_450-2450-10-550_1110-11-110-111-000_20230704150150.npz",
-                 "/home/dakorda/Python/NN/accuracy_tests/range_test/spacing/composition_450-2450-10-550_1110-11-110-111-000_20230709032616.npz",
+                 "/home/dakorda/Python/NN/accuracy_tests/range_test/range/composition_450-2450-10-550_1110-11-110-111-000_20230709032616.npz",
                  "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016111014.npz",
                  "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016111656.npz",
                  "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016153911.npz",
@@ -638,33 +740,50 @@ def print_model_to_model_variations() -> None:
         data = load_npz(filename)
         y_true, y_pred = data["labels_true"], data["labels_predicted"]
 
-        tmp, = compute_metrics(y_true, y_pred, remove_px_outliers=True)
+        tmp, = compute_metrics(y_true, y_pred, remove_px_outliers=True, used_minerals=used_minerals,
+                               used_endmembers=used_endmembers)
         rmse.append(tmp)
 
-        tmp, = compute_within(y_true, y_pred, error_limit=(10.,), remove_px_outliers=True)
+        tmp, = compute_within(y_true, y_pred, error_limit=(10.,), remove_px_outliers=True, used_minerals=used_minerals,
+                              used_endmembers=used_endmembers)
         within.append(tmp)
 
     rmse = np.array(rmse)
     within = np.array(within)
 
     indices = unique_indices(used_minerals, used_endmembers)
+    mns, stds = np.zeros((2, len(rmse))), np.zeros((2, len(rmse)))
 
     for i, quantity in enumerate([rmse, within]):
         mn, std = return_mean_std(quantity, axis=0)
-        mn, std, prec = round_data_with_errors(mn, std, return_precision=True)
-        mn, std, prec = mn[indices], std[indices], prec[indices]
-        prec[prec < 0] = 0
+        mns[i], stds[i] = mn, std
 
-        std_to_print = np.array(np.round(std * 10**prec), dtype=int)
-        print(f"{names[i]} &", " & ".join([f'{m:.{n}f}({s})' for m, s, n in zip(mn, std_to_print, prec)]), "\\\\")
+        if not quiet:
+            mn, std, prec = round_data_with_errors(mn, std, return_precision=True)
+            mn, std, prec = mn[indices], std[indices], prec[indices]
+            prec[prec < 0] = 0
+
+            std_to_print = np.array(np.round(std * 10**prec), dtype=int)
+            print(f"{names[i]} &", " & ".join([f'{m:.{n}f}({s})' for m, s, n in zip(mn, std_to_print, prec)]), "\\\\")
+
+    return mns, stds
 
 
-def ASPECT_metrics_variations(snrs: tuple[float, ...]) -> None:
+def ASPECT_metrics_variations(snrs: tuple[float, ...],
+                              filtering_setup: dict | None = None,
+                              data_split_setup: dict | None = None) -> None:
+    if filtering_setup is None: filtering_setup = comp_filtering_setup
+    if data_split_setup is None: data_split_setup = comp_data_split_setup
+
     n_trials = 200
     rnd_seed = 42
 
     model_names = ["/home/dakorda/Python/NN/models/composition/ASPECT_vis-nir1-nir2_30/CNN_ASPECT_vis-nir1-nir2_30_1110-11-110-111-000_20231015114247.h5",
                    "/home/dakorda/Python/NN/models/composition/ASPECT_vis-nir1-nir2-swir_30/CNN_ASPECT_vis-nir1-nir2-swir_30_1110-11-110-111-000_20231015114247.h5"]
+
+    if is_taxonomical(model=model_names[0]):
+        raise ValueError("Only composition models are allowed at this moment.")
+
     used_minerals, used_endmembers = bin_to_used(gimme_bin_code_from_name(model_names[0]))
 
     to_print = []
@@ -673,16 +792,17 @@ def ASPECT_metrics_variations(snrs: tuple[float, ...]) -> None:
 
     for model_name in model_names:
         for snr in snrs:
-            res = spectrum_error_transfer(model_name, snr=snr, n_trials=n_trials, rnd_seed=rnd_seed)
+            res = spectrum_error_transfer(model_name, snr=snr,  filtering_setup=filtering_setup,
+                                          data_split_setup=data_split_setup, n_trials=n_trials, rnd_seed=rnd_seed)
 
             for quantity in ["rmse", "within"]:
                 if quantity == "rmse":
-                    mn = res["RMSE noise"]["mean (pp)"] - res["RMSE base"]["mean (pp)"]
-                    std = res["RMSE noise"]["std (pp)"]
+                    mn = res["RMSE mean noisy (pp)"] - res["RMSE mean (pp)"]
+                    std = res["RMSE std noisy (pp)"]
                     name = "$\\Delta$~RMSE"
                 else:
-                    mn = res["within 10 noise"]["mean (%)"] - res["within 10 base"]["mean (%)"]
-                    std = res["within 10 noise"]["std (pp)"]
+                    mn = res["within 10 pp mean noisy (pp)"] - res["within 10 pp mean (%)"]
+                    std = res["within 10 pp std noisy (pp)"]
                     name = "$\\Delta$~Within"
 
                 mn, std, prec = round_data_with_errors(mn, std, return_precision=True)

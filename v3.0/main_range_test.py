@@ -77,4 +77,4 @@ def pipeline(index_of_range: int, num_models: int = 1) -> np.ndarray:
 
 
 if __name__ == "__main__":
-    y_pred = [pipeline(index_of_range=index) for index in tqdm(range(len(model_names)))]
+    y_pred = np.array([pipeline(index_of_range=index) for index in tqdm(range(len(model_names)))])

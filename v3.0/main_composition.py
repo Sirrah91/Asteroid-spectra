@@ -51,7 +51,10 @@ def pipeline(num_models: int = 1) -> np.ndarray:
 
     if train_new_model or tune_hyperparameters:
         # Name of the train data in _path_data
-        filename_train_data = f"mineral{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz"
+        if comp_grid["wvl_norm"] is not None:
+            filename_train_data = f"mineral{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz"
+        else:
+            filename_train_data = f"mineral{_sep_in}spectra{_sep_out}denoised.npz"
 
         # Load the data
         x_train, y_train = load_data(filename_train_data, clean_dataset=True,
@@ -106,7 +109,7 @@ if __name__ == "__main__":
     if tune_hyperparameters:
         pipeline()
     elif train_new_model:
-        for _ in tqdm(range(10)):
+        for _ in tqdm(range(1)):
             y_pred = pipeline()
     else:
         y_pred = pipeline()

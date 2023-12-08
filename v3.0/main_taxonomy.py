@@ -52,7 +52,10 @@ def pipeline(num_models: int = 1) -> np.ndarray:
 
     if train_new_model or tune_hyperparameters:
         # Name of the train data in _path_data
-        filename_train_data = f"asteroid{_sep_in}spectra{_sep_out}{num_labels_in_file}{_sep_out}reduced{_sep_out}denoised{_sep_out}norm.npz"
+        if tax_grid["wvl_norm"] is not None:
+            filename_train_data = f"asteroid{_sep_in}spectra{_sep_out}{num_labels_in_file}{_sep_out}reduced{_sep_out}denoised{_sep_out}norm.npz"
+        else:
+            raise ValueError("There are no non-normalised data for training.")
 
         # Load the data
         x_train, y_train = load_data(filename_train_data, clean_dataset=True, used_classes=classes,

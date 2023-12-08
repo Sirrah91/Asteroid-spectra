@@ -6,7 +6,7 @@ from modules.utilities import check_dir
 from modules._constants import _path_backup, _project_dir, _subdirs
 
 
-# pipreqs --encoding utf-8 --ignore venv10,venv,backup ./
+# pipreqs --encoding utf-8 --ignore venv10,backup ./
 
 
 def make_backup(version: str) -> None:
@@ -66,4 +66,4 @@ def make_backup(version: str) -> None:
 
 
 if __name__ == "__main__":
-    make_backup("v3.3.2")
+    make_backup("v3.4.8")

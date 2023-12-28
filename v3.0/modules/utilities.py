@@ -421,10 +421,13 @@ def is_sorted(array: np.ndarray) -> bool:
 
 def my_argextreme(min_or_max: Literal["min", "max"], x: np.ndarray, y: np.ndarray,
                   x0: float | None = None, dx: float = 50.,
-                  n_points: int = 3,
+                  n_points: int = 2,
                   fit_method: str = "ransac",
                   rtol: float = 2.) -> float:
     # This function returns a position of local extreme of y(x) around a point x0 +- dx
+    if n_points <= 0:
+        raise ValueError(f'"n_points" must be positive but is {n_points}.')
+
     if min_or_max not in ["min", "max"]:
         raise ValueError('"min_or_max" must be "min" or "max".')
 
@@ -506,14 +509,14 @@ def my_argextreme(min_or_max: Literal["min", "max"], x: np.ndarray, y: np.ndarra
     return x[ix0]
 
 
-def my_argmin(x: np.ndarray, y: np.ndarray, x0: float | None = None, dx: float = 10.,
-              n_points: int = 3, fit_method: str = "ransac", rtol: float = 2.) -> float:
+def my_argmin(x: np.ndarray, y: np.ndarray, x0: float | None = None, dx: float = 50.,
+              n_points: int = 2, fit_method: str = "ransac", rtol: float = 2.) -> float:
     # This function returns a position of local minimum of y(x) around a point x0 +- dx
     return my_argextreme("min", x, y, x0, dx, n_points, fit_method, rtol)
 
 
-def my_argmax(x: np.ndarray, y: np.ndarray, x0: float | None = None, dx: float = 10.,
-              n_points: int = 3, fit_method: str = "ransac", rtol: float = 2.) -> float:
+def my_argmax(x: np.ndarray, y: np.ndarray, x0: float | None = None, dx: float = 50.,
+              n_points: int = 2, fit_method: str = "ransac", rtol: float = 2.) -> float:
     # This function returns a position of local maximum of y(x) around a point x0 +- dx
     return my_argextreme("max", x, y, x0, dx, n_points, fit_method, rtol)
 

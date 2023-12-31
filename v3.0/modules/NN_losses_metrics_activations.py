@@ -359,7 +359,7 @@ def my_rmse(used_minerals: np.ndarray | None = None, used_endmembers: list[list[
 
 def my_Lp_norm(p_coef: float, used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None,
                cleaning: bool = True, all_to_one: bool = False) -> Callable[[EagerTensor, EagerTensor], EagerTensor]:
-    if p_coef < 1:
+    if p_coef < 1.:
         raise ValueError("p_coef >= 1 in Lp_norm.")
 
     if used_minerals is None: used_minerals = minerals_used
@@ -375,6 +375,9 @@ def my_Lp_norm(p_coef: float, used_minerals: np.ndarray | None = None, used_endm
 def my_quantile(percentile: np.ndarray | float, used_minerals: np.ndarray | None = None,
                 used_endmembers: list[list[bool]] | None = None, cleaning: bool = True,
                 all_to_one: bool = False) -> Callable[[EagerTensor, EagerTensor], EagerTensor]:
+    if not np.all(np.logical_and(percentile >= 0., percentile <= 100.)):
+        raise ValueError("Percentile must be in the range [0, 100].")
+
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
 
@@ -495,8 +498,8 @@ def my_sigmoid(used_minerals: np.ndarray | None = None, used_endmembers: list[li
     return sigmoid_norm
 
 
-def my_plu(alpha: float = 0.1, c: float = 1.0, used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None
-           ) -> Callable[[EagerTensor], EagerTensor]:
+def my_plu(alpha: float = 0.1, c: float = 1.0, used_minerals: np.ndarray | None = None,
+           used_endmembers: list[list[bool]] | None = None) -> Callable[[EagerTensor], EagerTensor]:
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
 
@@ -508,7 +511,7 @@ def my_plu(alpha: float = 0.1, c: float = 1.0, used_minerals: np.ndarray | None 
         x_new = K.zeros_like(x[:, 0:0])
 
         for start, stop in gimme_indices(used_minerals, used_endmembers):
-            tmp = relu(x[..., start:stop] + c) - c - (1 - alpha) * relu(x[..., start:stop] - c) - alpha * relu(
+            tmp = relu(x[..., start:stop] + c) - c - (1. - alpha) * relu(x[..., start:stop] - c) - alpha * relu(
                 -x[..., start:stop] - c)
             norm = K.sum(tmp, axis=-1, keepdims=True)
             # clip all numbers that are close to zero to signed K.epsilon()
@@ -559,6 +562,7 @@ def gimme_metrics(metrics: list | tuple, used_minerals: np.ndarray | None = None
 
 def create_custom_objects(used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None,
                           alpha: float | None = 1., use_weights: bool | None = True,
+                          p_coef: float = 1.5, percentile: float = 50.,
                           cleaning: bool = True, all_to_one: bool = True) -> dict:
     if used_minerals is None: used_minerals = minerals_used
     if used_endmembers is None: used_endmembers = endmembers_used
@@ -590,9 +594,9 @@ def create_custom_objects(used_minerals: np.ndarray | None = None, used_endmembe
                  cleaning=cleaning, all_to_one=all_to_one)
     rmse = my_rmse(used_minerals=used_minerals, used_endmembers=used_endmembers,
                    cleaning=cleaning, all_to_one=all_to_one)
-    Lp_norm = my_Lp_norm(p_coef=1.5, used_minerals=used_minerals, used_endmembers=used_endmembers,
+    Lp_norm = my_Lp_norm(p_coef=p_coef, used_minerals=used_minerals, used_endmembers=used_endmembers,
                          cleaning=cleaning, all_to_one=all_to_one)
-    quantile = my_quantile(percentile=50.0, used_minerals=used_minerals, used_endmembers=used_endmembers,
+    quantile = my_quantile(percentile=percentile, used_minerals=used_minerals, used_endmembers=used_endmembers,
                            cleaning=cleaning, all_to_one=all_to_one)
     r2 = my_r2(used_minerals=used_minerals, used_endmembers=used_endmembers,
                cleaning=cleaning, all_to_one=all_to_one)

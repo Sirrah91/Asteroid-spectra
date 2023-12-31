@@ -144,11 +144,11 @@ def quantile_table(y_true: np.ndarray, y_pred: np.ndarray,
     else:
         print("--------------------------- ALL LABELS ---------------------------")
         for i, limit in enumerate(error_limit):
-            print(f"{int(limit):3} percent: [{', '.join(f'{perc_list:3}' for perc_list in within_all[i])}]")
+            print(f"{int(limit):3} percent: [{', '.join(f'{perc_list:5.1f}' for perc_list in within_all[i])}]")
 
         print("----------------------- INDIVIDUAL LABELS ------------------------")
         for i, limit in enumerate(error_limit):
-            print(f"{int(limit):3} percent: [{', '.join(f'{perc_list:3}' for perc_list in within[i])}]")
+            print(f"{int(limit):3} percent: [{', '.join(f'{perc_list:5.1f}' for perc_list in within[i])}]")
 
     print()
     print(f"1-sigma error (all): [{', '.join(f'{acc:3.1f}' for acc in one_sigma_all)}]")

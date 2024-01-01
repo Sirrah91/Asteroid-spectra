@@ -101,19 +101,15 @@ def quantile_table(y_true: np.ndarray, y_pred: np.ndarray,
 
     within = compute_within(y_true, y_pred, error_limit=error_limit, used_minerals=used_minerals,
                             used_endmembers=used_endmembers)
-    within = np.round(within, 1)
 
     within_all = compute_within(y_true, y_pred, error_limit=error_limit, used_minerals=used_minerals,
                                 used_endmembers=used_endmembers, all_to_one=True)
-    within_all = np.round(within_all, 1)
 
     one_sigma = compute_one_sigma(y_true, y_pred, used_minerals=used_minerals,
                                   used_endmembers=used_endmembers)
-    one_sigma = np.round(one_sigma, 1)
 
     one_sigma_all = compute_one_sigma(y_true, y_pred, used_minerals=used_minerals,
                                       used_endmembers=used_endmembers, all_to_one=True)
-    one_sigma_all = np.round(one_sigma_all, 1)
 
     if latex_output:
         table = np.zeros((np.shape(y_true)[1] + 1, len(error_limit)), dtype="<U100")
@@ -143,16 +139,18 @@ def quantile_table(y_true: np.ndarray, y_pred: np.ndarray,
 
     else:
         print("--------------------------- ALL LABELS ---------------------------")
+        within_all = np.round(within_all, 1)
         for i, limit in enumerate(error_limit):
             print(f"{int(limit):3} percent: [{', '.join(f'{perc_list:5.1f}' for perc_list in within_all[i])}]")
 
         print("----------------------- INDIVIDUAL LABELS ------------------------")
+        within = np.round(within, 1)
         for i, limit in enumerate(error_limit):
             print(f"{int(limit):3} percent: [{', '.join(f'{perc_list:5.1f}' for perc_list in within[i])}]")
 
     print()
-    print(f"1-sigma error (all): [{', '.join(f'{acc:3.1f}' for acc in one_sigma_all)}]")
-    print(f"1-sigma error: [{', '.join(f'{acc:3.1f}' for acc in one_sigma)}]")
+    print(f"1-sigma error (all): [{', '.join(f'{acc:3.1f}' for acc in np.round(one_sigma_all, 1))}]")
+    print(f"1-sigma error: [{', '.join(f'{acc:3.1f}' for acc in np.round(one_sigma, 1))}]")
 
 
 def mean_asteroid_type(y_pred: np.ndarray, used_minerals: np.ndarray | None = None,

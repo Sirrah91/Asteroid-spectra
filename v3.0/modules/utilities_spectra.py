@@ -102,8 +102,9 @@ def load_h5(filename: str, subfolder: str = "", list_keys: list[str] | None = No
 
 def load_keras_model(filename: str, subfolder: str = "", custom_objects: dict | None = None,
                      compile: bool = True, custom_objects_dict: dict | None = None, **kwargs) -> Model:
-    if custom_objects_dict is None: custom_objects_dict = {}
-    if custom_objects is None: custom_objects = gimme_custom_objects(model_name=filename, **custom_objects_dict)
+    if custom_objects is None:
+        if custom_objects_dict is None: custom_objects_dict = {}
+        custom_objects = gimme_custom_objects(model_name=filename, **custom_objects_dict)
 
     filename = check_file(filename, _path_model, subfolder)
 

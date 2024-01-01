@@ -101,8 +101,9 @@ def load_h5(filename: str, subfolder: str = "", list_keys: list[str] | None = No
 
 
 def load_keras_model(filename: str, subfolder: str = "", custom_objects: dict | None = None,
-                     compile: bool = True, **kwargs) -> Model:
-    if custom_objects is None: custom_objects = gimme_custom_objects(model_name=filename)
+                     compile: bool = True, custom_objects_dict: dict | None = None, **kwargs) -> Model:
+    if custom_objects_dict is None: custom_objects_dict = {}
+    if custom_objects is None: custom_objects = gimme_custom_objects(model_name=filename, **custom_objects_dict)
 
     filename = check_file(filename, _path_model, subfolder)
 
@@ -361,7 +362,7 @@ def apply_transmission(spectra: np.ndarray,
     # transmission = normalise_in_rows(transmission)
 
     if wvl_cen_method == "argmax":
-        wvl_central = np.array([my_argmax(wvl_transmission, transm, fit_method="ransac") for transm in transmission])
+        wvl_central = np.array([my_argmax(wvl_transmission, transm, n_points=3, fit_method="ransac") for transm in transmission])
 
     elif wvl_cen_method == "dot":
         wvl_central = simps(y=transmission * wvl_transmission, x=wvl_transmission)

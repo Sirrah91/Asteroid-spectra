@@ -8,7 +8,7 @@ import pandas as pd
 from tensorflow.keras.models import load_model, Sequential, Model
 from pathlib import Path
 from scipy.interpolate import interp1d
-from scipy.integrate import simpson
+from scipy.integrate import trapezoid
 from scipy.spatial import ConvexHull
 from glob import glob
 import h5py
@@ -366,7 +366,7 @@ def apply_transmission(spectra: np.ndarray,
     if sum_or_int == "sum":
         transmission = normalise_in_rows(transmission)
     else:
-        transmission = normalise_in_rows(transmission, simpson(y=transmission, x=wvl_transmission))
+        transmission = normalise_in_rows(transmission, trapezoid(y=transmission, x=wvl_transmission))
 
     if wvl_cen_method == "argmax":
         wvl_central = np.array([my_argmax(wvl_transmission, transm, n_points=3, fit_method="ransac") for transm in transmission])
@@ -375,7 +375,7 @@ def apply_transmission(spectra: np.ndarray,
         if sum_or_int == "sum":
             wvl_central = np.dot(transmission, wvl_transmission)
         else:
-            wvl_central = simpson(y=transmission * wvl_transmission, x=wvl_transmission)
+            wvl_central = trapezoid(y=transmission * wvl_transmission, x=wvl_transmission)
 
     else:
         raise ValueError('Unknown method how to estimate central wavelengths. Available methods are "argmax" and "dot".')
@@ -386,7 +386,7 @@ def apply_transmission(spectra: np.ndarray,
     if sum_or_int == "sum":
         final_spectra = spectra @ np.transpose(transmission)
     else:
-        final_spectra = simpson(y=np.einsum('ij, kj -> ikj', spectra, transmission), x=wvl_transmission)
+        final_spectra = trapezoid(y=np.einsum('ij, kj -> ikj', spectra, transmission), x=wvl_transmission)
 
     wvl_central, final_spectra = np.array(wvl_central, dtype=_wp), np.array(final_spectra, dtype=_wp)
 

@@ -249,10 +249,7 @@ def denoise_spectra(data: np.ndarray, wavelength: np.ndarray, sigma_nm: float | 
     if np.ndim(data) == 1:
         data = np.reshape(data, (1, len(data)))
 
-    nm_to_px = 1. / (wavelength[1] - wavelength[0])  # conversion from nm to px
-    sigma_px = sigma_nm * nm_to_px
-
-    return denoise_array(data, sigma_px=sigma_px)
+    return denoise_array(data, sigma=sigma_nm, x=wavelength)
 
 
 def normalise_spectra(data: np.ndarray, wavelength: np.ndarray, wvl_norm_nm: float | None = 550.,
@@ -369,7 +366,7 @@ def apply_transmission(spectra: np.ndarray,
         transmission = normalise_in_rows(transmission, trapezoid(y=transmission, x=wvl_transmission))
 
     if wvl_cen_method == "argmax":
-        wvl_central = np.array([my_argmax(wvl_transmission, transm, n_points=3, fit_method="ransac") for transm in transmission])
+        wvl_central = np.array([my_argmax(wvl_transmission, transm, n_points=2, fit_method="ransac") for transm in transmission])
 
     elif wvl_cen_method == "dot":
         if sum_or_int == "sum":
@@ -390,7 +387,7 @@ def apply_transmission(spectra: np.ndarray,
             final_spectra = trapezoid(y=spectra * transmission, x=wvl_transmission)
         else:
             final_spectra = trapezoid(y=np.einsum('...ij, ...kj -> ...ikj', spectra, transmission), x=wvl_transmission)
-        
+
 
     wvl_central, final_spectra = np.array(wvl_central, dtype=_wp), np.array(final_spectra, dtype=_wp)
 

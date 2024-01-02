@@ -8,7 +8,7 @@ import pandas as pd
 from tensorflow.keras.models import load_model, Sequential, Model
 from pathlib import Path
 from scipy.interpolate import interp1d
-from scipy.integrate import simpson, trapezoid
+from scipy.integrate import simpson
 from scipy.spatial import ConvexHull
 from glob import glob
 import h5py

@@ -386,7 +386,7 @@ def apply_transmission(spectra: np.ndarray,
         if np.ndim(spectra) == 1:
             final_spectra = trapezoid(y=spectra * transmission, x=wvl_transmission)
         else:
-            final_spectra = trapezoid(y=np.einsum('...ij, ...kj -> ...ikj', spectra, transmission), x=wvl_transmission)
+            final_spectra = trapezoid(y=np.einsum('...j, kj -> ...kj', spectra, transmission), x=wvl_transmission)
 
 
     wvl_central, final_spectra = np.array(wvl_central, dtype=_wp), np.array(final_spectra, dtype=_wp)

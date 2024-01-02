@@ -13,8 +13,9 @@ from tensorflow.keras.models import Model
 from sklearn.decomposition import PCA
 from sklearn.linear_model import HuberRegressor, RANSACRegressor, TheilSenRegressor
 from sklearn.preprocessing import PolynomialFeatures
-from scipy.stats import gaussian_kde, kendalltau, pearsonr, spearmanr
+from scipy.stats import norm, gaussian_kde, kendalltau, pearsonr, spearmanr
 from scipy.ndimage import gaussian_filter1d
+from scipy.integrate import trapezoid
 import shutil
 import matplotlib
 from matplotlib import pyplot as plt
@@ -798,14 +799,37 @@ def normalise_in_rows(array: np.ndarray,
     return normalise_array(array, axis=1, norm_vector=norm_vector, norm_constant=norm_constant)
 
 
-def denoise_array(array: np.ndarray, sigma_px: float, remove_mean: bool = True) -> np.ndarray:
+def denoise_array(array: np.ndarray, sigma_px: float, x: np.ndarray | None = None,
+                  remove_mean: bool = False, sum_or_int: str | None = None) -> np.ndarray:
+    if x is None:
+        x = np.arange(np.shape(array)[-1])
 
-    *_, cols = np.shape(array)
+    equidistant_measure = np.var(np.diff(x))
 
-    correction = gaussian_filter1d(np.ones(cols), sigma=sigma_px, mode="constant")
-    array_denoised = gaussian_filter1d(array, sigma=sigma_px, mode="constant")
+    if equidistant_measure == 0.:  # equidistant step -> standard gaussian convolution
+        correction = gaussian_filter1d(np.ones(len(x)), sigma=sigma_px, mode="constant")
+        array_denoised = gaussian_filter1d(array, sigma=sigma_px, mode="constant")
 
-    array_denoised = normalise_in_columns(array_denoised, norm_vector=correction)
+        array_denoised = normalise_in_columns(array_denoised, norm_vector=correction)
+
+    else:  # transmission application
+        if sum_or_int is None:  # 3 is randomly chosen. Better to do sum if there are too large gaps in wavelengths
+             sum_or_int = "sum" if equidistant_measure > 3. else "int"
+
+        filter = norm.pdf(np.reshape(x, (len(x), 1)), x, sigma_px)  # Gaussian filter
+
+        if sum_or_int == "sum":
+            filter = normalise_in_rows(filter)
+        else:
+            filter = normalise_in_rows(filter, trapezoid(y=filter, x=x))
+
+        if sum_or_int == "sum":
+            array_denoised = array @ np.transpose(filter)
+        else:
+            if np.ndim(array) == 1:
+                array_denoised = trapezoid(y=array * filter, x=x)
+            else:
+                array_denoised = trapezoid(y=np.einsum('...ij, ...kj -> ...ikj', array, filter), x=x)
 
     if remove_mean:  # here I assume that the noise has a zero mean
         mn = np.mean(array_denoised - array, axis=-1, keepdims=True)

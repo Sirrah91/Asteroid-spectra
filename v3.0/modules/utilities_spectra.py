@@ -8,13 +8,13 @@ import pandas as pd
 from tensorflow.keras.models import load_model, Sequential, Model
 from pathlib import Path
 from scipy.interpolate import interp1d
-from scipy.integrate import simps
+from scipy.integrate import simpson, trapezoid
 from scipy.spatial import ConvexHull
 from glob import glob
 import h5py
 
 from modules.utilities import (check_dir, flatten_list, normalise_in_rows, denoise_array, safe_arange, is_empty, stack,
-                               split_path, argnearest, my_argmax, return_mean_std, my_polyfit, check_file, is_sorted)
+                               split_path, argnearest, my_argmax, return_mean_std, my_polyfit, check_file)
 
 from modules.NN_classes import gimme_list_of_classes
 
@@ -350,7 +350,11 @@ def clean_and_resave(filename: str, reinterpolate: bool = False, used_minerals: 
 def apply_transmission(spectra: np.ndarray,
                        transmission: np.ndarray,
                        wvl_transmission: np.ndarray,
-                       wvl_cen_method: Literal["argmax", "dot"] = "argmax") -> tuple[np.ndarray, ...]:
+                       wvl_cen_method: Literal["argmax", "dot"] = "argmax",
+                       sum_or_int: str | None = None) -> tuple[np.ndarray, ...]:
+
+    if sum_or_int is None:  # 3 is randomly chosen. Better to do sum if there are too large gaps in wavelengths
+         sum_or_int = "sum" if np.var(np.diff(wvl_transmission)) > 3. else "int"
 
     if np.ndim(transmission) == 1:  # need num_transmissions x num_wavelengths
         transmission = np.reshape(transmission, (1, -1))
@@ -359,15 +363,19 @@ def apply_transmission(spectra: np.ndarray,
     idx = np.argsort(wvl_transmission)
     wvl_transmission, transmission = wvl_transmission[idx], transmission[:, idx]
 
-    transmission = normalise_in_rows(transmission, simps(y=transmission, x=wvl_transmission))
-    # transmission = normalise_in_rows(transmission)
+    if sum_or_int == "sum":
+        transmission = normalise_in_rows(transmission)
+    else:
+        transmission = normalise_in_rows(transmission, simpson(y=transmission, x=wvl_transmission))
 
     if wvl_cen_method == "argmax":
         wvl_central = np.array([my_argmax(wvl_transmission, transm, n_points=3, fit_method="ransac") for transm in transmission])
 
     elif wvl_cen_method == "dot":
-        wvl_central = simps(y=transmission * wvl_transmission, x=wvl_transmission)
-        # wvl_central = np.dot(transmission, wvl_transmission)
+        if sum_or_int == "sum":
+            wvl_central = np.dot(transmission, wvl_transmission)
+        else:
+            wvl_central = simpson(y=transmission * wvl_transmission, x=wvl_transmission)
 
     else:
         raise ValueError('Unknown method how to estimate central wavelengths. Available methods are "argmax" and "dot".')
@@ -375,8 +383,10 @@ def apply_transmission(spectra: np.ndarray,
     index_sort = np.argsort(wvl_central)
     wvl_central, transmission = wvl_central[index_sort], transmission[index_sort]
 
-    final_spectra = simps(y=np.einsum('ij, kj -> ikj', spectra, transmission), x=wvl_transmission)
-    # final_spectra = spectra @ np.transpose(transmission)
+    if sum_or_int == "sum":
+        final_spectra = spectra @ np.transpose(transmission)
+    else:
+        final_spectra = simpson(y=np.einsum('ij, kj -> ikj', spectra, transmission), x=wvl_transmission)
 
     wvl_central, final_spectra = np.array(wvl_central, dtype=_wp), np.array(final_spectra, dtype=_wp)
 

@@ -3,7 +3,7 @@ environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 import numpy as np
 from scipy.interpolate import interp1d
-from scipy.integrate import simpson
+from scipy.integrate import trapezoid
 
 from modules.utilities import my_argmin, my_argmax, argnearest
 
@@ -11,7 +11,7 @@ from modules.utilities import my_argmin, my_argmax, argnearest
 def calc_BAR_BC(wavelength: np.ndarray, reflectance: np.ndarray, sum_or_int: str | None = None) -> tuple[np.ndarray, ...]:
     if sum_or_int is None:  # 3 is randomly chosen. Better to do sum if there are too large gaps in wavelengths
          sum_or_int = "sum" if np.var(np.diff(wavelength)) > 3. else "int"
-    
+
     # find extremes around these wavelengths
     pos_max_1 = 680.
     pos_max_2 = 1500.
@@ -96,7 +96,7 @@ def calc_BAR_BC(wavelength: np.ndarray, reflectance: np.ndarray, sum_or_int: str
         if sum_or_int == "sum":
             band_area_1 = np.sum(fc[arg_wvl_start:arg_wvl_stop + 1])
         else:
-            band_area_1 = simpson(y=fc[arg_wvl_start:arg_wvl_stop + 1], x=wavelength[arg_wvl_start:arg_wvl_stop + 1])
+            band_area_1 = trapezoid(y=fc[arg_wvl_start:arg_wvl_stop + 1], x=wavelength[arg_wvl_start:arg_wvl_stop + 1])
 
         # area of the second band
         if wvl_max_3 > np.max(wavelength) or wvl_max_3 < wvl_max_2 or np.isnan(wvl_max_3):
@@ -116,7 +116,7 @@ def calc_BAR_BC(wavelength: np.ndarray, reflectance: np.ndarray, sum_or_int: str
         if sum_or_int == "sum":
             band_area_1 = np.sum(fc[arg_wvl_start:arg_wvl_stop + 1])
         else:
-            band_area_2 = simpson(y=fc[arg_wvl_start:arg_wvl_stop + 1], x=wavelength[arg_wvl_start:arg_wvl_stop + 1])
+            band_area_2 = trapezoid(y=fc[arg_wvl_start:arg_wvl_stop + 1], x=wavelength[arg_wvl_start:arg_wvl_stop + 1])
 
         BAR[i] = band_area_2 / band_area_1
 

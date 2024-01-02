@@ -799,7 +799,7 @@ def normalise_in_rows(array: np.ndarray,
     return normalise_array(array, axis=1, norm_vector=norm_vector, norm_constant=norm_constant)
 
 
-def denoise_array(array: np.ndarray, sigma_px: float, x: np.ndarray | None = None,
+def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
                   remove_mean: bool = False, sum_or_int: str | None = None) -> np.ndarray:
     if x is None:
         x = np.arange(np.shape(array)[-1])
@@ -807,8 +807,9 @@ def denoise_array(array: np.ndarray, sigma_px: float, x: np.ndarray | None = Non
     equidistant_measure = np.var(np.diff(x))
 
     if equidistant_measure == 0.:  # equidistant step -> standard gaussian convolution
-        correction = gaussian_filter1d(np.ones(len(x)), sigma=sigma_px, mode="constant")
-        array_denoised = gaussian_filter1d(array, sigma=sigma_px, mode="constant")
+        step = x[1] - x[0]
+        correction = gaussian_filter1d(np.ones(len(x)), sigma=sigma / step, mode="constant")
+        array_denoised = gaussian_filter1d(array, sigma=sigma / step, mode="constant")
 
         array_denoised = normalise_in_columns(array_denoised, norm_vector=correction)
 
@@ -816,7 +817,7 @@ def denoise_array(array: np.ndarray, sigma_px: float, x: np.ndarray | None = Non
         if sum_or_int is None:  # 3 is randomly chosen. Better to do sum if there are too large gaps in wavelengths
              sum_or_int = "sum" if equidistant_measure > 3. else "int"
 
-        filter = norm.pdf(np.reshape(x, (len(x), 1)), x, sigma_px)  # Gaussian filter
+        filter = norm.pdf(np.reshape(x, (len(x), 1)), x, sigma)  # Gaussian filter
 
         if sum_or_int == "sum":
             filter = normalise_in_rows(filter)

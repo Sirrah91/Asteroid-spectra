@@ -502,7 +502,8 @@ def apply_aspect_filter(wvl_data: np.ndarray, x_data: np.ndarray,
                                   wvl_new <= np.max(wvl_data)))
     wvl_new, sigma_new = wvl_new[mask], sigma_new[mask]
 
-    gauss = np.transpose(norm.pdf(np.reshape(wvl_data, (len(wvl_data), 1)), wvl_new, sigma_new))  # one Gaussian per row
+    # one Gaussian per row
+    gauss = np.transpose(norm.pdf(np.reshape(wvl_data, (len(wvl_data), 1)), loc=wvl_new, scale=sigma_new))
 
     wvl_new, filtered_data = apply_transmission(spectra=x_data, transmission=gauss,
                                                 wvl_transmission=wvl_data, wvl_cen_method="argmax")
@@ -840,7 +841,7 @@ def apply_aspect_fwhm(x_data: np.ndarray, wvl_old: np.ndarray, wvl_new: np.ndarr
         else:
             sigma = np.polyval(fwhm_swir, wvl) * fwhm_to_sigma
 
-        gauss = norm.pdf(wvl_old, wvl, sigma)
+        gauss = norm.pdf(wvl_old, loc=wvl, scale=sigma)
         gauss = normalise_array(gauss)
         filtered_data[:, i] = np.sum(x_data * gauss, axis=1)
 

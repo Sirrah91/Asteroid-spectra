@@ -827,10 +827,7 @@ def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
         if sum_or_int == "sum":
             array_denoised = array @ np.transpose(filter)
         else:
-            if np.ndim(array) == 1:
-                array_denoised = trapezoid(y=array * filter, x=x)
-            else:
-                array_denoised = trapezoid(y=np.einsum('...j, kj -> ...kj', array, filter), x=x)
+            array_denoised = trapezoid(y=np.einsum('...j, kj -> ...kj', array, filter), x=x)
 
     if remove_mean:  # here I assume that the noise has a zero mean
         mn = np.mean(array_denoised - array, axis=-1, keepdims=True)

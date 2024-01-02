@@ -802,7 +802,7 @@ def normalise_in_rows(array: np.ndarray,
 def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
                   remove_mean: bool = False, sum_or_int: str | None = None) -> np.ndarray:
     if x is None:
-        x = np.arange(np.shape(array)[-1])
+        x = np.arange(0., np.shape(array)[-1])  # 0. to convert it to float
 
     equidistant_measure = np.var(np.diff(x))
 

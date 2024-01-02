@@ -817,7 +817,7 @@ def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
         if sum_or_int is None:  # 3 is randomly chosen. Better to do sum if there are too large gaps in wavelengths
              sum_or_int = "sum" if equidistant_measure > 3. else "int"
 
-        filter = norm.pdf(np.reshape(x, (len(x), 1)), x, sigma)  # Gaussian filter
+        filter = norm.pdf(np.reshape(x, (len(x), 1)), loc=x, scale=sigma)  # Gaussian filter
 
         if sum_or_int == "sum":
             filter = normalise_in_rows(filter)
@@ -830,7 +830,7 @@ def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
             if np.ndim(array) == 1:
                 array_denoised = trapezoid(y=array * filter, x=x)
             else:
-                array_denoised = trapezoid(y=np.einsum('...ij, ...kj -> ...ikj', array, filter), x=x)
+                array_denoised = trapezoid(y=np.einsum('...j, kj -> ...kj', array, filter), x=x)
 
     if remove_mean:  # here I assume that the noise has a zero mean
         mn = np.mean(array_denoised - array, axis=-1, keepdims=True)

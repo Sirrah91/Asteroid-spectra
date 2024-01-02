@@ -20,6 +20,8 @@ def calc_BAR_BC(wavelength: np.ndarray, reflectance: np.ndarray, sum_or_int: str
     pos_min_1 = 1000.
     pos_min_2 = 2000.
 
+    n_points = 2
+
     reflectance = np.reshape(reflectance, (-1, len(wavelength)))
 
     # sort wavelengths
@@ -36,35 +38,35 @@ def calc_BAR_BC(wavelength: np.ndarray, reflectance: np.ndarray, sum_or_int: str
 
     for i, spectrum in enumerate(reflectance):
         try:
-            BIC[i] = my_argmin(wavelength, spectrum, x0=pos_min_1, dx=250., n_points=3)
+            BIC[i] = my_argmin(wavelength, spectrum, x0=pos_min_1, dx=250., n_points=n_points)
             if np.abs(BIC[i] - pos_min_1) >= 250.:  # outside the interval
                 BIC[i] = np.nan
         except Exception:
             BIC[i] = np.nan
 
         try:
-            BIIC[i] = my_argmin(wavelength, spectrum, x0=pos_min_2, dx=300., n_points=3)
+            BIIC[i] = my_argmin(wavelength, spectrum, x0=pos_min_2, dx=300., n_points=n_points)
             if np.abs(BIIC[i] - pos_min_2) >= 300.:  # outside the interval
                 BIIC[i] = np.nan
         except Exception:
             BIIC[i] = np.nan
 
         try:
-            wvl_max_1 = my_argmax(wavelength, spectrum, x0=pos_max_1, dx=200., n_points=3)
+            wvl_max_1 = my_argmax(wavelength, spectrum, x0=pos_max_1, dx=200., n_points=n_points)
             if np.abs(wvl_max_1 - pos_max_1) >= 200.:  # outside the interval
                 wvl_max_1 = np.nan
         except Exception:
             wvl_max_1 = np.nan
 
         try:
-            wvl_max_2 = my_argmax(wavelength, spectrum, x0=pos_max_2, dx=300., n_points=3)
+            wvl_max_2 = my_argmax(wavelength, spectrum, x0=pos_max_2, dx=300., n_points=n_points)
             if np.abs(wvl_max_2 - pos_max_2) >= 300.:  # outside the interval
                 wvl_max_2 = np.nan
         except Exception:
             wvl_max_2 = np.nan
 
         try:
-            wvl_max_3 = my_argmax(wavelength, spectrum, x0=pos_max_3, dx=200., n_points=3)
+            wvl_max_3 = my_argmax(wavelength, spectrum, x0=pos_max_3, dx=200., n_points=n_points)
             if np.abs(wvl_max_3 - pos_max_3) >= 200.:  # outside the interval
                 wvl_max_3 = np.nan
         except Exception:

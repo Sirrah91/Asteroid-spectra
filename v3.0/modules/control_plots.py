@@ -730,7 +730,7 @@ def plot_model_history(model: Model, offset: float = 0., quiet: bool = False) ->
     fig = plt.figure("Loss and accuracy", figsize=(8, 6))
     ax1 = fig.add_subplot(111)
 
-    plot1 = denoise_array(history["loss"], sigma_px=sigma)
+    plot1 = denoise_array(history["loss"], sigma=sigma)
 
     metrics = history[model.metrics_names[1]]
     if model.metrics_names[1] == "mse":  # MSE to RMSE
@@ -743,7 +743,7 @@ def plot_model_history(model: Model, offset: float = 0., quiet: bool = False) ->
     else:
         labely = model.metrics_names[1].capitalize()
 
-    plot3 = denoise_array(metrics, sigma_px=sigma)
+    plot3 = denoise_array(metrics, sigma=sigma)
     labely = str(np.char.replace(labely, "_", " "))
 
     lns1 = ax1.plot(plot1, color=color1, linestyle="-", label="Loss - training")
@@ -751,14 +751,14 @@ def plot_model_history(model: Model, offset: float = 0., quiet: bool = False) ->
     lns3 = ax2.plot(plot3, color=color2, linestyle="-", label=f"{labely} - training")
 
     if "val_loss" in history.keys():
-        plot2 = denoise_array(history["val_loss"], sigma_px=sigma)
+        plot2 = denoise_array(history["val_loss"], sigma=sigma)
 
         metrics = history[f"val_{model.metrics_names[1]}"]
 
         if model.metrics_names[1] == "mse":  # MSE to RMSE
             metrics = np.sqrt(metrics)
 
-        plot4 = denoise_array(metrics, sigma_px=sigma)
+        plot4 = denoise_array(metrics, sigma=sigma)
 
         lns2 = ax1.plot(plot2, color=color1, linestyle=":", label="Loss - validation")
         lns4 = ax2.plot(plot4, color=color2, linestyle=":", label=f"{labely} - validation")

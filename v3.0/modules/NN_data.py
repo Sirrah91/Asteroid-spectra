@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from functools import reduce
 from scipy.interpolate import interp1d
-from scipy.integrate import simps
+from scipy.integrate import simpson
 from scipy.stats import norm
 from tensorflow.keras.utils import to_categorical
 from typing import Literal
@@ -524,14 +524,14 @@ def apply_hyperscout_filter(wvl_data: np.ndarray, x_data: np.ndarray,
     mask = 665. <= wvl_raw  # to remove additional peaks (done with broadband filter??)
     wvl_raw, transmissions = wvl_raw[mask], transmissions[:, mask]
 
-    areas = simps(y=transmissions, x=wvl_raw)
+    areas = simpson(y=transmissions, x=wvl_raw)
 
     mask = np.logical_and.reduce((wvl_raw >= np.min(wvl_data),
                                   wvl_raw <= np.max(wvl_data)))
     wvl_raw, transmissions = wvl_raw[mask], transmissions[:, mask]
 
     # this is here to delete channels which centres are not covered
-    mask =  simps(y=transmissions, x=wvl_raw) / areas >= 0.5
+    mask =  simpson(y=transmissions, x=wvl_raw) / areas >= 0.5
     transmissions = transmissions[mask]
 
     x_data = interp1d(wvl_data, x_data, kind="cubic")(wvl_raw)

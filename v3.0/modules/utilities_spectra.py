@@ -370,7 +370,7 @@ def apply_transmission(spectra: np.ndarray,
 
     elif wvl_cen_method == "dot":
         if sum_or_int == "sum":
-            wvl_central = np.dot(transmission, wvl_transmission)
+            wvl_central = transmission @ wvl_transmission
         else:
             wvl_central = trapezoid(y=transmission * wvl_transmission, x=wvl_transmission)
 

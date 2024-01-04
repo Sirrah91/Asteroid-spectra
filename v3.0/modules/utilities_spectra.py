@@ -353,8 +353,11 @@ def apply_transmission(spectra: np.ndarray,
     if sum_or_int is None:  # 3 is randomly chosen. Better to do sum if there are too large gaps in wavelengths
          sum_or_int = "sum" if np.var(np.diff(wvl_transmission)) > 3. else "int"
 
-    if np.ndim(transmission) == 1:  # need num_transmissions x num_wavelengths
+    # need num_transmissions x num_wavelengths
+    if np.ndim(transmission) == 1:
         transmission = np.reshape(transmission, (1, -1))
+    if np.ndim(transmission) > 2:
+        raise ValueError("Transmission must be 1-D or 2-D array.")
 
     # sort wavelengths first
     idx = np.argsort(wvl_transmission)

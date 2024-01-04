@@ -819,6 +819,12 @@ def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
 
         filter = norm.pdf(np.reshape(x, (len(x), 1)), loc=x, scale=sigma)  # Gaussian filter
 
+        # need num_filters x num_wavelengths
+        if np.ndim(filter) == 1:
+            filter = np.reshape(filter, (1, -1))
+        if np.ndim(filter) > 2:
+            raise ValueError("Filter must be 1-D or 2-D array.")
+
         if sum_or_int == "sum":
             filter = normalise_in_rows(filter)
         else:

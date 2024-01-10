@@ -40,7 +40,7 @@ comp_filtering_setup = {
     # if use_pure_only == False, this option is not used
     "use_mix_of_the_pure_ones": False,
 
-    "lim_vol_part": 0.65,  # remove samples with at least x vol fraction of wanted minerals
+    "lim_vol_part": 0.65,  # keep samples with at least x vol fraction of wanted minerals
 
     # LOWER limits of end-member amounts (to have reasonable absorption bands)
     # These are also used to remove samples with high-iron phase that is not in "minerals"
@@ -48,8 +48,8 @@ comp_filtering_setup = {
                     "OPX": {"Fs (OPX)": 5.},  # lower limits of iron in orthopyroxene
                     "CPX": {"Fs (CPX)": 5.}},  # lower limits of iron in clinopyroxene
 
-    "remove_high_iron_unwanted": True,  # more iron than the limit => remove it
-    "keep_if_not_used": False,  # it the chemical composition is not used, ignore limits
+    "remove_high_iron_unwanted": True,  # more iron than the limit in unwanted => remove it
+    "keep_if_not_used": False,  # if the chemical composition is not used, ignore limits
 
     "red_thresh": 5.  # threshold for normalised reflectance (redder spectra are deleted)
 }
@@ -60,10 +60,10 @@ comp_data_split_setup = {
 }
 
 comp_model_setup = {
-    "metrics": ["mse"],  # must be in custom_objects in custom_objects in NN_losses_metrics_activations.py
+    "metrics": ["mse"],  # must be in custom_objects in NN_losses_metrics_activations.py
 
     # important for HP tuning and early stopping
-    "monitoring": {"objective": "val_loss",  # if is not loss, must be included in custom_objects and metrics
+    "monitoring": {"objective": "val_loss",  # if not loss, must be included in custom_objects and metrics
                    "direction": "min"  # minimise or maximise the objective (for HP tuning)?
                    },
 

@@ -314,8 +314,8 @@ def plot_Fa_vs_Fs(y_true: np.ndarray, y_pred: np.ndarray, meta: pd.DataFrame,
     left, right = limx1 - shift, limx2 + shift
     bottom, top = limy1 - shift, limy2 + shift
 
-    RMSE = compute_metrics(y_true, y_pred, return_r2=False, return_sam=False,
-                           used_minerals=used_minerals, used_endmembers=used_endmembers)
+    RMSE, = compute_metrics(y_true, y_pred, return_r2=False, return_sam=False,
+                            used_minerals=used_minerals, used_endmembers=used_endmembers)
 
     if print_asteroids:
         # NEED TO BE SET ACCORDING TO MODEL PREDICTIONS
@@ -359,6 +359,10 @@ def plot_Fa_vs_Fs(y_true: np.ndarray, y_pred: np.ndarray, meta: pd.DataFrame,
             axis.scatter(Fa_pred[inds_H], Fs_pred[inds_H], c="r", s=s, label="H")
             axis.scatter(Fa_pred[inds_L], Fs_pred[inds_L], c="g", s=s, label="L")
             axis.scatter(Fa_pred[inds_LL], Fs_pred[inds_LL], c="b", s=s, label="LL")
+
+            axis.scatter(np.mean(Fa_pred[inds_H]), np.mean(Fs_pred[inds_H]), c="r", s=3 * s)
+            axis.scatter(np.mean(Fa_pred[inds_L]), np.mean(Fs_pred[inds_L]), c="g", s=3 * s)
+            axis.scatter(np.mean(Fa_pred[inds_LL]), np.mean(Fs_pred[inds_LL]), c="b", s=3 * s)
 
             axis.errorbar(Fa_pred[inds_H], Fs_pred[inds_H], xerr=error_Fa, yerr=error_Fs, c="r", fmt="o")
             axis.errorbar(Fa_pred[inds_L], Fs_pred[inds_L], xerr=error_Fa, yerr=error_Fs, c="g", fmt="o")

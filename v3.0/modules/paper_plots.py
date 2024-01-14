@@ -296,7 +296,7 @@ def plot_Fa_vs_Fs_ast_only(offset: float = 0.) -> None:
 
 def plot_Fa_vs_Fs(y_true: np.ndarray, y_pred: np.ndarray, meta: pd.DataFrame,
                   used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None,
-                  offset: float = 0.) -> None:
+                  print_asteroids: bool = False, offset: float = 0.) -> None:
     print("Plot Fa vs Fs")
 
     if used_minerals is None: used_minerals = minerals_used
@@ -314,23 +314,24 @@ def plot_Fa_vs_Fs(y_true: np.ndarray, y_pred: np.ndarray, meta: pd.DataFrame,
     left, right = limx1 - shift, limx2 + shift
     bottom, top = limy1 - shift, limy2 + shift
 
-    #####
-    # NEED TO BE SET ACCORDING TO MODEL PREDICTIONS
-    error_Fa, error_Fs = 5.7, 5.7
+    RMSE = compute_metrics(y_true, y_pred, return_r2=False, return_sam=False,
+                           used_minerals=used_minerals, used_endmembers=used_endmembers)
 
-    Fa_S, Fs_S = [20.7], [18.3]
-    Fa_Sq, Fs_Sq = [23.2], [21.0]
-    Fa_Sr, Fs_Sr = [18.3], [19.2]
-    Fa_Sw, Fs_Sw = [21.3], [14.7]
-
-    Fa_Q, Fs_Q = [26.2], [23.8]
-    #####
+    if print_asteroids:
+        # NEED TO BE SET ACCORDING TO MODEL PREDICTIONS
+        Fa_S, Fs_S = [20.7], [18.3]
+        Fa_Sq, Fs_Sq = [23.2], [21.0]
+        Fa_Sr, Fs_Sr = [18.3], [19.2]
+        Fa_Sw, Fs_Sw = [21.3], [14.7]
+        Fa_Q, Fs_Q = [26.2], [23.8]
 
     # Indices in which Fa and Fs are
     num_minerals = gimme_num_minerals(used_minerals)
     count_endmembers = gimme_endmember_counts(used_endmembers)
 
     ind_Fa, ind_Fs = num_minerals, num_minerals + count_endmembers[0]
+
+    error_Fa, error_Fs = RMSE[ind_Fa], RMSE[ind_Fs]
 
     types = np.array(meta["SubType"], dtype=str)
 
@@ -385,12 +386,13 @@ def plot_Fa_vs_Fs(y_true: np.ndarray, y_pred: np.ndarray, meta: pd.DataFrame,
 
         axis.legend()
 
-    ax[1].scatter(Fa_S, Fs_S, marker="$S$", c="k", s=s * 2.5)
-    ax[1].scatter(Fa_Sq, Fs_Sq, marker="$Sq$", c="k", s=s * 5)
-    ax[1].scatter(Fa_Sr, Fs_Sr, marker="$Sr$", c="k", s=s * 5)
-    ax[1].scatter(Fa_Sw, Fs_Sw, marker="$Sw$", c="k", s=s * 6)
+    if print_asteroids:
+        ax[1].scatter(Fa_S, Fs_S, marker="$S$", c="k", s=s * 2.5)
+        ax[1].scatter(Fa_Sq, Fs_Sq, marker="$Sq$", c="k", s=s * 5)
+        ax[1].scatter(Fa_Sr, Fs_Sr, marker="$Sr$", c="k", s=s * 5)
+        ax[1].scatter(Fa_Sw, Fs_Sw, marker="$Sw$", c="k", s=s * 6)
 
-    ax[1].scatter(Fa_Q, Fs_Q, marker="$Q$", c="k", s=s * 2.5)
+        ax[1].scatter(Fa_Q, Fs_Q, marker="$Q$", c="k", s=s * 2.5)
 
     plt.draw()
     plt.tight_layout()
@@ -2651,7 +2653,7 @@ def plot_test_step(error_type: str = "RMSE", remove_outliers: bool = False,
                                axes[best_blk(len(error[0]))[1] - 1].get_position().intervalx[1] -
                                axes[0].get_position().intervalx[0], 0.2),
                loc="lower left", mode="expand", borderaxespad=0.,
-               ncol=best_blk(num_colors)[1])
+               ncol=best_blk(num_colors, 4.)[1])
 
     fig.savefig(path.join(outdir_range_tests, fig_name), format=fig_format, **savefig_kwargs, **pil_kwargs)
     plt.close(fig)

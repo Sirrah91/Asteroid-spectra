@@ -2173,8 +2173,8 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
     cm = plt.get_cmap("gist_rainbow")
     arrowprops = {"color": "red",
                   "shrink": 0.}
-    prec_shift = 2.5
-    box_width = 3.5
+    box_text_shift = 2.5
+    box_linewidth = 3.5
 
     if error_type == "RMSE":
         unit1, unit2 = "pp", "pp"
@@ -2274,9 +2274,9 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
 
                         text = f"{mn:.1f} {unit1} $\pm$ {std:.1f} {unit2}" if _std > 0 else f"{mn:.1f} {unit1}"
 
-                        xc, yc = add_box(ax, **box_prop, linewidth=box_width, linestyle="--")
+                        xc, yc = add_box(ax, **box_prop, linewidth=box_linewidth, linestyle="--")
                         ax.annotate(f"{description} \n {text}", xy=(xc, yc),
-                                    xytext=(4 + prec_shift * i, 2 + prec_shift * i),
+                                    xytext=(4 + box_text_shift * i, 2 + box_text_shift * i),
                                     fontsize=SMALL_SIZE - 3 + offset, color=box_prop["edgecolor"],
                                     arrowprops=arrowprops | {"color": box_prop["edgecolor"]})
 
@@ -2419,9 +2419,9 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
 
                 text = f"{mn:.1f} {unit1} $\pm$ {std:.1f} {unit2}" if _std > 0 else f"{mn:.1f} {unit1}"
 
-                xc, yc = add_box(ax, **box_prop, linewidth=box_width, linestyle="--")
+                xc, yc = add_box(ax, **box_prop, linewidth=box_linewidth, linestyle="--")
                 ax.annotate(f"{description} \n {text}", xy=(xc, yc),
-                            xytext=(4 + prec_shift * i, 2 + prec_shift * i),
+                            xytext=(4 + box_text_shift * i, 2 + box_text_shift * i),
                             fontsize=MEDIUM_SIZE + offset, color=box_prop["edgecolor"],
                             arrowprops=arrowprops | {"color": box_prop["edgecolor"]})
 

@@ -314,5 +314,5 @@ def spectrum_error_transfer(model_name: str, filename_data: str | None = None,
                         index=label_keys,
                         columns=["RMSE mean (pp)", "within 10 pp mean (%)", "within 20 pp mean (%)",
                                  "RMSE mean noisy (pp)", "RMSE std noisy (pp)",
-                                 "within 10 pp mean noisy (pp)", "within 10 pp std noisy (pp)",
-                                 "within 20 pp mean noisy (pp)", "within 20 pp std noisy (pp)"])
+                                 "within 10 pp mean noisy (%)", "within 10 pp std noisy (pp)",
+                                 "within 20 pp mean noisy (%)", "within 20 pp std noisy (pp)"])

@@ -10,6 +10,7 @@ from pandas.core.common import flatten
 from typing import Literal, Iterable, Callable
 from time import time
 from tensorflow.keras.models import Model
+from tensorflow.python.framework.ops import EagerTensor
 from sklearn.decomposition import PCA
 from sklearn.linear_model import HuberRegressor, RANSACRegressor, TheilSenRegressor
 from sklearn.preprocessing import PolynomialFeatures
@@ -931,6 +932,24 @@ def get_weights_from_model(model: Model) -> dict[str, np.ndarray]:
 
     return weights
 
+
+def get_layer_output(model: Model, x_data: np.ndarray,
+                     layer_name: str | None = None) -> list[EagerTensor] | EagerTensor:
+    if layer_name is None:  # returns outputs of all layers
+        extractor = Model(inputs=model.inputs, outputs=[layer.output for layer in model.layers])
+        features = extractor(x_data)
+
+        return features
+
+    else:
+        layer_names = np.array([layer["config"]["name"] for layer in model.get_config()["layers"]])
+        if layer_name not in layer_names:
+            raise ValueError(f'Unknown layer name "{layer_name}".')
+
+        intermediate_layer_model = Model(inputs=model.input, outputs=model.get_layer(layer_name).output)
+        intermediate_output = intermediate_layer_model(x_data)
+
+        return intermediate_output
 
 def kernel_density_estimation_2d(y_true_part: np.ndarray, y_pred_part: np.ndarray,
                                  nbins: int = 20) -> tuple[np.ndarray, ...]:

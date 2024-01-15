@@ -23,9 +23,9 @@ from modules._constants import _path_accuracy_tests, _spectra_name, _wavelengths
 from modules._constants import _metadata_key_name, _label_key_name, _label_true_name, _label_pred_name, _config_name, _wp
 
 # defaults only
-from modules.NN_config_composition import minerals_used, endmembers_used, comp_model_setup, comp_filtering_setup
-from modules.NN_config_composition import comp_output_setup, comp_grid
-from modules.NN_config_taxonomy import classes, tax_filtering_setup, tax_output_setup, tax_grid, tax_model_setup
+from modules.NN_config_composition import comp_output_setup, comp_grid, comp_model_setup, comp_filtering_setup
+from modules.NN_config_composition import minerals_used, endmembers_used
+from modules.NN_config_taxonomy import tax_filtering_setup, tax_output_setup, tax_grid, tax_model_setup, classes
 from modules._constants import _rnd_seed
 
 
@@ -153,7 +153,6 @@ if __name__ == "__main__":
         model_setup = tax_model_setup
 
         filename_train_data = f"asteroid{_sep_in}spectra{_sep_out}{num_labels_in_file}{_sep_out}reduced{_sep_out}denoised{_sep_out}norm.npz"
-        use_class_weights = model_setup["use_class_weights"]
 
     else:
         load_data = partial(load_composition_data, used_minerals=minerals_used, used_endmembers=endmembers_used)
@@ -164,20 +163,12 @@ if __name__ == "__main__":
         model_setup = comp_model_setup
 
         filename_train_data = f"mineral{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz"
-        use_class_weights = False
 
     bin_code = output_setup["bin_code"]
-
     model_grid = grid_setup["model_grid"]
 
-    model_name, model_subdir = model_setup["model_name"], model_setup["model_subdir"]
     proportiontocut, metrics, p = model_setup["trim_mean_cut"], model_setup["metrics"], model_setup["params"]
     model_type = p["model_usage"]
-
-    model_subdir = path.join("accuracy_tests", model_subdir)
-
-    dt_string = datetime.utcnow().strftime("%Y%m%d%H%M%S")
-    results_name = f"{model_type}{_sep_out}{model_grid}{_sep_out}{bin_code}{_sep_out}{dt_string}.npz"
 
     data = load_npz(filename_train_data, list_keys=[_metadata_key_name, _label_key_name])
     metadata_key = data[_metadata_key_name]
@@ -186,6 +177,13 @@ if __name__ == "__main__":
         labels_key = np.array(list(classes.keys()))
     else:
         labels_key = data[_label_key_name]
+
+    model_name, model_subdir = model_setup["model_name"], model_setup["model_subdir"]
+
+    model_subdir = path.join("accuracy_tests", model_subdir)
+
+    dt_string = datetime.utcnow().strftime("%Y%m%d%H%M%S")
+    results_name = f"{model_type}{_sep_out}{model_grid}{_sep_out}{bin_code}{_sep_out}{dt_string}.npz"
 
     # Load the data
     x_train, y_train, meta, wavelengths = load_data(filename_train_data, clean_dataset=True,
@@ -222,9 +220,9 @@ if __name__ == "__main__":
 
         # Create and train the neural network and save the model
         model_names = [train(x_train, y_train, np.array([]), np.array([]), params=p,
-                             monitoring=comp_model_setup["monitoring"],
+                             monitoring=model_setup["monitoring"],
                              model_subdir=model_subdir, model_name=model_name,
-                             metrics=comp_model_setup["metrics"]) for _ in range(num_models)]
+                             metrics=model_setup["metrics"]) for _ in range(num_models)]
 
         y_pred_part, accuracy_part = evaluate_test_data(model_names, x_test_part, y_test_part,
                                                         proportiontocut=proportiontocut,
@@ -242,7 +240,6 @@ if __name__ == "__main__":
     # config = data[_config_name][()]
 
     suf = f"_{model_grid}_accuracy_test"
-
     result_plots(y_train[indices], y_pred, bin_code=bin_code, density_plot=True, suf=suf, quiet=False)
 
     print("\n-----------------------------------------------------")

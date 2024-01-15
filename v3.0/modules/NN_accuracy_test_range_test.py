@@ -3,12 +3,13 @@ environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 from datetime import datetime
 import numpy as np
+from functools import partial
 from tqdm import tqdm
 
 from modules.utilities import is_constant, stack
 from modules.utilities_spectra import print_header, print_info, load_npz
 
-from modules.NN_data import load_composition_data
+from modules.NN_data import labels_to_categories, load_composition_data, load_taxonomy_data
 from modules.NN_train import train
 from modules.NN_evaluate import evaluate_test_data
 
@@ -16,32 +17,48 @@ from modules.NN_accuracy_test import split_data_for_testing, gimme_info, save_re
 
 from modules._constants import _metadata_key_name, _label_key_name, _sep_out, _sep_in, _wp
 
-from modules.NN_config_range_test import model_subdirs, model_names, range_grids
+from modules.NN_config_range_test import model_subdirs, model_names, range_grids, taxonomy
 
-from modules.NN_config_composition import minerals_used, endmembers_used, comp_model_setup, comp_filtering_setup
-from modules.NN_config_composition import comp_output_setup
+# defaults only
+from modules.NN_config_composition import comp_output_setup, comp_model_setup, comp_filtering_setup
+from modules.NN_config_composition import minerals_used, endmembers_used
+from modules.NN_config_taxonomy import tax_filtering_setup, tax_output_setup, tax_model_setup, classes
 
 if __name__ == "__main__":
-
     max_splits = 20
     num_models = 1
 
-    load_data = load_composition_data
+    if taxonomy:
+        load_data = partial(load_taxonomy_data, used_classes=classes)
 
-    output_setup = comp_output_setup
-    grid_setup_list = range_grids
-    filtering_setup = comp_filtering_setup
-    model_setup = comp_model_setup
+        output_setup = tax_output_setup
+        filtering_setup = tax_filtering_setup
+        model_setup = tax_model_setup
 
-    filename_train_data = f"mineral{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz"
+        filename_train_data = f"asteroid{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz"
+
+    else:
+        load_data = partial(load_composition_data, used_minerals=minerals_used, used_endmembers=endmembers_used)
+
+        output_setup = comp_output_setup
+        filtering_setup = comp_filtering_setup
+        model_setup = comp_model_setup
+
+        filename_train_data = f"mineral{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz"
 
     bin_code = output_setup["bin_code"]
+    grid_setup_list = range_grids
 
     proportiontocut, metrics, p = model_setup["trim_mean_cut"], model_setup["metrics"], model_setup["params"]
     model_type = p["model_usage"]
 
     data = load_npz(filename_train_data, list_keys=[_metadata_key_name, _label_key_name])
-    labels_key, metadata_key = data[_label_key_name], data[_metadata_key_name]
+    metadata_key = data[_metadata_key_name]
+
+    if taxonomy:
+        labels_key = np.array(list(classes.keys()))
+    else:
+        labels_key = data[_label_key_name]
 
     for index_of_range in tqdm(range(len(model_names))):
         grid_setup = grid_setup_list[index_of_range]
@@ -54,7 +71,6 @@ if __name__ == "__main__":
         # Load the data
         x_train, y_train, meta, wavelengths = load_data(filename_train_data, clean_dataset=True,
                                                         return_meta=True, return_wavelengths=True,
-                                                        used_minerals=minerals_used, used_endmembers=endmembers_used,
                                                         grid_setup=grid_setup, filtering_setup=filtering_setup)
 
         method, K = gimme_method(maximum_splits=max_splits, len_data=len(x_train))
@@ -67,8 +83,12 @@ if __name__ == "__main__":
         grid_setup["wvl_grid"], grid_setup["wvl_norm"] = np.array(wavelengths, dtype=_wp), normalised_at
         model_setup["model_subdir"], model_setup["model_subdir"] = model_subdir, model_name
 
-        info = gimme_info(taxonomy=False, model_option=(method, K, num_models), output_setup=output_setup,
+        info = gimme_info(taxonomy=taxonomy, model_option=(method, K, num_models), output_setup=output_setup,
                           grid_setup=grid_setup, filtering_setup=filtering_setup, model_setup=model_setup)
+
+        if taxonomy:
+            # labels to categories
+            y_train = labels_to_categories(y_train, used_classes=classes)
 
         y_pred = np.zeros(np.shape(y_train))
 
@@ -83,9 +103,9 @@ if __name__ == "__main__":
 
             # Create and train the neural network and save the model
             model_names_trained = [train(x_train, y_train, np.array([]), np.array([]), params=p,
-                                         monitoring=comp_model_setup["monitoring"],
+                                         monitoring=model_setup["monitoring"],
                                          model_subdir=model_subdir, model_name=model_name,
-                                         metrics=comp_model_setup["metrics"]) for _ in range(num_models)]
+                                         metrics=model_setup["metrics"]) for _ in range(num_models)]
 
             y_pred_part, accuracy_part = evaluate_test_data(model_names_trained, x_test_part, y_test_part,
                                                             proportiontocut=proportiontocut,

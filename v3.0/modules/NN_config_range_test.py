@@ -7,16 +7,18 @@ from modules.NN_data_grids import normalise_spectrum_at_wvl
 from modules.utilities import stack, find_nearest, safe_arange
 from modules._constants import _sep_in, _sep_out
 
-from modules.NN_config_composition import p, bin_code, minerals_used, endmembers_used, comp_model_setup
+# it taxonomy = True, you must modify "NN_classes.py" and force it to return the same classes (including the bin_to_cls)
+taxonomy = True
 
-minerals_used_range, endmembers_used_range = minerals_used, endmembers_used
-model_subdir_range = comp_model_setup["model_subdir"]
-monitoring = comp_model_setup["monitoring"]
+if taxonomy:
+    from modules.NN_config_taxonomy import p, bin_code
+else:
+    from modules.NN_config_composition import p, bin_code
 
-model_basedir = "range_test"
+model_basedir = path.join("range_test", "taxonomy") if taxonomy else path.join("range_test", "composition")
 
-tested_quantity: Literal["step", "range", "window", "normalisation"] = "step"
-instrument = "ASPECT_vis-nir1-nir2-swir"
+tested_quantity: Literal["step", "range", "window", "normalisation"] = "range"
+instrument = None  # "ASPECT_vis-nir1-nir2-swir"
 
 if tested_quantity != "step":
     instrument = None

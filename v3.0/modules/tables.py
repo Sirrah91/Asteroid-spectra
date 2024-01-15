@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from os import path
 from sklearn.metrics import classification_report
 from tensorflow_addons.metrics import CohenKappa
 
@@ -14,7 +15,7 @@ from modules.NN_config_parse import gimme_num_minerals, gimme_endmember_counts, 
 
 from modules.NN_config_composition import mineral_names_short, endmember_names, mineral_names
 
-from modules._constants import _label_name, _sep_out, _sep_in
+from modules._constants import _label_name, _sep_out, _sep_in, _path_accuracy_tests, _path_model
 
 # defaults only
 from modules.NN_config_composition import minerals_used, endmembers_used, comp_filtering_setup, comp_data_split_setup
@@ -716,16 +717,16 @@ def print_grid_test_stats_table(norm: np.ndarray, error_mat: np.ndarray, window:
 
 
 def print_model_to_model_variations(quiet: bool = False) -> tuple[np.ndarray, ...]:
-    filenames = ["/home/dakorda/Python/NN/accuracy_tests/range_test/normalisation/composition_450-2450-10-550_1110-11-110-111-000_20230704150150.npz",
-                 "/home/dakorda/Python/NN/accuracy_tests/range_test/range/composition_450-2450-10-550_1110-11-110-111-000_20230709032616.npz",
-                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016111014.npz",
-                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016111656.npz",
-                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016153911.npz",
-                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016153728.npz",
-                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016193822.npz",
-                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016194425.npz",
-                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016234622.npz",
-                 "/home/dakorda/Python/NN/accuracy_tests/composition_450-2450-10-550_1110-11-110-111-000_20231016235128.npz"]
+    filenames = [path.join(_path_accuracy_tests, "range_test", "composition", "normalisation", "composition_450-2450-10-550_1110-11-110-111-000_20230704150150.npz"),
+                 path.join(_path_accuracy_tests, "range_test", "composition", "range", "composition_450-2450-10-550_1110-11-110-111-000_20230709032616.npz"),
+                 path.join(_path_accuracy_tests, "composition_450-2450-10-550_1110-11-110-111-000_20231016111014.npz"),
+                 path.join(_path_accuracy_tests, "composition_450-2450-10-550_1110-11-110-111-000_20231016111656.npz"),
+                 path.join(_path_accuracy_tests, "composition_450-2450-10-550_1110-11-110-111-000_20231016153911.npz"),
+                 path.join(_path_accuracy_tests, "composition_450-2450-10-550_1110-11-110-111-000_20231016153728.npz"),
+                 path.join(_path_accuracy_tests, "composition_450-2450-10-550_1110-11-110-111-000_20231016193822.npz"),
+                 path.join(_path_accuracy_tests, "composition_450-2450-10-550_1110-11-110-111-000_20231016194425.npz"),
+                 path.join(_path_accuracy_tests, "composition_450-2450-10-550_1110-11-110-111-000_20231016234622.npz"),
+                 path.join(_path_accuracy_tests, "composition_450-2450-10-550_1110-11-110-111-000_20231016235128.npz")]
 
     used_minerals, used_endmembers = bin_to_used(gimme_bin_code_from_name(filenames[0]))
 
@@ -776,8 +777,8 @@ def ASPECT_metrics_variations(snrs: tuple[float, ...],
     n_trials = 200
     rnd_seed = 42
 
-    model_names = ["/home/dakorda/Python/NN/models/composition/ASPECT_vis-nir1-nir2_30/CNN_ASPECT_vis-nir1-nir2_30_1110-11-110-111-000_20231015114247.h5",
-                   "/home/dakorda/Python/NN/models/composition/ASPECT_vis-nir1-nir2-swir_30/CNN_ASPECT_vis-nir1-nir2-swir_30_1110-11-110-111-000_20231015114247.h5"]
+    model_names = [path.join(_path_model, "composition", "ASPECT_vis-nir1-nir2_30", "CNN_ASPECT_vis-nir1-nir2_30_1110-11-110-111-000_20231015114247.h5"),
+                   path.join(_path_model, "composition", "ASPECT_vis-nir1-nir2-swir_30", "CNN_ASPECT_vis-nir1-nir2-swir_30_1110-11-110-111-000_20231015114247.h5")]
 
     if is_taxonomical(model=model_names[0]):
         raise ValueError("Only composition models are allowed at this moment.")

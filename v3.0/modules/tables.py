@@ -804,8 +804,9 @@ def ASPECT_metrics_variations(snrs: tuple[float, ...],
                     std = res["within 10 pp std noisy (pp)"]
                     name = "$\\Delta$~Within"
 
+                mn, std = mn[indices], std[indices]
+
                 mn, std, prec = round_data_with_errors(mn, std, return_precision=True)
-                mn, std, prec = mn[indices], std[indices], prec[indices]
                 prec[prec < 0] = 0
 
                 std_to_print = np.array(np.round(std * 10 ** prec), dtype=int)

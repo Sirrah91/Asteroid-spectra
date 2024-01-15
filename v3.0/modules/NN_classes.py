@@ -70,6 +70,12 @@ def gimme_list_of_classes(grid_option: str) -> list[str]:
             "Xk",
         ]
 
+    elif grid_option == "2":  # used for tests of space weathering for Ozgur
+        list_of_classes = [
+            "S",
+            "Q",
+        ]
+
     else:
         raise ValueError("Cannot connect model grid and list of classes.")
 

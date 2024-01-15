@@ -339,7 +339,7 @@ def paper_3() -> None:
     remove_outliers = True
 
     # to load config
-    data = load_npz("/home/dakorda/Python/NN/accuracy_tests/range_test/step/composition_HS-H_1110-11-110-111-000_20231012122642.npz")
+    data = load_npz(path.join(_path_accuracy_tests, "range_test", "composition", "step", "composition_HS-H_1110-11-110-111-000_20231012122642.npz"))
     used_minerals = data["config"][()]["output_setup"]["used_minerals"]
     used_endmembers = data["config"][()]["output_setup"]["used_endmembers"]
 

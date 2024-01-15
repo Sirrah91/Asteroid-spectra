@@ -674,7 +674,7 @@ def remove_no_iron_samples(y_data: pd.DataFrame,
         return limits_unique
 
     limits = remove_non_unique()
-    
+
     # If "limits" is empty, no samples are deleted
     if not limits: return np.array(np.arange(len(y_data)), dtype=int)
 

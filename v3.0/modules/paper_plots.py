@@ -2167,7 +2167,7 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
 
     num_colors = np.shape(error_mat)[-1]
 
-    outdir_range_tests = path.join(outdir, "range_test")
+    outdir_range_tests = path.join(outdir, "range_test", "composition")
     check_dir(outdir_range_tests)
 
     cm = plt.get_cmap("gist_rainbow")
@@ -2596,7 +2596,7 @@ def plot_test_step(error_type: str = "RMSE", remove_outliers: bool = False,
     titles_all = np.array(["All", "Olivine", "Orthopyroxene", "Clinopyroxene", "Fa",
                            "Fs (OPX)", "Fs (CPX)", "En (CPX)", "Wo (CPX)"], dtype=str)
 
-    outdir_range_tests = path.join(outdir, "range_test")
+    outdir_range_tests = path.join(outdir, "range_test", "composition")
     check_dir(outdir_range_tests)
 
     cm = plt.get_cmap("gist_rainbow")
@@ -2784,7 +2784,7 @@ def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = Fa
 
     cm = plt.get_cmap("gist_rainbow")
 
-    outdir_range_tests = path.join(outdir, "range_test")
+    outdir_range_tests = path.join(outdir, "range_test", "composition")
     check_dir(outdir_range_tests)
 
     fig, ax = plt.subplots(1, 1, figsize=(18, 6))
@@ -2953,7 +2953,7 @@ def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False,
     yticks2 = safe_arange(0., 100., 2., endpoint=True)
     yticks5 = safe_arange(0., 100., 5., endpoint=True)
 
-    outdir_range_tests = path.join(outdir, "range_test")
+    outdir_range_tests = path.join(outdir, "range_test", "composition")
     check_dir(outdir_range_tests)
 
     cm = plt.get_cmap("gist_rainbow")

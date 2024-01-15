@@ -245,9 +245,7 @@ def collect_data_CTAPE() -> list[str]:
     for i, name in enumerate(names):
         for j in range(N_files[i]):
             data = np.transpose(load_txt(f"{name}_{j}.dat", subfolder=subfolder, sep="\t", header=None).to_numpy())
-
-            x = data[0]
-            v = data[1:]
+            x, v = data[0], data[1:]
 
             # delete pure spectra
             if i == 0 and j <= 3:
@@ -529,7 +527,7 @@ def resave_asteroid_taxonomy_data(grouping_options: list[str]) -> None:
 
     filename = save_data(final_name, spectra=spectra_raw, wavelengths=xq, labels=labels_raw, metadata=metadata_raw,
                          labels_key=labels_key, metadata_key=metadata_key, subfolder=subfolder)
-    # my_mv(filename, filename.replace(subfolder, "", 1), "cp")
+    my_mv(filename, filename.replace(subfolder, "", 1), "cp")
 
     for option in grouping_options:
         final_name_option = f"{final_name}{_sep_out}{option}"

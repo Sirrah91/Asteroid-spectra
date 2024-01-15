@@ -2149,7 +2149,7 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
 
         return x + width / 2, y + height / 2  # returns centre of the patch
 
-    pref = path.join(_path_accuracy_tests, "range_test/range/*npz")
+    pref = path.join(_path_accuracy_tests, "range_test", "composition", "range", "*npz")
 
     line_stop, error_line, wvl_start, wvl_stop, error_mat, label = load_data_for_plot(pref, error_type)
 
@@ -2574,11 +2574,11 @@ def plot_test_step(error_type: str = "RMSE", remove_outliers: bool = False,
         return wvl_step, error, label
 
     prefs = [
-        path.join(_path_accuracy_tests, "range_test/step/composition_650-1850*.npz"),
-        path.join(_path_accuracy_tests, "range_test/step/composition_650-2450*.npz"),
-        path.join(_path_accuracy_tests, "range_test/step/composition_ASPECT_vis-nir1-nir2_*.npz"),
-        path.join(_path_accuracy_tests, "range_test/step/composition_ASPECT_vis-nir1-nir2-swir_*.npz"),
-        # path.join(_path_accuracy_tests, "range_test/range/composition_HS-H*.npz")
+        path.join(_path_accuracy_tests, "range_test", "composition", "step", "composition_650-1850*.npz"),
+        path.join(_path_accuracy_tests, "range_test", "composition", "step", "composition_650-2450*.npz"),
+        path.join(_path_accuracy_tests, "range_test", "composition", "step", "composition_ASPECT_vis-nir1-nir2_*.npz"),
+        path.join(_path_accuracy_tests, "range_test", "composition", "step", "composition_ASPECT_vis-nir1-nir2-swir_*.npz"),
+        # path.join(_path_accuracy_tests, "range_test", "composition", "range", composition_HS-H*.npz")
              ]
 
     num_colors = len(prefs)
@@ -2763,7 +2763,7 @@ def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = Fa
 
         return wvl_norm, error
 
-    pref = path.join(_path_accuracy_tests, "range_test/normalisation/composition_450-2450*.npz")
+    pref = path.join(_path_accuracy_tests, "range_test", "composition", "normalisation", "composition_450-2450*.npz")
 
     wvl_norm, error = load_data_for_plot(pref, error_type)
 
@@ -2936,7 +2936,7 @@ def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False,
 
         return window_range, error
 
-    pref = path.join(_path_accuracy_tests, "range_test/window/composition_600(*.npz")
+    pref = path.join(_path_accuracy_tests, "range_test", "composition", "window", "composition_600(*.npz")
 
     titles_all = np.array(["All", "Olivine", "Orthopyroxene", "Clinopyroxene", "Fa",
                            "Fs (OPX)", "Fs (CPX)", "En (CPX)", "Wo (CPX)"], dtype=str)

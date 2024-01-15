@@ -2272,10 +2272,10 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
                                                                 quiet=True)
                         mn, std = np.round(_mn, 1), np.round(_std, 1)
 
-                        text = f"{mn:.1f} {unit1} $\pm$ {std:.1f} {unit2}" if _std > 0 else f"{mn:.1f} {unit1}"
+                        metric = f"{mn:.1f} {unit1} $\pm$ {std:.1f} {unit2}" if _std > 0 else f"{mn:.1f} {unit1}"
 
                         xc, yc = add_box(ax, **box_prop, linewidth=box_linewidth, linestyle="--")
-                        ax.annotate(f"{description} \n {text}", xy=(xc, yc),
+                        ax.annotate(f"{description} \n {metric}", xy=(xc, yc),
                                     xytext=(4 + box_text_shift * i, 2 + box_text_shift * i),
                                     fontsize=SMALL_SIZE - 3 + offset, color=box_prop["edgecolor"],
                                     arrowprops=arrowprops | {"color": box_prop["edgecolor"]})
@@ -2417,10 +2417,10 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
                                                         quiet=True)
                 mn, std = np.round(_mn, 1), np.round(_std, 1)
 
-                text = f"{mn:.1f} {unit1} $\pm$ {std:.1f} {unit2}" if _std > 0 else f"{mn:.1f} {unit1}"
+                metric = f"{mn:.1f} {unit1} $\pm$ {std:.1f} {unit2}" if _std > 0 else f"{mn:.1f} {unit1}"
 
                 xc, yc = add_box(ax, **box_prop, linewidth=box_linewidth, linestyle="--")
-                ax.annotate(f"{description} \n {text}", xy=(xc, yc),
+                ax.annotate(f"{description} \n {metric}", xy=(xc, yc),
                             xytext=(4 + box_text_shift * i, 2 + box_text_shift * i),
                             fontsize=MEDIUM_SIZE + offset, color=box_prop["edgecolor"],
                             arrowprops=arrowprops | {"color": box_prop["edgecolor"]})

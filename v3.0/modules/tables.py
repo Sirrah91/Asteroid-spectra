@@ -800,7 +800,7 @@ def ASPECT_metrics_variations(snrs: tuple[float, ...],
                     std = res["RMSE std noisy (pp)"]
                     name = "$\\Delta$~RMSE"
                 else:
-                    mn = res["within 10 pp mean noisy (pp)"] - res["within 10 pp mean (%)"]
+                    mn = res["within 10 pp mean noisy (%)"] - res["within 10 pp mean (%)"]
                     std = res["within 10 pp std noisy (pp)"]
                     name = "$\\Delta$~Within"
 

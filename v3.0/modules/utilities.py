@@ -983,11 +983,19 @@ def round_data_with_errors(data: np.ndarray, errors: np.ndarray, n_valid: int = 
                            return_precision: bool = False) -> tuple[np.ndarray, ...]:
     n = n_valid - np.floor(np.log10(errors) + 1.)  # rounding to n_valid numbers
     n[~np.isfinite(n)] = n_valid
-    # n[n < 0.] = 0.  # can cause problems when you print automatic format, e.g. f"{x:.{n}f} and n < 0
     n = np.array(n, dtype=int)
 
-    data_rounded = np.array([np.round(d, prec) for d, prec in zip(data, n)])
     errors_rounded = np.array([np.round(e, prec) for e, prec in zip(errors, n)])
+    
+    # do it again for cases of data = 1.23 and error = 0.998 -> 1.23 +- 1.00
+    # this fixes it to 1.2 +- 1.0
+    n = n_valid - np.floor(np.log10(errors_rounded) + 1.)  # rounding to n_valid numbers
+    n[~np.isfinite(n)] = n_valid
+    # n[n < 0.] = 0.  # can cause problems when you print automatic format, e.g. f"{x:.{n}f} and n < 0
+    n = np.array(n, dtype=int)
+    
+    data_rounded = np.array([np.round(d, prec) for d, prec in zip(data, n)])
+
 
     if return_precision:
         return data_rounded, errors_rounded, n

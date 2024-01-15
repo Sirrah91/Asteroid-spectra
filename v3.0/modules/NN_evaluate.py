@@ -294,8 +294,8 @@ def spectrum_error_transfer(model_name: str, filename_data: str | None = None,
         spectra_noise = spectra + np.array(rng.normal(loc=0., scale=sigma), dtype=_wp)
 
         # de-noise and normalise
-        spectra_noise = denoise_and_norm(spectra_noise, wavelengths, denoising=True, normalising=True, sigma_nm=20.,
-                                         wvl_norm_nm=wvl_norm)
+        spectra_noise = denoise_and_norm(spectra_noise, wavelengths, denoising=True, normalising=True,
+                                         sigma_nm=400./snr, wvl_norm_nm=wvl_norm)
 
         # evaluate
         y_pred_noise = np.array(model.predict(spectra_noise, verbose=0), dtype=_wp)

@@ -823,7 +823,8 @@ def plot_model_layer(model_name: str, subfolder_model: str = "", layer: str = "C
         warnings.warn(f"No {layer} layer in the model.")
         return
 
-    weights = np.squeeze(layers[layer_name][0])  # [0] to get only weights, not biases
+    weights = layers[layer_name][0]  # [0] to get only weights, not biases
+    weights = np.reshape(weights, (np.shape(weights)[0], -1))
 
     # center the x values
     x = safe_arange(len(weights))

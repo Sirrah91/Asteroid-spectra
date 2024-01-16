@@ -603,33 +603,40 @@ def resave_asteroid_taxonomy_data(grouping_options: list[str]) -> None:
 
         # REDUCED TAXONOMY WITH METEORITES #
         # add OC from RELAB to Q-type
-        data = load_npz(f"mineral{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz")  # to read the file
+        if "Q" not in classes_to_delete:
+            data = load_npz(f"mineral{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz")  # to read the file
 
-        metadata_min = join_data(data, header="meta")
-        types = np.array(metadata_min[["Type1"]], dtype=str)
-        inds = np.where(np.array(["Ordinary Chondrite" == ast_type for ast_type in types]))[0]
-        types = types[inds]
+            metadata_min = join_data(data, header="meta")
+            types = np.array(metadata_min[["Type1"]], dtype=str)
+            inds = np.where(np.array(["Ordinary Chondrite" == ast_type for ast_type in types]))[0]
+            types = types[inds]
 
-        types[:] = "Q"
-        OC = data[_spectra_name][inds]
-        x_oc = data[_wavelengths_name]
-        OC = interp1d(x_oc, OC, kind="cubic")(xq)
+            # combine Q with some others?
+            Q_combine_mask = ["Q" in combine[0] for combine in classes_to_combine]
+            if np.any(Q_combine_mask):
+                types[:] = classes_to_combine[np.where(Q_combine_mask)[0][0]][1]
+            else:  # Q is not combined and is just Q
+                types[:] = "Q"
 
-        OC = denoise_and_norm(data=OC, wavelength=xq, denoising=False, normalising=True, sigma_nm=denoising_sigma,
-                              wvl_norm_nm=wvl_norm)
+            OC = data[_spectra_name][inds]
+            x_oc = data[_wavelengths_name]
+            OC = interp1d(x_oc, OC, kind="cubic")(xq)
 
-        OC_meta = np.array([np.shape(metadata_reduced)[1] * [np.nan]], dtype=object)
-        OC_meta[0, 1] = "Q"
-        OC_meta = np.repeat(OC_meta, len(OC), axis=0)
+            OC = denoise_and_norm(data=OC, wavelength=xq, denoising=False, normalising=True, sigma_nm=denoising_sigma,
+                                  wvl_norm_nm=wvl_norm)
 
-        labels_reduced = stack((labels_reduced, types), axis=0)
-        spectra_reduced = stack((spectra_reduced, OC), axis=0)
-        metadata_reduced = stack((metadata_reduced, OC_meta), axis=0)
+            OC_meta = np.array([np.shape(metadata_reduced)[1] * [np.nan]], dtype=object)
+            OC_meta[0, 1] = "Q"
+            OC_meta = np.repeat(OC_meta, len(OC), axis=0)
 
-        filename = save_data(f"{final_name_option}{_sep_out}reduced{_sep_in}met", spectra=spectra_reduced,
-                             wavelengths=xq, labels=labels_reduced, metadata=metadata_reduced, labels_key=labels_key,
-                             metadata_key=metadata_key, subfolder=subfolder)
-        # my_mv(filename, filename.replace(subfolder, "", 1), "cp")
+            labels_reduced = stack((labels_reduced, types), axis=0)
+            spectra_reduced = stack((spectra_reduced, OC), axis=0)
+            metadata_reduced = stack((metadata_reduced, OC_meta), axis=0)
+
+            filename = save_data(f"{final_name_option}{_sep_out}reduced{_sep_in}met", spectra=spectra_reduced,
+                                 wavelengths=xq, labels=labels_reduced, metadata=metadata_reduced, labels_key=labels_key,
+                                 metadata_key=metadata_key, subfolder=subfolder)
+            # my_mv(filename, filename.replace(subfolder, "", 1), "cp")
 
 
 def resave_Itokawa_Eros() -> None:
@@ -839,7 +846,7 @@ def resave_didymos_2004() -> list[str]:
 
     subfolder = "Didymos"
 
-    xq = safe_arange(490, 2450, 5, endpoint=True)
+    xq = safe_arange(490, lambda_max, resolution_final, endpoint=True)
 
     file = "Didymos_vnir_albedo.dat"
     tmp = load_txt(file, subfolder=subfolder, sep="\t").to_numpy()
@@ -869,7 +876,7 @@ def resave_didymos_2022(add_blue_part: bool = False) -> list[str]:
     files = ["a65803_IR_Spec_IRTF_20220926_Polishook.dat", "a65803_IR_Spec_IRTF_20220927_Polishook.dat"]
 
     # xq = safe_arange(650, 2450, 5, endpoint=True)
-    xq = safe_arange(800, 2450, 5, endpoint=True)
+    xq = safe_arange(800, lambda_max, resolution_final, endpoint=True)
 
     if add_blue_part:  # the original spectrum starts at 650. I added mean S type here
         asteroid_data = load_npz(f"asteroid{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz", subfolder="taxonomy")

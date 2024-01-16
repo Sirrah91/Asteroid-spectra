@@ -824,7 +824,7 @@ def plot_model_layer(model_name: str, subfolder_model: str = "", layer: str = "C
         return
 
     weights = layers[layer_name][0]  # [0] to get only weights, not biases
-    weights = np.reshape(weights, (np.shape(weights)[0], -1))
+    weights = np.reshape(weights, (np.shape(weights)[0], -1))  # optimised for conv1d layers
 
     # center the x values
     x = safe_arange(len(weights))

@@ -5,7 +5,7 @@ from copy import deepcopy
 from typing import Callable, Literal
 import numpy as np
 import pandas as pd
-from tensorflow.keras.models import load_model, Sequential, Model
+from tensorflow.keras.models import load_model, Model
 from pathlib import Path
 from scipy.interpolate import interp1d
 from scipy.integrate import trapezoid
@@ -569,7 +569,7 @@ def gimme_used_from_name(model_name: str) -> tuple[np.ndarray, list[list[bool]]]
     return bin_to_used(bin_code=gimme_bin_code_from_name(model_name=model_name))
 
 
-def is_taxonomical(model: str | Model | Sequential | None = None, bin_code: str | None = None) -> bool:
+def is_taxonomical(model: str | Model | None = None, bin_code: str | None = None) -> bool:
     if isinstance(model, str):
         bare_name = split_path(model)[1]
         bin_code = gimme_bin_code_from_name(bare_name)
@@ -577,7 +577,7 @@ def is_taxonomical(model: str | Model | Sequential | None = None, bin_code: str 
     if bin_code is not None:
         return len(bin_code.split(_sep_in)) == 2
 
-    if isinstance(model, Model | Sequential):  # model was compiled when loaded
+    if isinstance(model, Model):  # model was compiled when loaded
         if model.metrics_names:
             possible_taxonomy_metrics = ["categorical_accuracy", "f1_score"]
             return np.any([metric in model.metrics_names for metric in possible_taxonomy_metrics])
@@ -1147,11 +1147,15 @@ def outliers_frequency(y_true: np.ndarray, y_pred: np.ndarray,
 
 
 def wt_vol_conversion(conversion_direction: Literal["wt_to_vol", "vol_to_wt"], y_data: np.ndarray,
-                      used_minerals: np.ndarray, used_endmembers: list[list[bool]]) -> np.ndarray:
+                      used_minerals_all: np.ndarray | None = None,
+                      used_endmembers: list[list[bool]] | None = None) -> np.ndarray:
     # should be after the chemicals are filled with dummy data, otherwise you can divide by 0 here
     # WAS NOT PROPERLY TESTED
     # zatim nefunguje:
     # pokud je nejaky mineral samotny bez chem slozeni
+
+    if used_endmembers is None: used_endmembers = endmembers_used
+    if used_minerals_all is None: used_minerals_all = gimme_minerals_all(minerals_used, used_endmembers)
 
     if conversion_direction not in ["wt_to_vol", "vol_to_wt"]:
         raise ValueError('conversion_direction" must be "wt_to_vol" or "vol_to_wt".')
@@ -1160,7 +1164,7 @@ def wt_vol_conversion(conversion_direction: Literal["wt_to_vol", "vol_to_wt"], y
     densities = np.array([4.39, 3.27, 3.95, 3.20, 2.90, 3.95, 3.20, 2.90, 2.73, 2.62, 2.56]
                          )[flatten_list(used_endmembers)]
 
-    num_minerals = gimme_num_minerals(used_minerals)
+    num_minerals = gimme_num_minerals(used_minerals_all)
 
     # for not-pure samples only
     inds = np.max(y_data[:, :num_minerals], axis=1) != 1
@@ -1169,9 +1173,9 @@ def wt_vol_conversion(conversion_direction: Literal["wt_to_vol", "vol_to_wt"], y
     mineral_density = chemical * densities
 
     #[:1] to avoid mineral position indices but keep mineral indices together with end-member indices
-    for i, start, stop in gimme_indices(used_minerals, used_endmembers, return_mineral_indices=True)[1:]:
+    for i, start, stop in gimme_indices(used_minerals_all, used_endmembers, return_mineral_indices=True)[1:]:
         norm_density = np.sum(mineral_density[inds, start - num_minerals:stop - num_minerals], axis=1)
-        if np.all(norm_density) > 0:
+        if np.all(norm_density) > 0.:
             if conversion_direction == "vol_to_wt":
                 modals[inds, i] *= norm_density
             else:  # must be "wt_to_vol"
@@ -1182,13 +1186,19 @@ def wt_vol_conversion(conversion_direction: Literal["wt_to_vol", "vol_to_wt"], y
     return stack((modals, chemical), axis=1)
 
 
-def vol_to_wt_percent(y_data: np.ndarray, used_minerals_all: np.ndarray,
-                      used_endmembers: list[list[bool]]) -> np.ndarray:
+def vol_to_wt_percent(y_data: np.ndarray, used_minerals_all: np.ndarray | None = None,
+                      used_endmembers: list[list[bool]] | None = None) -> np.ndarray:
+    if used_endmembers is None: used_endmembers = endmembers_used
+    if used_minerals_all is None: used_minerals_all = gimme_minerals_all(minerals_used, used_endmembers)
+
     return wt_vol_conversion("vol_to_wt", y_data, used_minerals_all, used_endmembers)
 
 
-def wt_to_vol_percent(y_data: np.ndarray, used_minerals_all: np.ndarray,
-                      used_endmembers: list[list[bool]]) -> np.ndarray:
+def wt_to_vol_percent(y_data: np.ndarray, used_minerals_all: np.ndarray | None = None,
+                      used_endmembers: list[list[bool]] | None = None) -> np.ndarray:
+    if used_endmembers is None: used_endmembers = endmembers_used
+    if used_minerals_all is None: used_minerals_all = gimme_minerals_all(minerals_used, used_endmembers)
+
     return wt_vol_conversion("wt_to_vol", y_data, used_minerals_all, used_endmembers)
 
 

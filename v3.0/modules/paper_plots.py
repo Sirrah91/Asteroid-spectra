@@ -3041,23 +3041,19 @@ def plot_test_step_taxonomy(offset: float = 0.) -> tuple[np.ndarray, ...]:
     check_dir(outdir_range_tests)
 
     cm = plt.get_cmap("gist_rainbow")
-    num_colors = 1
-    titles_all = data["labels_key"]
 
-    rows, cols = best_blk(np.shape(error)[-1])
-    fig, axes = plt.subplots(rows, cols, figsize=(24, 12), sharex=True)
-    axes = np.ravel(axes)
+    titles_all = [f"{ast_type}-type" for ast_type in data["labels_key"]]
+    num_colors = len(titles_all)
 
-    colors = cm(np.linspace(0., 1., num_colors))
+    fig, ax = plt.subplots(1, 1, figsize=(18, 6))
+    ax.set_prop_cycle(color=cm(np.linspace(0., 1., num_colors)))
+    ax.plot(wvl_step, error, marker='o', linestyle="--")
 
-    for q, ax in enumerate(axes):
-        ax.plot(wvl_step, error[:, q], marker='o', linestyle="--", color=colors[0])
+    ax.set_xlabel("Step (nm)")
+    ax.set_ylabel(f"MAE (pp)")
 
-        ax.set_title(f"{titles_all[q]}-type")
-        if q >= (rows - 1) * cols:  # last row only
-            ax.set_xlabel("Step (nm)")
-
-        ax.set_ylabel(f"MAE (pp)")
+    ax.legend(titles_all, bbox_to_anchor=(0., 1.02, 1., 0.2), loc="lower left", mode="expand", borderaxespad=0.,
+              ncol=best_blk(num_colors)[1])
 
     fig_name = f"step{_sep_out}MAE.{fig_format}"
 

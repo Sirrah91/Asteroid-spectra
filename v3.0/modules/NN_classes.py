@@ -115,4 +115,7 @@ def gimme_list_of_classes(grid_option: str) -> list[str]:
         "Xn",
     ]
 
+    # must be here for tests of accuracy
+    # list_of_classes = ["S", "Q"]
+
     return list_of_classes

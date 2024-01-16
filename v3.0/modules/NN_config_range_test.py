@@ -50,13 +50,13 @@ if tested_quantity == "range":
 
 elif tested_quantity == "step":
     # wavelength ranges in nm
-    approx_resolution = np.array([10, 20, 30, 40, 50], dtype=int)  # nm
+    approx_resolution = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90, 100], dtype=int)  # nm
     norm_at = 1550.
 
-    start = 650.
+    start = 450.
 
     if instrument is None:
-        stop = start + 2. * np.lcm.reduce(approx_resolution)
+        stop = 2450  # start + 2. * np.lcm.reduce(approx_resolution)
     elif "ASPECT" in instrument:
         if "swir" in instrument:
             stop = 2450.
@@ -159,7 +159,7 @@ if not (instrument is None or "ASPECT" in instrument or "HS-H" in instrument):
     raise ValueError('Unknown instrument. Must be "None" or contain "ASPECT" or "HS-H".')
 
 # model subdirs
-model_subdirs = [path.join(model_basedir, tested_quantity, model_grid) for model_grid in model_grids]
+model_subdirs = [path.join(model_basedir, tested_quantity) for model_grid in model_grids]
 
 # model names
 model_names = [f"{p['model_type']}{_sep_out}{model_grid}{_sep_out}{bin_code}" for model_grid in model_grids]

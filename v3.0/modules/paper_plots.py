@@ -2307,9 +2307,9 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
                     cbar.set_ticks(yticks)
 
         if limit is None:
-            fig_name = f"range_{error_type}{_sep_out}{titles_all[q].replace(' ', _sep_in)}.{fig_format}"
+            fig_name = f"range{_sep_out}{error_type}{_sep_out}{titles_all[q].replace(' ', _sep_in)}.{fig_format}"
         else:
-            fig_name = f"range_{error_type}{_sep_in}{limit[0]}{_sep_out}{titles_all[q].replace(' ', _sep_in)}.{fig_format}"
+            fig_name = f"range{_sep_out}{error_type}{_sep_in}{limit[0]}{_sep_out}{titles_all[q].replace(' ', _sep_in)}.{fig_format}"
 
         plt.draw()
         plt.tight_layout()
@@ -2366,9 +2366,9 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
                   ncol=best_blk(num_colors)[1])
 
         if limit is None:
-            fig_name = f"range_{error_type}{_sep_out}{titles_all[q].replace(' ', _sep_in)}_line.{fig_format}"
+            fig_name = f"range{_sep_out}{error_type}{_sep_out}{titles_all[q].replace(' ', _sep_in)}{_sep_out}line.{fig_format}"
         else:
-            fig_name = f"range_{error_type}{_sep_in}{limit[0]}{_sep_out}{titles_all[q].replace(' ', _sep_in)}_line.{fig_format}"
+            fig_name = f"range{_sep_out}{error_type}{_sep_in}{limit[0]}{_sep_out}{titles_all[q].replace(' ', _sep_in)}{_sep_out}line.{fig_format}"
 
         plt.draw()
         plt.tight_layout()
@@ -2453,9 +2453,9 @@ def plot_test_range(error_type: str = "RMSE", remove_outliers: bool = False,
             cbar.set_ticks(yticks)
 
         if limit is None:
-            fig_name = f"range_{error_type}{_sep_out}{titles_all[q].replace(' ', _sep_in)}_mat.{fig_format}"
+            fig_name = f"range{_sep_out}{error_type}{_sep_out}{titles_all[q].replace(' ', _sep_in)}{_sep_out}mat.{fig_format}"
         else:
-            fig_name = f"range_{error_type}{_sep_in}{limit[0]}{_sep_out}{titles_all[q].replace(' ', _sep_in)}_mat.{fig_format}"
+            fig_name = f"range{_sep_out}{error_type}{_sep_in}{limit[0]}{_sep_out}{titles_all[q].replace(' ', _sep_in)}{_sep_out}mat.{fig_format}"
 
         plt.draw()
         plt.tight_layout()
@@ -2601,7 +2601,8 @@ def plot_test_step(error_type: str = "RMSE", remove_outliers: bool = False,
 
     cm = plt.get_cmap("gist_rainbow")
 
-    fig, axes = plt.subplots(*best_blk(len(error[0])), figsize=(24, 12), sharex=True)
+    rows, cols = best_blk(len(error[0]))
+    fig, axes = plt.subplots(rows, cols, figsize=(24, 12), sharex=True)
     axes = np.ravel(axes)
 
     colors = cm(np.linspace(0., 1., num_colors))
@@ -2618,7 +2619,7 @@ def plot_test_step(error_type: str = "RMSE", remove_outliers: bool = False,
 
         ax.set_title(titles_all[q])
 
-        if q > 5:
+        if q >= (rows - 1) * cols:  # last row only
             ax.set_xlabel("Step (nm)")
 
         if error_type == "outliers":
@@ -2647,9 +2648,9 @@ def plot_test_step(error_type: str = "RMSE", remove_outliers: bool = False,
         ax.set_ylim(lim)
 
     if limit is None:
-        fig_name = f"step_{error_type}.{fig_format}"
+        fig_name = f"step{_sep_out}{error_type}.{fig_format}"
     else:
-        fig_name = f"step_{error_type}{_sep_in}{limit[0]}.{fig_format}"
+        fig_name = f"step{_sep_out}{error_type}{_sep_in}{limit[0]}.{fig_format}"
 
     plt.draw()
     plt.tight_layout()
@@ -2818,14 +2819,14 @@ def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = Fa
 
     if error_type == "outliers":
         ax.set_ylabel("No. outliers")
-        fig_name = f"normalisation_{error_type}.{fig_format}"
+        fig_name = f"normalisation{_sep_out}{error_type}.{fig_format}"
     else:
         if limit is None:
             ax.set_ylabel(f"{error_type} (pp)")
-            fig_name = f"normalisation_{error_type}.{fig_format}"
+            fig_name = f"normalisation{_sep_out}{error_type}.{fig_format}"
         else:
             ax.set_ylabel(f"{error_type} {limit[0]} pp (\%)")
-            fig_name = f"normalisation_{error_type}{_sep_in}{limit[0]}.{fig_format}"
+            fig_name = f"normalisation{_sep_out}{error_type}{_sep_in}{limit[0]}.{fig_format}"
 
     plt.draw()
     plt.tight_layout()
@@ -2998,9 +2999,9 @@ def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False,
               ncol=best_blk(num_colors)[1])
 
     if limit is None:
-        fig_name = f"window_{error_type}.{fig_format}"
+        fig_name = f"window{_sep_out}{error_type}.{fig_format}"
     else:
-        fig_name = f"window_{error_type}{_sep_in}{limit[0]}.{fig_format}"
+        fig_name = f"window{_sep_out}{error_type}{_sep_in}{limit[0]}.{fig_format}"
 
     plt.draw()
     plt.tight_layout()
@@ -3011,3 +3012,61 @@ def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False,
     change_params(offset, reset=True)
 
     return window_range, error
+
+
+def plot_test_step_taxonomy(offset: float = 0.) -> tuple[np.ndarray, ...]:
+    change_params(offset)
+
+    pref = path.join(_path_accuracy_tests, "range_test", "taxonomy", "step", "taxonomy_450-2450*.npz")
+    filenames = glob(pref)
+
+    wvl_step = np.zeros(len(filenames))
+
+    for i, filename in enumerate(filenames):
+        data = load_npz(filename)
+        y_true, y_pred = data[_label_true_name], data[_label_pred_name]
+
+        wavelengths = data[_wavelengths_name]
+        wvl_step[i] = np.mean(np.diff(wavelengths))
+
+        if i == 0:
+            error = np.zeros((len(filenames), np.shape(y_true)[1]))
+
+        error[i] = np.mean(np.abs(y_true - y_pred), axis=0)
+
+    inds = np.argsort(wvl_step)
+    wvl_step, error = wvl_step[inds], error[inds] * 100.
+
+    outdir_range_tests = path.join(outdir, "range_test", "taxonomy")
+    check_dir(outdir_range_tests)
+
+    cm = plt.get_cmap("gist_rainbow")
+    num_colors = 1
+    titles_all = data["labels_key"]
+
+    rows, cols = best_blk(np.shape(error)[-1])
+    fig, axes = plt.subplots(rows, cols, figsize=(24, 12), sharex=True)
+    axes = np.ravel(axes)
+
+    colors = cm(np.linspace(0., 1., num_colors))
+
+    for q, ax in enumerate(axes):
+        ax.plot(wvl_step, error[:, q], marker='o', linestyle="--", color=colors[0])
+
+        ax.set_title(f"{titles_all[q]}-type")
+        if q >= (rows - 1) * cols:  # last row only
+            ax.set_xlabel("Step (nm)")
+
+        ax.set_ylabel(f"MAE (pp)")
+
+    fig_name = f"step{_sep_out}MAE.{fig_format}"
+
+    plt.draw()
+    plt.tight_layout()
+
+    fig.savefig(path.join(outdir_range_tests, fig_name), format=fig_format, **savefig_kwargs, **pil_kwargs)
+    plt.close(fig)
+
+    change_params(offset, reset=True)
+
+    return wvl_step, error

@@ -14,7 +14,7 @@ from modules.BAR_BC_method import calc_BAR_BC, calc_composition, filter_data_mas
 
 from modules.NN_data import numbers_to_classes
 
-from modules.utilities import check_dir, best_blk, distance, stack, normalise_array, is_empty, find_all
+from modules.utilities import check_dir, best_blk, distance, stack, normalise_array, is_empty, find_all, gimme_kind
 from modules.utilities_spectra import (error_estimation_bin_like, cut_error_bars, find_outliers, used_indices,
                                        unique_indices, join_data, load_npz, load_txt, normalise_spectra)
 from modules.tables import print_grid_test_stats_range
@@ -836,7 +836,7 @@ def compare_spectra_with_instrument(filename: str,
                                                                        instrument=instrument)
 
     # interpolate avg_spectra to wavelengths_instrument grid
-    avg_spectra = interp1d(wavelengths, avg_spectra, kind="cubic")(wavelengths_intrument)
+    avg_spectra = interp1d(wavelengths, avg_spectra, kind=gimme_kind(wavelengths))(wavelengths_intrument)
 
     rows, columns = best_blk(len(classes_to_plot))
 
@@ -1532,7 +1532,7 @@ def plot_Eros_spectra(offset: float = 0.) -> None:
     meta = join_data(DM, "meta")
     i_eros = "433" == np.array(meta["asteroid number"], dtype=str)
     DM, DM_wvl = DM[_spectra_name][i_eros], DM[_wavelengths_name]
-    fun = interp1d(DM_wvl, DM, kind="cubic")
+    fun = interp1d(DM_wvl, DM, kind=gimme_kind(DM_wvl))
     DM = normalise_spectra(fun(wavelengths), wavelengths, wvl_norm_nm=1300., fun=fun, on_pixel=False)
 
     # NIS corrected

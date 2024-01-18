@@ -289,6 +289,8 @@ def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
 
     z_thresh = np.clip(z_thresh, a_min=num_eps, a_max=None)
 
+    i = 0  # counts iterations (now needed only for edge outlier removal)
+
     while True:
         deriv = np.diff(y_iterate) / np.diff(x_iterate)
         mu, sigma = return_mean_std(deriv)
@@ -300,10 +302,19 @@ def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
         # noise -> the points are next to each other (overlap if compensated for "diff" shift)
         outliers = stack((np.intersect1d(positive, negative + 1), np.intersect1d(negative, positive + 1)))
 
+        if i == 0:  # check edges of the original data
+            if 0 in positive or 0 in negative:  # first index is outlier
+                outliers = stack(([0], outliers))
+
+            # last index is outlier
+            if (len(z_score) - 1) in positive or (len(z_score) - 1) in negative:  # -1 to count "len" from 0
+                outliers = stack((outliers, [len(x_iterate) - 1]))
+
         if np.size(outliers) == 0:
             break
 
         x_iterate, y_iterate = np.delete(x_iterate, outliers), np.delete(y_iterate, outliers)
+        i += 1
 
     # outliers are shifted due to deleting the two iterables
     return np.where([x_test not in x_iterate for x_test in x])[0]

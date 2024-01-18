@@ -332,10 +332,18 @@ def remove_outliers(y: np.ndarray, x: np.ndarray | None = None,
 
 def interpolate_outliers(y: np.ndarray, x: np.ndarray | None = None,
                     z_thresh: float = 1., num_eps: float = _num_eps) -> np.ndarray:
+    if x is None: x = np.arange(len(y))
+
     inds_to_remove = find_outliers(y=y, x=x, z_thresh=z_thresh, num_eps=num_eps)
     x_no_out, y_no_out = np.delete(x, inds_to_remove), np.delete(y, inds_to_remove)
 
-    return interp1d(x_no_out, y_no_out, kind=gimme_kind(x_no_out), fill_value="extrapolate")(x)
+    # interpolation first
+    inds_in = np.logical_and(x >= np.min(x_no_out), x <= np.max(x_no_out))
+    x_in = x[inds_in]  # x corrected for possible edges to avoid cubic extrapolation
+    y_in = interp1d(x_no_out, y_no_out, kind=gimme_kind(x_no_out))(x_in)
+
+    # linearly extrapolate the interpolated values if needed
+    return interp1d(x_in, y_in, kind="linear", fill_value="extrapolate")(x)
 
 
 def gimme_kind(x: np.ndarray) -> str:

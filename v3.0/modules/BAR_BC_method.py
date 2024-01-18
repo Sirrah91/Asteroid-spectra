@@ -5,7 +5,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 from scipy.integrate import trapezoid
 
-from modules.utilities import my_argmin, my_argmax, argnearest
+from modules.utilities import my_argmin, my_argmax, argnearest, gimme_kind
 
 
 def calc_BAR_BC(wavelength: np.ndarray, reflectance: np.ndarray) -> tuple[np.ndarray, ...]:
@@ -77,7 +77,7 @@ def calc_BAR_BC(wavelength: np.ndarray, reflectance: np.ndarray) -> tuple[np.nda
         wvl_max_1 = np.max((wvl_max_1, np.min(wavelength)))
         wvl_max_3 = np.min((wvl_max_3, np.max(wavelength)))
 
-        fun = interp1d(wavelength, spectrum, kind="cubic")
+        fun = interp1d(wavelength, spectrum, kind=gimme_kind(wavelength))
 
         # area of the first band
         # y = slope * x + const

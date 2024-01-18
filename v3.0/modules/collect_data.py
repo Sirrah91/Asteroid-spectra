@@ -21,7 +21,7 @@ from modules.utilities_spectra import denoise_and_norm, save_data, combine_files
 from modules.utilities_spectra import join_data, load_npz, load_xlsx, load_txt, load_h5, normalise_spectra
 from modules.utilities_spectra import collect_all_models, remove_jumps_in_spectra, match_spectra
 from modules.utilities import flatten_list, stack, my_mv, check_dir, safe_arange, normalise_in_rows, find_all
-from modules.utilities import is_empty, remove_outliers, find_outliers
+from modules.utilities import is_empty, remove_outliers, find_outliers, gimme_kind
 
 from modules.NN_config_composition import mineral_names, endmember_names, mineral_names_short
 
@@ -180,7 +180,7 @@ def collect_data_RELAB(start_line_number: tuple[int, ...] | int, end_line_number
             x, v = x[idx], v[idx]
             v, x = remove_outliers(y=v, x=x, z_thresh=0.5)
 
-            vq[i, :] = interp1d(x, v, kind="cubic")(xq)
+            vq[i, :] = interp1d(x, v, kind=gimme_kind(x))(xq)
 
         # Remove missing data and normalise
         vq = np.delete(vq, irow, axis=0)
@@ -273,7 +273,7 @@ def collect_data_CTAPE() -> list[str]:
             start, stop = stop, stop + len(v)
 
             # can be done before deleting the incorrect wavelengths, because the interpolation is just slicing here
-            vq = interp1d(x, v, kind="cubic")(xq)
+            vq = interp1d(x, v, kind=gimme_kind(x))(xq)
 
             # incorrect wavelengths (not noise-like)
             inds = np.array([505, 510, 520, 525, 535, 540, 545, 550, 555, 560, 565, 615, 625, 630, 635, 645, 650, 655,
@@ -291,7 +291,7 @@ def collect_data_CTAPE() -> list[str]:
             X = [np.delete(xq_clean, ind) for ind in inds_to_delete]
             Y = [np.delete(vq_clean[i], ind) for i, ind in enumerate(inds_to_delete)]
 
-            vq_clean = np.array([interp1d(x, y, kind="cubic")(xq) for x, y in zip(X, Y)])
+            vq_clean = np.array([interp1d(x, y, kind=gimme_kind(x))(xq) for x, y in zip(X, Y)])
 
             vq_c = denoise_and_norm(data=vq_clean, wavelength=xq, denoising=denoise, normalising=normalise,
                                     sigma_nm=denoising_sigma, wvl_norm_nm=wvl_norm)
@@ -348,7 +348,7 @@ def resave_Tomas_OL_OPX_mixtures() -> list[str]:
     data[147:] *= remove_jumps_in_spectra(x, data, jump_index=147)
     data, x = remove_outliers(y=data, x=x, z_thresh=1.)
 
-    OL = interp1d(x, data, kind="cubic")(xq)
+    OL = interp1d(x, data, kind=gimme_kind(x))(xq)
 
     # pyroxene
     with open(path.join(dirin, "02_100px.dat")) as f:
@@ -365,7 +365,7 @@ def resave_Tomas_OL_OPX_mixtures() -> list[str]:
     data[147:] *= remove_jumps_in_spectra(x, data, jump_index=147)
     data, x = remove_outliers(y=data, x=x, z_thresh=1.)
 
-    OPX = interp1d(x, data, kind="cubic")(xq)
+    OPX = interp1d(x, data, kind=gimme_kind(x))(xq)
 
     # mixtures
     C = np.array([0, 0.1, 0.25, 0.5, 0.75, 0.9, 1]) * 100.
@@ -386,7 +386,7 @@ def resave_Tomas_OL_OPX_mixtures() -> list[str]:
         else:
             data[146:, 1] *= remove_jumps_in_spectra(data[:, 0], data[:, 1], jump_index=146)
         data = np.transpose(remove_outliers(y=data[:, 1], x=data[:, 0], z_thresh=1.)[::-1])  # wavelengths first
-        spectra_msm[:, i + 1] = interp1d(data[:, 0], data[:, 1], kind="cubic")(xq)
+        spectra_msm[:, i + 1] = interp1d(data[:, 0], data[:, 1], kind=gimme_kind(data[:, 0]))(xq)
 
     spectra = denoise_and_norm(data=np.transpose(spectra_msm), wavelength=xq, denoising=denoise, normalising=normalise,
                                sigma_nm=denoising_sigma, wvl_norm_nm=wvl_norm)
@@ -422,7 +422,7 @@ def resave_Chelyabinsk() -> list[str]:
         x, y = tmp[:, 0], tmp[:, 1]
         y, x = remove_outliers(y=y, x=x, z_thresh=0.3)
 
-        tmp_spec = interp1d(x, y, kind="cubic")(xq)
+        tmp_spec = interp1d(x, y, kind=gimme_kind(x))(xq)
 
         SD_spectra[i, :] = denoise_and_norm(data=tmp_spec, wavelength=xq, denoising=denoise, normalising=normalise,
                                             sigma_nm=denoising_sigma, wvl_norm_nm=wvl_norm)
@@ -437,7 +437,7 @@ def resave_Chelyabinsk() -> list[str]:
         x, y = tmp[:, 0] * 1000., tmp[:, 1]
         y, x = remove_outliers(y=y, x=x, z_thresh=0.3)
 
-        tmp_spec = interp1d(x, y, kind="cubic")(xq)
+        tmp_spec = interp1d(x, y, kind=gimme_kind(x))(xq)
 
         IM_spectra[i, :] = denoise_and_norm(data=tmp_spec, wavelength=xq, denoising=denoise, normalising=normalise,
                                             sigma_nm=denoising_sigma, wvl_norm_nm=wvl_norm)
@@ -451,7 +451,7 @@ def resave_Chelyabinsk() -> list[str]:
         x, y = tmp[:, 0], tmp[:, 1]
         y, x = remove_outliers(y=y, x=x, z_thresh=0.7)
 
-        tmp_spec = interp1d(x, y, kind="cubic")(xq)
+        tmp_spec = interp1d(x, y, kind=gimme_kind(x))(xq)
 
         SW_spectra[i, :] = denoise_and_norm(data=tmp_spec, wavelength=xq, denoising=denoise, normalising=normalise,
                                             sigma_nm=denoising_sigma, wvl_norm_nm=wvl_norm)
@@ -520,7 +520,7 @@ def resave_asteroid_taxonomy_data(grouping_options: list[str]) -> None:
     X = [np.delete(x_old, ind) for ind in inds_to_delete]
     Y = [np.delete(spectra_raw[i], ind) for i, ind in enumerate(inds_to_delete)]
 
-    spectra_raw = np.array([interp1d(x, y, kind="cubic")(xq) for x, y in zip(X, Y)])
+    spectra_raw = np.array([interp1d(x, y, kind=gimme_kind(x))(xq) for x, y in zip(X, Y)])
 
     spectra_raw = denoise_and_norm(data=spectra_raw, wavelength=xq, denoising=denoise, normalising=normalise,
                                    sigma_nm=denoising_sigma, wvl_norm_nm=wvl_norm)
@@ -620,7 +620,7 @@ def resave_asteroid_taxonomy_data(grouping_options: list[str]) -> None:
 
             OC = data[_spectra_name][inds]
             x_oc = data[_wavelengths_name]
-            OC = interp1d(x_oc, OC, kind="cubic")(xq)
+            OC = interp1d(x_oc, OC, kind=gimme_kind(x_oc))(xq)
 
             OC = denoise_and_norm(data=OC, wavelength=xq, denoising=False, normalising=True, sigma_nm=denoising_sigma,
                                   wvl_norm_nm=wvl_norm)
@@ -660,7 +660,7 @@ def resave_Itokawa_Eros() -> None:
     X = [np.delete(wavelengths, ind) for ind in inds_to_delete]
     Y = [np.delete(data[i], ind) for i, ind in enumerate(inds_to_delete)]
 
-    data = np.array([interp1d(x, y, kind="cubic")(wavelengths) for x, y in zip(X, Y)])
+    data = np.array([interp1d(x, y, kind=gimme_kind(x))(wavelengths) for x, y in zip(X, Y)])
 
     metadata = np.array([["Itokawa", "Hayabusa Near Infrared Spectrometer"]])
     metadata = np.repeat(metadata, len(data), axis=0)
@@ -694,7 +694,7 @@ def resave_Itokawa_Eros() -> None:
     X = [np.delete(wavelengths, ind) for ind in inds_to_delete]
     Y = [np.delete(data[i], ind) for i, ind in enumerate(inds_to_delete)]
 
-    data = np.array([interp1d(x, y, kind="cubic")(wavelengths) for x, y in zip(X, Y)])
+    data = np.array([interp1d(x, y, kind=gimme_kind(x))(wavelengths) for x, y in zip(X, Y)])
 
     data = denoise_and_norm(data=data, wavelength=wavelengths, denoising=denoise, normalising=normalise,
                             sigma_nm=denoising_sigma, wvl_norm_nm=norm_at)
@@ -718,7 +718,7 @@ def resave_Itokawa_Eros() -> None:
 
     spectrum, wvl = ast[_spectra_name][eros], ast[_wavelengths_name]
 
-    spectra = interp1d(wvl, spectrum, kind="cubic")(wavelengths)
+    spectra = interp1d(wvl, spectrum, kind=gimme_kind(wvl))(wavelengths)
     spectrum = normalise_spectra(spectra, wavelengths, wvl_norm_nm=norm_at)
 
     data_1, data_2 = data[:, mask], data[:, ~mask]
@@ -806,7 +806,7 @@ def resave_kachr_ol_opx() -> list[str]:
         X = [np.delete(x, ind) for ind in inds_to_delete]
         Y = [np.delete(y[:, i], ind) for i, ind in enumerate(inds_to_delete)]
 
-        tmp_spec = np.array([interp1d(x, y, kind="cubic")(x_new_part) for x, y in zip(X, Y)])
+        tmp_spec = np.array([interp1d(x, y, kind=gimme_kind(x))(x_new_part) for x, y in zip(X, Y)])
 
         # Linear extrapolation if needed
         tmp_spec = interp1d(x_new_part, tmp_spec, kind="linear", fill_value="extrapolate")(xq)
@@ -853,7 +853,7 @@ def resave_didymos_2004() -> list[str]:
     x, y = tmp[:, 0], np.transpose(tmp[:, 1:])
     y, x = remove_outliers(y=y[0], x=x, z_thresh=0.4)
 
-    spectrum = interp1d(x, y, kind="cubic")(xq)  # one spectrum per row
+    spectrum = interp1d(x, y, kind=gimme_kind(x))(xq)  # one spectrum per row
     spectrum = denoise_and_norm(data=spectrum, wavelength=xq, denoising=denoise, normalising=normalise, sigma_nm=30.,
                                 wvl_norm_nm=wvl_norm)
 
@@ -906,7 +906,7 @@ def resave_didymos_2022(add_blue_part: bool = False) -> list[str]:
 
         if add_blue_part:
             x_old_full, spectrum = match_spectra((S_wavelengths, xq), (S_spectra_mean, spectrum[0]))
-            spectrum = interp1d(x_old_full, spectrum, kind="cubic")(xq_full)
+            spectrum = interp1d(x_old_full, spectrum, kind=gimme_kind(x_old_full))(xq_full)
 
             spectrum = denoise_and_norm(data=spectrum, wavelength=xq_full, denoising=False, normalising=normalise,
                                         sigma_nm=denoising_sigma, wvl_norm_nm=wvl_norm)

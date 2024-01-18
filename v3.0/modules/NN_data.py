@@ -11,7 +11,7 @@ from tensorflow.keras.utils import to_categorical
 from typing import Literal
 import warnings
 
-from modules.utilities import normalise_in_rows, normalise_array, stack, safe_arange, my_polyfit, is_empty
+from modules.utilities import normalise_in_rows, normalise_array, stack, safe_arange, my_polyfit, is_empty, gimme_kind
 
 from modules.utilities_spectra import gimme_indices, used_indices, normalise_spectra, if_no_test_data
 from modules.utilities_spectra import join_data, load_npz, apply_transmission
@@ -433,7 +433,7 @@ def reinterpolate_data(x_data: np.ndarray, wvl_old: np.ndarray, wvl_new: np.ndar
         print(f"Re-interpolating the data to the {model_grid} grid.")
 
         # new resolution
-        x_data = interp1d(wvl_old, x_data, kind="cubic")(wvl_new)
+        x_data = interp1d(wvl_old, x_data, kind=gimme_kind(wvl_old))(wvl_new)
 
         if wvl_new_norm == "adaptive":
             wvl_new_norm = normalise_spectrum_at_wvl(wvl_new)
@@ -534,7 +534,7 @@ def apply_hyperscout_filter(wvl_data: np.ndarray, x_data: np.ndarray,
     mask =  trapezoid(y=transmissions, x=wvl_raw) / areas >= 0.5
     transmissions = transmissions[mask]
 
-    x_data = interp1d(wvl_data, x_data, kind="cubic")(wvl_raw)
+    x_data = interp1d(wvl_data, x_data, kind=gimme_kind(wvl_data))(wvl_raw)
 
     wvl_central, filtered_data = apply_transmission(spectra=x_data, transmission=transmissions,
                                                     wvl_transmission=wvl_raw, wvl_cen_method="argmax")

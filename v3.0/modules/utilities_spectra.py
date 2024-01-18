@@ -14,7 +14,7 @@ from glob import glob
 import h5py
 
 from modules.utilities import (check_dir, flatten_list, normalise_in_rows, denoise_array, safe_arange, is_empty, stack,
-                               split_path, argnearest, my_argmax, return_mean_std, my_polyfit, check_file)
+                               split_path, argnearest, my_argmax, return_mean_std, my_polyfit, check_file, gimme_kind)
 
 from modules.NN_classes import gimme_list_of_classes
 
@@ -270,7 +270,7 @@ def normalise_spectra(data: np.ndarray, wavelength: np.ndarray, wvl_norm_nm: flo
         v_norm = fun(wvl_norm_nm)
 
     else:
-        v_norm = interp1d(wavelength, data, kind="cubic")(wvl_norm_nm)
+        v_norm = interp1d(wavelength, data, kind=gimme_kind(wavelength))(wvl_norm_nm)
 
     return normalise_in_rows(data, norm_vector=v_norm, norm_constant=1.)
 

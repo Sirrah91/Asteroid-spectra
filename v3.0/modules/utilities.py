@@ -1,4 +1,5 @@
 from os import environ, path
+
 environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 import warnings
@@ -17,6 +18,7 @@ from sklearn.preprocessing import PolynomialFeatures
 from scipy.stats import norm, gaussian_kde, kendalltau, pearsonr, spearmanr
 from scipy.ndimage import gaussian_filter1d
 from scipy.integrate import trapezoid
+from scipy.interpolate import interp1d
 import shutil
 import matplotlib
 from matplotlib import pyplot as plt
@@ -153,7 +155,6 @@ def return_mean_std(array: np.ndarray, axis: int | None = None) -> tuple[np.ndar
 def my_polyfit(x: np.ndarray | list[float], y: np.ndarray | list[float], deg: int,
                method: Literal["huber", "ransac", "theilsen", "numpy"] = "ransac",
                rnd_seed: int | None = _rnd_seed) -> np.ndarray | tuple[np.ndarray, ...]:
-
     if len(y) < deg + 1:
         warnings.warn("Polyfit may be poorly conditioned")
 
@@ -218,7 +219,7 @@ def theilsen_fit(x: np.ndarray | list[float], y: np.ndarray | list[float], deg: 
     return p[::-1]
 
 
-def is_constant(array: np.ndarray | list| float, constant: float | None = None, axis: int | None = None,
+def is_constant(array: np.ndarray | list | float, constant: float | None = None, axis: int | None = None,
                 atol: float = _num_eps) -> bool | np.ndarray:
     if atol < 0.:
         raise ValueError('"atol" must be a non-negative number')
@@ -318,6 +319,22 @@ def remove_outliers(y: np.ndarray, x: np.ndarray | None = None,
     return np.delete(y, inds_to_remove), np.delete(x, inds_to_remove)
 
 
+def interpolate_outliers(y: np.ndarray, x: np.ndarray | None = None,
+                    z_thresh: float = 1., num_eps: float = _num_eps) -> np.ndarray:
+    inds_to_remove = find_outliers(y=y, x=x, z_thresh=z_thresh, num_eps=num_eps)
+    x_no_out, y_no_out = np.delete(x, inds_to_remove), np.delete(y, inds_to_remove)
+
+    return interp1d(x_no_out, y_no_out, kind=gimme_kind(x_no_out), fill_value="extrapolate")(x)
+
+
+def gimme_kind(x: np.ndarray) -> str:
+    if len(x) > 3:
+        return "cubic"
+    if len(x) > 1:
+        return "linear"
+    return "nearest"
+
+
 def plot_me(x: np.ndarray | list, *args, **kwargs) -> tuple:
     matplotlib.use("TkAgg")  # Potentially dangerous (changes backend in the following code)
 
@@ -363,7 +380,6 @@ def plot_me(x: np.ndarray | list, *args, **kwargs) -> tuple:
 
 
 def split_path(filename: str, is_dir_check: bool = False) -> tuple[str, ...]:
-
     if is_dir_check and path.isdir(filename):
         return filename, "", ""
 
@@ -816,7 +832,7 @@ def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
 
     else:  # transmission application
         if sum_or_int is None:  # 3 is randomly chosen. Better to do sum if there are too large gaps in wavelengths
-             sum_or_int = "sum" if equidistant_measure > 3. else "int"
+            sum_or_int = "sum" if equidistant_measure > 3. else "int"
 
         filter = norm.pdf(np.reshape(x, (len(x), 1)), loc=x, scale=sigma)  # Gaussian filter
 
@@ -951,6 +967,7 @@ def get_layer_output(model: Model, x_data: np.ndarray,
 
         return intermediate_output
 
+
 def kernel_density_estimation_2d(y_true_part: np.ndarray, y_pred_part: np.ndarray,
                                  nbins: int = 20) -> tuple[np.ndarray, ...]:
     error = 100. * (y_pred_part - y_true_part)
@@ -986,16 +1003,15 @@ def round_data_with_errors(data: np.ndarray, errors: np.ndarray, n_valid: int = 
     n = np.array(n, dtype=int)
 
     errors_rounded = np.array([np.round(e, prec) for e, prec in zip(errors, n)])
-    
+
     # do it again for cases of data = 1.23 and error = 0.998 -> 1.23 +- 1.00
     # this fixes it to 1.2 +- 1.0
     n = n_valid - np.floor(np.log10(errors_rounded) + 1.)  # rounding to n_valid numbers
     n[~np.isfinite(n)] = n_valid
     # n[n < 0.] = 0.  # can cause problems when you print automatic format, e.g. f"{x:.{n}f} and n < 0
     n = np.array(n, dtype=int)
-    
-    data_rounded = np.array([np.round(d, prec) for d, prec in zip(data, n)])
 
+    data_rounded = np.array([np.round(d, prec) for d, prec in zip(data, n)])
 
     if return_precision:
         return data_rounded, errors_rounded, n

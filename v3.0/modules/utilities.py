@@ -1041,15 +1041,15 @@ def replace_spaces_with_phantom(str_array: np.ndarray) -> np.ndarray:
 
 
 def kendall_pval(x, y):
-    # use these with DataFrame.corr(method=kendall_pval) to get p-value for the variables
+    # use this with DataFrame.corr(method=kendall_pval) to get p-value for the variables
     return kendalltau(x, y)[1]
 
 
 def pearsonr_pval(x, y):
-    # use these with DataFrame.corr(method=pearsonr_pval) to get p-value for the variables
+    # use this with DataFrame.corr(method=pearsonr_pval) to get p-value for the variables
     return pearsonr(x, y)[1]
 
 
 def spearmanr_pval(x, y):
-    # use these with DataFrame.corr(method=spearmanr_pval) to get p-value for the variables
+    # use this with DataFrame.corr(method=spearmanr_pval) to get p-value for the variables
     return spearmanr(x, y)[1]

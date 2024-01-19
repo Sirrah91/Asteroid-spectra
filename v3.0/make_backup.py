@@ -66,4 +66,4 @@ def make_backup(version: str) -> None:
 
 
 if __name__ == "__main__":
-    make_backup("v3.4.8")
+    make_backup("v3.5.1")

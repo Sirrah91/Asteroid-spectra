@@ -21,7 +21,7 @@ from modules.utilities_spectra import denoise_and_norm, save_data, combine_files
 from modules.utilities_spectra import join_data, load_npz, load_xlsx, load_txt, load_h5, normalise_spectra
 from modules.utilities_spectra import collect_all_models, remove_jumps_in_spectra, match_spectra
 from modules.utilities import flatten_list, stack, my_mv, check_dir, safe_arange, normalise_in_rows, find_all
-from modules.utilities import is_empty, remove_outliers, find_outliers, gimme_kind
+from modules.utilities import is_empty, remove_outliers, find_outliers, gimme_kind, safe_extrap1d
 
 from modules.NN_config_composition import mineral_names, endmember_names, mineral_names_short
 
@@ -806,10 +806,14 @@ def resave_kachr_ol_opx() -> list[str]:
         X = [np.delete(x, ind) for ind in inds_to_delete]
         Y = [np.delete(y[:, i], ind) for i, ind in enumerate(inds_to_delete)]
 
+        tmp_spec = np.array([safe_extrap1d(x, y, x_new=xq) for x, y in zip(X, Y)])
+
+        """
         tmp_spec = np.array([interp1d(x, y, kind=gimme_kind(x))(x_new_part) for x, y in zip(X, Y)])
 
         # Linear extrapolation if needed
         tmp_spec = interp1d(x_new_part, tmp_spec, kind="linear", fill_value="extrapolate")(xq)
+        """
 
         start, stop = stop, stop + len(tmp_spec)
 

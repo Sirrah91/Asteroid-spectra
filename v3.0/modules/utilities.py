@@ -316,8 +316,7 @@ def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
         x_iterate, y_iterate = np.delete(x_iterate, outliers), np.delete(y_iterate, outliers)
         i += 1
 
-    # outliers are shifted due to deleting the two iterables
-    return np.where([x_test not in x_iterate for x_test in x])[0]
+    return np.where(~np.in1d(x, x_iterate))[0]
 
 
 def remove_outliers(y: np.ndarray, x: np.ndarray | None = None,
@@ -336,7 +335,7 @@ def interpolate_outliers(y: np.ndarray, x: np.ndarray | None = None,
     y_no_out, x_no_out = remove_outliers(y=y, x=x, z_thresh=z_thresh, num_eps=num_eps)
 
     return safe_extrap1d(x=x_no_out, y=y_no_out, x_new=x)
-    
+
 
 def safe_extrap1d(x: np.ndarray, y: np.ndarray, x_new: np.ndarray | None = None) -> np.ndarray:
     # use interpolation with variable kind and linear or nearest extrapolation

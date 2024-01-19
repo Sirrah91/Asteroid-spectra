@@ -335,13 +335,26 @@ def interpolate_outliers(y: np.ndarray, x: np.ndarray | None = None,
     if x is None: x = np.arange(len(y))
     y_no_out, x_no_out = remove_outliers(y=y, x=x, z_thresh=z_thresh, num_eps=num_eps)
 
-    # interpolation first
-    inds_in = np.logical_and(x >= np.min(x_no_out), x <= np.max(x_no_out))
-    x_in = x[inds_in]  # x corrected for possible edges to avoid cubic extrapolation
-    y_in = interp1d(x_no_out, y_no_out, kind=gimme_kind(x_no_out))(x_in)
+    return safe_extrap1d(x=x_no_out, y=y_no_out, x_new=x)
+    
 
-    # linearly extrapolate the interpolated values
-    return interp1d(x_in, y_in, kind="linear", fill_value="extrapolate")(x)
+def safe_extrap1d(x: np.ndarray, y: np.ndarray, x_new: np.ndarray | None = None) -> np.ndarray:
+    # use interpolation with variable kind and linear or nearest extrapolation
+    inds_in = np.logical_and(x_new >= np.min(x), x_new <= np.max(x))
+    kind = gimme_kind(x)
+
+    if np.all(inds_in):  # no extrapolation needed
+        return interp1d(x, y, kind=kind)(x_new)
+
+    # interpolation with variable kind
+    if kind == "cubic":
+        # interpolation first
+        y_in = interp1d(x, y, kind=kind, fill_value=np.nan, bounds_error=False)(x_new)
+        y_out = interp1d(x, y, kind="linear", fill_value="extrapolate")(x_new)
+        return np.where(inds_in, y_in, y_out)
+
+    else:  # not cubic -> can use extrapolation directly
+        return interp1d(x, y, kind=kind, fill_value="extrapolate")(x_new)
 
 
 def gimme_kind(x: np.ndarray) -> str:

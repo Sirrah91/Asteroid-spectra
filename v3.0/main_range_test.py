@@ -28,49 +28,78 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 from os import environ
 environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
-from modules.NN_data import load_composition_data as load_data
-from modules.NN_data import split_composition_data_proportional as split_data_proportional
+from modules.NN_data import load_composition_data, load_taxonomy_data, labels_to_categories
+from modules.NN_data import split_composition_data_proportional, split_taxonomy_data_proportional
 from modules.NN_train import train
 from modules.NN_evaluate import evaluate_test_data
 import numpy as np
+from functools import partial
 from tqdm import tqdm
 
-from modules.NN_config_composition import (comp_model_setup, minerals_used, endmembers_used, comp_filtering_setup,
-                                           comp_data_split_setup)
-from modules.NN_config_range_test import model_subdirs, model_names, range_grids
+from modules.NN_config_range_test import model_subdirs, model_names, range_grids, taxonomy
+
+from modules.NN_config_taxonomy import tax_model_setup, tax_filtering_setup, tax_data_split_setup, classes
+from modules.NN_config_composition import (comp_model_setup, comp_filtering_setup, comp_data_split_setup,
+                                           minerals_used, endmembers_used)
 
 from modules._constants import _sep_in, _sep_out
+
+# it taxonomy = True, you must modify "NN_classes.py" and force it to return the same classes (including the bin_to_cls)
+if taxonomy:
+    load_data = partial(load_taxonomy_data, used_classes=classes)
+    split_data_proportional = split_taxonomy_data_proportional
+
+    model_setup = tax_model_setup
+    filtering_setup = tax_filtering_setup
+    data_split_setup = tax_data_split_setup
+
+    # Name of the train data in _path_data
+    filename_train_data = f"asteroid{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz"
+
+else:
+    load_data = partial(load_composition_data, used_minerals=minerals_used, used_endmembers=endmembers_used)
+    split_data_proportional = partial(split_composition_data_proportional, used_minerals=minerals_used)
+
+    model_setup = comp_model_setup
+    filtering_setup = comp_filtering_setup
+    data_split_setup = comp_data_split_setup
+
+    # Name of the train data in _path_data
+    filename_train_data = f"mineral{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz"
 
 
 def pipeline(index_of_range: int, num_models: int = 1) -> np.ndarray:
     # pipeline(num_models) computes a trimmed mean of num_models and returns predictions or print best hyperparameters
 
     model_subdir, model_name = model_subdirs[index_of_range], model_names[index_of_range]
-
-    # Name of the train data in _path_data
-    filename_train_data = f"mineral{_sep_in}spectra{_sep_out}denoised{_sep_out}norm.npz"
+    grid_setup = range_grids[index_of_range]
 
     # Load the data
     x_train, y_train = load_data(filename_train_data, clean_dataset=True,
-                                 used_minerals=minerals_used, used_endmembers=endmembers_used,
-                                 grid_setup=range_grids[index_of_range], filtering_setup=comp_filtering_setup)
+                                 grid_setup=grid_setup, filtering_setup=filtering_setup)
 
     # Split the data
     x_train, y_train, x_val, y_val, x_test, y_test = split_data_proportional(x_train, y_train,
-                                                                             val_portion=comp_data_split_setup["val_portion"],
-                                                                             test_portion=comp_data_split_setup["test_portion"],
-                                                                             used_minerals=minerals_used)
+                                                                             val_portion=data_split_setup["val_portion"],
+                                                                             test_portion=data_split_setup["test_portion"]
+                                                                             )
+
+    if taxonomy:
+        # labels to categories
+        y_train = labels_to_categories(y_train, used_classes=classes)
+        y_val = labels_to_categories(y_val, used_classes=classes)
+        y_test = labels_to_categories(y_test, used_classes=classes)
 
     # Create, train, and save the neural network
-    model_names_trained = [train(x_train, y_train, x_val, y_val, params=comp_model_setup["params"],
-                                 monitoring=comp_model_setup["monitoring"],
+    model_names_trained = [train(x_train, y_train, x_val, y_val, params=model_setup["params"],
+                                 monitoring=model_setup["monitoring"],
                                  model_subdir=model_subdir, model_name=model_name,
-                                 metrics=comp_model_setup["metrics"]) for _ in range(num_models)]
+                                 metrics=model_setup["metrics"]) for _ in range(num_models)]
 
     # Evaluate it on the test data
     predictions, accuracy = evaluate_test_data(model_names_trained, x_test, y_test, x_val=x_val, y_val=y_val,
                                                x_train=x_train, y_train=y_train,
-                                               proportiontocut=comp_model_setup["trim_mean_cut"],
+                                               proportiontocut=model_setup["trim_mean_cut"],
                                                subfolder_model=model_subdir)
 
     return predictions

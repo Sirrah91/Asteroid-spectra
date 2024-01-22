@@ -845,7 +845,7 @@ def normalise_in_rows(array: np.ndarray,
 
 
 def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
-                  remove_mean: bool = False, sum_or_int: str = "sum") -> np.ndarray:
+                  remove_mean: bool = False, sum_or_int: Literal["sum", "int"] = "sum") -> np.ndarray:
     if x is None:
         x = np.arange(0., np.shape(array)[-1])  # 0. to convert it to float
 

@@ -1,5 +1,4 @@
 from os import environ, path
-
 environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 import warnings
@@ -863,7 +862,8 @@ def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
         if sum_or_int is None:  # 3 is randomly chosen. Better to do sum if there are too large gaps in wavelengths
             sum_or_int = "sum" if equidistant_measure > 3. else "int"
 
-        filter = norm.pdf(np.reshape(x, (len(x), 1)), loc=x, scale=sigma)  # Gaussian filter
+        # Gaussian filters in columns
+        filter = norm.pdf(np.reshape(x, (len(x), 1)), loc=x, scale=sigma)
 
         # need num_filters x num_wavelengths
         if np.ndim(filter) == 1:
@@ -872,12 +872,12 @@ def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
             raise ValueError("Filter must be 1-D or 2-D array.")
 
         if sum_or_int == "sum":
-            filter = normalise_in_rows(filter)
+            filter = normalise_in_columns(filter)
         else:
-            filter = normalise_in_rows(filter, trapezoid(y=filter, x=x))
+            filter = normalise_in_columns(filter, trapezoid(y=filter, x=x))
 
         if sum_or_int == "sum":
-            array_denoised = array @ np.transpose(filter)
+            array_denoised = array @ filter
         else:
             array_denoised = trapezoid(y=np.einsum('...j, kj -> ...kj', array, filter), x=x)
 

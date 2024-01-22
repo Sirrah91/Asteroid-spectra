@@ -15,14 +15,14 @@ from modules.BAR_BC_method import calc_BAR_BC, calc_composition, filter_data_mas
 from modules.NN_data import numbers_to_classes
 
 from modules.utilities import check_dir, best_blk, distance, stack, normalise_array, is_empty, find_all, gimme_kind
-from modules.utilities_spectra import (error_estimation_bin_like, cut_error_bars, find_outliers, used_indices,
-                                       unique_indices, join_data, load_npz, load_txt, normalise_spectra)
+from modules.utilities_spectra import (error_estimation_bin_like, cut_error_bars, find_outliers, collect_all_models,
+                                       unique_indices, join_data, load_npz, load_txt, normalise_spectra, used_indices)
 from modules.tables import print_grid_test_stats_range
 
 from modules.NN_config_parse import gimme_num_minerals, gimme_endmember_counts
 
 from modules._constants import _path_data, _path_asteroid_images, _sep_out, _sep_in, _label_true_name, _label_pred_name
-from modules._constants import _spectra_name, _wavelengths_name, _label_name, _config_name
+from modules._constants import _spectra_name, _wavelengths_name, _label_name, _config_name, _path_model
 from modules._constants import _path_accuracy_tests
 
 
@@ -3014,13 +3014,23 @@ def plot_test_window(error_type: str = "RMSE", remove_outliers: bool = False,
     return window_range, error
 
 
-def plot_test_step_taxonomy(offset: float = 0.) -> tuple[np.ndarray, ...]:
+def plot_test_step_taxonomy(evaluate_Sq: bool = False, offset: float = 0.) -> tuple[np.ndarray, ...]:
     change_params(offset)
 
     pref = path.join(_path_accuracy_tests, "range_test", "taxonomy", "step", "taxonomy_450-2450*.npz")
     filenames = glob(pref)
 
     wvl_step = np.zeros(len(filenames))
+
+    if evaluate_Sq:
+        from modules.NN_evaluate import evaluate
+        data_sq = load_npz("/home/dakorda/Python/NN/datasets/taxonomy/asteroid-spectra_denoised_norm.npz")
+
+        inds_sq = np.where(data_sq["labels"] == "Sq")[0]
+        Sq = data_sq["spectra"][inds_sq]
+        wvl_old = data_sq["wavelengths"]
+
+        sq_new = interp1d(wvl_old, Sq, kind="cubic")
 
     for i, filename in enumerate(filenames):
         data = load_npz(filename)
@@ -3032,7 +3042,21 @@ def plot_test_step_taxonomy(offset: float = 0.) -> tuple[np.ndarray, ...]:
         if i == 0:
             error = np.zeros((len(filenames), np.shape(y_true)[1]))
 
-        error[i] = np.mean(np.abs(y_true - y_pred), axis=0)
+        if evaluate_Sq:
+            dir_models = filename.replace(_path_accuracy_tests, _path_model)
+            dir_models = split_path(dir_models)
+            grid_setup = data["config"][()]["grid_setup"]
+
+            dir_models = path.join(dir_models[0], grid_setup["model_grid"])
+            model_names = collect_all_models(dir_models)
+
+            sq = sq_new(wavelengths)
+            sq = normalise_spectra(sq, wavelengths, wvl_norm_nm=grid_setup["wvl_norm"])
+
+            error[i] = np.mean(evaluate(model_names, sq), axis=0)
+            # error[i] = np.std(evaluate(model_names, sq), axis=0, ddof=1)
+        else:
+            error[i] = np.mean(np.abs(y_true - y_pred), axis=0)
 
     inds = np.argsort(wvl_step)
     wvl_step, error = wvl_step[inds], error[inds] * 100.
@@ -3050,12 +3074,18 @@ def plot_test_step_taxonomy(offset: float = 0.) -> tuple[np.ndarray, ...]:
     ax.plot(wvl_step, error, marker='o', linestyle="--")
 
     ax.set_xlabel("Step (nm)")
-    ax.set_ylabel(f"MAE (pp)")
+    if evaluate_Sq:
+        ax.set_ylabel("Mean probability (\%)")
+    else:
+        ax.set_ylabel(f"MAE (pp)")
 
     ax.legend(titles_all, bbox_to_anchor=(0., 1.02, 1., 0.2), loc="lower left", mode="expand", borderaxespad=0.,
               ncol=best_blk(num_colors)[1])
 
-    fig_name = f"step{_sep_out}MAE.{fig_format}"
+    if evaluate_Sq:
+        fig_name = f"step{_sep_out}Sq{_sep_out}S-type_prob.{fig_format}"
+    else:
+        fig_name = f"step{_sep_out}MAE.{fig_format}"
 
     plt.draw()
     plt.tight_layout()
@@ -3066,3 +3096,228 @@ def plot_test_step_taxonomy(offset: float = 0.) -> tuple[np.ndarray, ...]:
     change_params(offset, reset=True)
 
     return wvl_step, error
+
+
+def plot_test_range_taxonomy(evaluate_Sq: bool = False, offset: float = 0.) -> tuple[np.ndarray, ...]:
+    change_params(offset)
+
+    # fill error mat
+    def fill_mat(start: np.ndarray, stop: np.ndarray, value: np.ndarray) -> tuple[np.ndarray, ...]:
+        min_start, max_stop = np.min(start), np.max(stop)
+
+        # here I assume that shift_x == shift_y
+        step = np.gcd.reduce(np.unique(stack((start - min_start, max_stop - stop))))
+        if step > 0.:
+            # wavelength step from minimum start to minimum stop
+            wvl_step_minimum = np.mod(stop - start, step)
+
+            if not is_constant(wvl_step_minimum):  # it must be constant, otherwise something weird is happening here
+                raise ValueError('I cannot fill the matrix. Check "wvl_step_minimum". It should be a constant array.')
+
+            wvl_step_minimum = wvl_step_minimum[0]
+
+            if wvl_step_minimum == 0:  # if it is zero, the minimum step is just "step
+                wvl_step_minimum = np.gcd.reduce(np.unique(stop - start))
+
+            max_start, min_stop = max_stop - wvl_step_minimum, min_start + wvl_step_minimum
+
+            len_start = (max_start - min_start) / step + 1
+            len_stop = (max_stop - min_stop) / step + 1
+            len_data = int(np.max((len_start, len_stop)))
+
+            error_mat = np.empty((np.shape(value)[1], len_data, len_data)) * np.nan
+
+            irow = np.array(np.round((stop - min_stop) / step), dtype=int)
+            icol = np.array(np.round((start - min_start) / step), dtype=int)
+            index = (irow, icol)
+
+            for i in range(len(error_mat)):
+                error_mat[i][index] = value[:, i]
+
+            start_grid = np.arange(len_data) * step + min_start
+            stop_grid = np.arange(len_data) * step + min_stop
+
+        else:  # step == 0. => single-value matrix
+            error_mat = np.reshape(value, (-1, 1, 1))
+            start_grid, stop_grid = start, stop
+
+        return start_grid, stop_grid, error_mat
+
+    # load data
+    def load_data_for_plot(pref: str) -> tuple[
+        list[float], list[np.ndarray], np.ndarray, np.ndarray, np.ndarray, list[str]]:
+        filenames = glob(pref)
+
+        wvl_start = np.zeros(len(filenames), dtype=int)
+        wvl_stop = np.zeros(len(filenames), dtype=int)
+        error = np.zeros(len(filenames))
+
+        if evaluate_Sq:
+            from modules.NN_evaluate import evaluate
+            data_sq = load_npz("/home/dakorda/Python/NN/datasets/taxonomy/asteroid-spectra_denoised_norm.npz")
+
+            inds_sq = np.where(data_sq["labels"] == "Sq")[0]
+            Sq = data_sq["spectra"][inds_sq]
+            wvl_old = data_sq["wavelengths"]
+
+            sq_new = interp1d(wvl_old, Sq, kind="cubic")
+
+        for i, filename in enumerate(filenames):
+            data = load_npz(filename)
+
+            y_true, y_pred = data[_label_true_name], data[_label_pred_name]
+
+            wavelengths = data[_wavelengths_name]
+            wvl_start[i], wvl_stop[i] = np.min(wavelengths), np.max(wavelengths)
+
+            if i == 0:
+                error = np.zeros((len(filenames), np.shape(y_true)[1]))
+
+            if evaluate_Sq:
+                dir_models = filename.replace(_path_accuracy_tests, _path_model)
+                dir_models = split_path(dir_models)
+                grid_setup = data["config"][()]["grid_setup"]
+
+                dir_models = path.join(dir_models[0], grid_setup["model_grid"])
+                model_names = collect_all_models(dir_models)
+
+                sq = sq_new(wavelengths)
+                sq = normalise_spectra(sq, wavelengths, wvl_norm_nm=grid_setup["wvl_norm"])
+
+                error[i] = np.mean(evaluate(model_names, sq), axis=0)
+                # error[i] = np.std(evaluate(model_names, sq), axis=0, ddof=1)
+            else:
+                error[i] = np.mean(np.abs(y_true - y_pred), axis=0)
+
+        inds = np.lexsort((wvl_stop, wvl_start))
+        wvl_start, wvl_stop, error = wvl_start[inds], wvl_stop[inds], error[inds] * 100.
+
+        unique_start, unique_stop = np.unique(wvl_start), np.unique(wvl_stop)
+        error_line = [np.transpose(error[wvl_start == start]) for start in unique_start]
+        line_stop = [wvl_stop[wvl_start == start] for start in unique_start]
+
+        wvl_start, wvl_stop, error_mat = fill_mat(wvl_start, wvl_stop, error)
+
+        label = [f"From {start} nm" for start in unique_start]
+
+        return line_stop, error_line, wvl_start, wvl_stop, error_mat, label, data
+
+    pref = path.join(_path_accuracy_tests, "range_test", "taxonomy", "range", "*npz")
+
+    line_stop, error_line, wvl_start, wvl_stop, error_mat, label, data = load_data_for_plot(pref)
+
+    yticks02 = safe_arange(0., 100., 0.2, endpoint=True)
+    yticks05 = safe_arange(0., 100., 0.5, endpoint=True)
+    yticks1 = safe_arange(0., 100., 1., endpoint=True)
+    yticks2 = safe_arange(0., 100., 2., endpoint=True)
+    yticks5 = safe_arange(0., 100., 5., endpoint=True)
+    yticks10 = safe_arange(0., 500., 10., endpoint=True)
+
+    titles_all = [f"{ast_type}-type" for ast_type in data["labels_key"]]
+
+    num_colors = np.shape(error_mat)[-1]
+
+    outdir_range_tests = path.join(outdir, "range_test", "taxonomy")
+    check_dir(outdir_range_tests)
+
+    cm = plt.get_cmap("gist_rainbow")
+
+    for q in range(len(titles_all)):
+        fig, axes = plt.subplots(1, 2, figsize=(25, 10), gridspec_kw={"width_ratios": [2.3, 1]})
+        axes = np.ravel(axes)
+
+        if evaluate_Sq:
+            error_label = f"Mean probability (\%; {titles_all[q]})"
+        else:
+            error_label = f"MAE (pp; {titles_all[q]})"
+
+        for iax, ax in enumerate(axes):
+            if iax == 0:  # line plots
+                ax.set_prop_cycle(color=cm(np.linspace(0., 1., num_colors)))
+
+                for i in range(len(error_line)):
+                    ax.plot(line_stop[i], error_line[i][q, :], marker='o', linestyle="--", label=label[i])
+
+                ax.set_xticks(wvl_stop)
+                ax.set_xlabel("To wavelength (nm)")
+                ax.set_ylabel(error_label)
+
+                lim = ax.get_ylim()
+                if lim[1] - lim[0] > 64.:
+                    yticks = yticks10
+                elif lim[1] - lim[0] > 32.:
+                    yticks = yticks5
+                elif lim[1] - lim[0] > 16.:
+                    yticks = yticks2
+                elif lim[1] - lim[0] > 8.:
+                    yticks = yticks1
+                elif lim[1] - lim[0] > 4.:
+                    yticks = yticks05
+                else:
+                    yticks = yticks02
+                yticks = yticks[np.logical_and(yticks >= lim[0], yticks <= lim[1])]
+                ax.set_yticks(yticks)
+                # ax.yaxis.set_major_formatter(FormatStrFormatter("%.1f"))
+                ax.set_ylim(lim)
+
+                ax.legend(bbox_to_anchor=(0., 1.02, 1., 0.2), loc="lower left", mode="expand", borderaxespad=0.,
+                          ncol=best_blk(num_colors)[1])
+
+            else:  # mat plot
+                cmap = "viridis"
+                vmin = np.nanmin(error_mat[q])
+                vmax = np.nanmin((np.nanmax(error_mat[q]), np.nanmin(error_mat[q]) + 20.))
+                cmap += "_r"
+
+                if vmin == vmax:
+                    im = ax.imshow(error_mat[q], aspect="auto", cmap=cmap)
+                else:
+                    im = ax.imshow(error_mat[q], aspect="auto", cmap=cmap, vmin=vmin, vmax=vmax)
+
+                rows, cols = np.shape(error_mat[q])
+                ax.set_xticks(range(cols))
+                ax.set_yticks(range(rows))
+
+                ax.set_xticklabels(wvl_start, rotation=90, ha="center")
+                ax.set_yticklabels(wvl_stop)
+
+                ax.set_xlabel("From wavelength (nm)")
+                ax.set_ylabel("To wavelength (nm)")
+                ax.xaxis.set_label_position("bottom")
+                ax.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=False,
+                               bottom=True, top=False, left=True, right=False)
+
+                divider = make_axes_locatable(ax)
+                cax = divider.append_axes(**cbar_kwargs)
+                cbar = plt.colorbar(im, cax=cax)
+                cbar.ax.set_ylabel(error_label)
+
+                lim = (cbar.vmin, cbar.vmax)
+                if lim[1] - lim[0] > 32.:
+                    yticks = yticks5
+                elif lim[1] - lim[0] > 16.:
+                    yticks = yticks2
+                elif lim[1] - lim[0] > 8.:
+                    yticks = yticks1
+                elif lim[1] - lim[0] > 4.:
+                    yticks = yticks05
+                else:
+                    yticks = yticks02
+                yticks = yticks[np.logical_and(yticks >= lim[0], yticks <= lim[1])]
+                if not is_empty(yticks):
+                    cbar.set_ticks(yticks)
+
+        if evaluate_Sq:
+            fig_name = f"range{_sep_out}Sq{_sep_out}{titles_all[q].replace(' ', _sep_in)}.{fig_format}"
+        else:
+            fig_name = f"range{_sep_out}MAE{_sep_out}{titles_all[q].replace(' ', _sep_in)}.{fig_format}"
+
+        plt.draw()
+        plt.tight_layout()
+
+        fig.savefig(path.join(outdir_range_tests, fig_name), format=fig_format, **savefig_kwargs, **pil_kwargs)
+        plt.close(fig)
+
+    change_params(offset, reset=True)
+
+    return wvl_start, wvl_stop, error_mat

@@ -860,20 +860,20 @@ def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
 
     else:  # transmission application
         # Gaussian filters in columns
-        filter = norm.pdf(np.reshape(x, (len(x), 1)), loc=x, scale=sigma)
+        gaussian = norm.pdf(np.reshape(x, (len(x), 1)), loc=x, scale=sigma)
 
         # need num_filters x num_wavelengths
-        if np.ndim(filter) == 1:
-            filter = np.reshape(filter, (1, -1))
-        if np.ndim(filter) > 2:
+        if np.ndim(gaussian) == 1:
+            gaussian = np.reshape(gaussian, (1, -1))
+        if np.ndim(gaussian) > 2:
             raise ValueError("Filter must be 1-D or 2-D array.")
 
         if sum_or_int == "sum":
-            filter = normalise_in_columns(filter)
-            array_denoised = array @ filter
+            gaussian = normalise_in_columns(gaussian)
+            array_denoised = array @ gaussian
         else:
-            filter = normalise_in_columns(filter, trapezoid(y=filter, x=x))
-            array_denoised = trapezoid(y=np.einsum('...j, kj -> ...kj', array, filter), x=x)
+            gaussian = normalise_in_columns(gaussian, trapezoid(y=gaussian, x=x))
+            array_denoised = trapezoid(y=np.einsum('...j, kj -> ...kj', array, gaussian), x=x)
 
     if remove_mean:  # here I assume that the noise has a zero mean
         mn = np.mean(array_denoised - array, axis=-1, keepdims=True)

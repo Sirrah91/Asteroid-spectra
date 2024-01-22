@@ -348,11 +348,7 @@ def apply_transmission(spectra: np.ndarray,
                        transmission: np.ndarray,
                        wvl_transmission: np.ndarray,
                        wvl_cen_method: Literal["argmax", "dot"] = "argmax",
-                       sum_or_int: str | None = None) -> tuple[np.ndarray, ...]:
-
-    if sum_or_int is None:  # 3 is randomly chosen. Better to do sum if there are too large gaps in wavelengths
-         sum_or_int = "sum" if np.var(np.diff(wvl_transmission)) > 3. else "int"
-
+                       sum_or_int: Literal["sum", "int"] = "sum") -> tuple[np.ndarray, ...]:
     # need num_transmissions x num_wavelengths
     if np.ndim(transmission) == 1:
         transmission = np.reshape(transmission, (1, -1))

@@ -883,38 +883,6 @@ def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
     return array_denoised - mn
 
 
-def denoise_array2(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
-                  remove_mean: bool = False, sum_or_int: str | None = None) -> np.ndarray:
-    if x is None:
-        x = np.arange(0., np.shape(array)[-1])  # 0. to convert it to float
-
-    if sum_or_int is None:  # 3 is randomly chosen. Better to do sum if there are too large gaps in wavelengths
-        sum_or_int = "sum" if np.var(np.diff(x)) > 3. else "int"
-
-    # Gaussian filters in columns
-    filter = norm.pdf(np.reshape(x, (len(x), 1)), loc=x, scale=sigma)
-
-    # need num_filters x num_wavelengths
-    if np.ndim(filter) == 1:
-        filter = np.reshape(filter, (1, -1))
-    if np.ndim(filter) > 2:
-        raise ValueError("Filter must be 1-D or 2-D array.")
-
-    if sum_or_int == "sum":
-        filter = normalise_in_columns(filter)
-        array_denoised = array @ filter
-    else:
-        filter = normalise_in_columns(filter, trapezoid(y=filter, x=x))
-        array_denoised = trapezoid(y=np.einsum('...j, kj -> ...kj', array, filter), x=x)
-
-    if remove_mean:  # here I assume that the noise has a zero mean
-        mn = np.mean(array_denoised - array, axis=-1, keepdims=True)
-    else:
-        mn = 0.
-
-    return array_denoised - mn
-
-
 def maxdiff(arr1: np.ndarray, arr2: np.ndarray, axis: int | None = None) -> np.ndarray:
     return np.nanmax(np.abs(arr1 - arr2), axis=axis)
 

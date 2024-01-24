@@ -137,9 +137,9 @@ def npz_to_dat(filename: str, data_in_columns: bool = True) -> None:
     fmt = "%.5f"
 
     if data_in_columns:
-        np.savetxt(spectra_dat, np.transpose(spectra), fmt=fmt, delimiter='\t')
+        np.savetxt(spectra_dat, np.transpose(spectra), fmt=fmt, delimiter="\t")
     else:
-        np.savetxt(spectra_dat, data, fmt=fmt, delimiter='\t')
+        np.savetxt(spectra_dat, data, fmt=fmt, delimiter="\t")
 
     # save metadata
     if _metadata_name in data.files:
@@ -150,7 +150,7 @@ def npz_to_dat(filename: str, data_in_columns: bool = True) -> None:
 
         meta_dat = filename.replace(".npz", f"{_sep_out}metadata.dat")
         fmt = "%s"
-        np.savetxt(meta_dat, meta, fmt=fmt, delimiter='\t')
+        np.savetxt(meta_dat, meta, fmt=fmt, delimiter="\t")
 
     # save labels
     if _label_name in data.files:
@@ -161,7 +161,7 @@ def npz_to_dat(filename: str, data_in_columns: bool = True) -> None:
 
         labels_dat = filename.replace(".npz", f"{_sep_out}labels.dat")
         fmt = "%.5f" if np.issubdtype(np.result_type(labels), np.number) else "%s"
-        np.savetxt(labels_dat, labels, fmt=fmt, delimiter='\t')
+        np.savetxt(labels_dat, labels, fmt=fmt, delimiter="\t")
 
 
 def combine_files(filenames: tuple[str, ...], final_name: str, subfolder: str = "") -> str:
@@ -382,7 +382,7 @@ def apply_transmission(spectra: np.ndarray,
     if sum_or_int == "sum":
         final_spectra = spectra @ np.transpose(transmission)
     else:
-        final_spectra = trapezoid(y=np.einsum('...j, kj -> ...kj', spectra, transmission), x=wvl_transmission)
+        final_spectra = trapezoid(y=np.einsum("...j, kj -> ...kj", spectra, transmission), x=wvl_transmission)
 
     wvl_central, final_spectra = np.array(wvl_central, dtype=_wp), np.array(final_spectra, dtype=_wp)
 

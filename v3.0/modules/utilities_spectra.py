@@ -640,7 +640,7 @@ def remove_continuum(filename: str, subfolder: str = "", saving: bool = False) -
             x_fit, y_fit = xq[[hull[j], hull[j + 1]]], spectrum[[hull[j], hull[j + 1]]]
             if j == 0 and hull[j] != 0:
                 x_new = xq[:hull[j + 1] + 1]
-                continuum[:hull[j + 1] + 1] = np.polval(my_polyfit(x_fit, y_fit, 1), x_new)
+                continuum[:hull[j + 1] + 1] = np.polyval(my_polyfit(x_fit, y_fit, 1), x_new)
             else:
                 x_new = xq[hull[j]:hull[j + 1] + 1]
                 continuum[hull[j]:hull[j + 1] + 1] = np.polyval(my_polyfit(x_fit, y_fit, 1), x_new)

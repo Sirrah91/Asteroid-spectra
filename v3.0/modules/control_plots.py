@@ -15,7 +15,7 @@ from tensorflow.keras.models import Model
 
 from modules.NN_losses_metrics_activations import my_quantile
 
-from modules.utilities_spectra import error_estimation_bin_like, unique_indices, used_indices
+from modules.utilities_spectra import error_estimation_bin_like, error_estimation_overall, unique_indices, used_indices
 from modules.utilities_spectra import load_npz, load_keras_model, gimme_predicted_class, compute_metrics, is_taxonomical
 from modules.utilities_spectra import gimme_model_grid_from_name, gimme_bin_code_from_name
 
@@ -110,6 +110,8 @@ def plot_scatter_plots(y_true: np.ndarray, y_pred: np.ndarray,
 
     LW_scatter = 2.5
 
+    error_estimation_method = "bin-like"  # "bin-like" or "overall"
+
     # limit = 0.25
     shift = 3.  # Control ranges of axes (from 0 - shift to 100 + shift)
     s = 30  # scaling parameter (marker size)
@@ -145,17 +147,15 @@ def plot_scatter_plots(y_true: np.ndarray, y_pred: np.ndarray,
 
     actual_errorbar = np.array([3.])  # pp
 
-    """
-    pred_errorbar, true_errorbar = error_estimation_overall(y_true, y_pred, 
-                                                            actual_error=actual_errorbar,
-                                                            used_minerals=used_minerals, 
-                                                            used_endmembers=used_endmembers)
-    """
+    if error_estimation_method == "bin-like":
+        error_estimation = error_estimation_bin_like
+    else:
+        error_estimation = error_estimation_overall
 
-    pred_errorbar, true_errorbar = error_estimation_bin_like(y_true, y_pred,
-                                                             actual_error=actual_errorbar,
-                                                             used_minerals=used_minerals,
-                                                             used_endmembers=used_endmembers)
+    pred_errorbar, true_errorbar = error_estimation(y_true, y_pred,
+                                                    actual_error=actual_errorbar,
+                                                    used_minerals=used_minerals,
+                                                    used_endmembers=used_endmembers)
 
     # modal first
     start, stop = 0, num_minerals

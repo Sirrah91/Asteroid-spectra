@@ -383,12 +383,12 @@ def plot_me(x: np.ndarray | list, *args, **kwargs) -> tuple:
             ax.plot(x, *args, **kwargs)
 
         """
-        ax.spines['left'].set_position('zero')
-        ax.spines['bottom'].set_position('zero')
-        ax.spines['right'].set_color('none')
-        ax.spines['top'].set_color('none')
-        ax.xaxis.set_ticks_position('bottom')
-        ax.yaxis.set_ticks_position('left')
+        ax.spines["left"].set_position("zero")
+        ax.spines["bottom"].set_position("zero")
+        ax.spines["right"].set_color("none")
+        ax.spines["top"].set_color("none")
+        ax.xaxis.set_ticks_position("bottom")
+        ax.yaxis.set_ticks_position("left")
         """
 
     else:  # x is the matrix to plot
@@ -574,7 +574,7 @@ def to_shape(a: np.ndarray, shape: tuple[int, int], val: float = np.nan) -> np.n
     x_pad = (x_ - x)
     return np.pad(a, ((y_pad // 2, y_pad // 2 + y_pad % 2),
                       (x_pad // 2, x_pad // 2 + x_pad % 2)),
-                  mode='constant', constant_values=(val,))
+                  mode="constant", constant_values=(val,))
 
 
 def cropND(img: np.ndarray, bounding: tuple[int, int]) -> np.ndarray:
@@ -738,7 +738,7 @@ def my_pca(x_data: np.ndarray,
         ddof = np.min((len(x_data) - 1, 1))
         std = np.std(x_data, ddof=ddof, axis=0)
         if np.any(std <= num_eps):  # "<=" is necessary for num_eps = 0.
-            raise ValueError("Not all features are determinative. Remove these features, or don't use standardisation.")
+            raise ValueError("Not all features are determinative. Remove these features, or do not use standardisation.")
     else:
         std = np.full(np.shape(x_data)[1], fill_value=1.)
 
@@ -873,7 +873,7 @@ def denoise_array(array: np.ndarray, sigma: float, x: np.ndarray | None = None,
             array_denoised = array @ gaussian
         else:
             gaussian = normalise_in_columns(gaussian, trapezoid(y=gaussian, x=x))
-            array_denoised = trapezoid(y=np.einsum('...j, kj -> ...kj', array, gaussian), x=x)
+            array_denoised = trapezoid(y=np.einsum("...j, kj -> ...kj", array, gaussian), x=x)
 
     if remove_mean:  # here I assume that the noise has a zero mean
         mn = np.mean(array_denoised - array, axis=-1, keepdims=True)
@@ -897,7 +897,7 @@ def npz_to_dat(filename: str) -> None:
     for file in data.files:
         filename_dat = f"{filename.replace('.npz', '')}{_sep_out}{file.replace(' ', _sep_in)}.dat"
         fmt = "%.5f" if np.issubdtype(np.result_type(data[file]), np.number) else "%s"
-        np.savetxt(filename_dat, data[file], fmt=fmt, delimiter='\t')
+        np.savetxt(filename_dat, data[file], fmt=fmt, delimiter="\t")
 
 
 def change_files_in_npz(filename: str, old_files: list[str], new_files: list[str]) -> None:

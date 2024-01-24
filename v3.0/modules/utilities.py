@@ -1000,7 +1000,7 @@ def kernel_density_estimation_2d(y_true_part: np.ndarray, y_pred_part: np.ndarra
     # limits: 0:100 for quantity; max error range for error
     # 1j means there is nbins * 1steps
     xi, yi = np.mgrid[0:100:nbins * 1j, -50:50:nbins * 1j]
-    zi = k(stack([xi.flatten(), yi.flatten()], axis=0))
+    zi = k(stack([flatten_list(xi), flatten_list(yi)], axis=0))
 
     zi = np.reshape(zi, np.shape(xi))
 

@@ -792,9 +792,11 @@ def error_estimation_bin_like(y_true: np.ndarray, y_pred: np.ndarray, actual_err
     return cut_error_bars(y_true_clean, actual_error, y_pred_clean, errors)
 
 
-def gimme_indices(used_minerals: np.ndarray, used_endmembers: list[list[bool]],
+def gimme_indices(used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None,
                   reduced: bool = True, return_mineral_indices: bool = False) -> np.ndarray:
     # This function returns the first and last indices of modal/mineral groups
+    if used_minerals is None: used_minerals = minerals_used
+    if used_endmembers is None: used_endmembers = endmembers_used
 
     count_endmembers = gimme_endmember_counts(used_endmembers)
     all_minerals = gimme_minerals_all(used_minerals, used_endmembers)
@@ -820,17 +822,21 @@ def gimme_indices(used_minerals: np.ndarray, used_endmembers: list[list[bool]],
     return indices[:, 1:]
 
 
-def used_indices(used_minerals: np.ndarray, used_endmembers: list[list[bool]],
+def used_indices(used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None,
                  return_digits: bool = False) -> np.ndarray:
+    if used_minerals is None: used_minerals = minerals_used
+    if used_endmembers is None: used_endmembers = endmembers_used
     indices = stack((used_minerals, flatten_list(used_endmembers)))
     if return_digits:
         return np.where(indices)[0]
     return indices
 
 
-def unique_indices(used_minerals: np.ndarray, used_endmembers: list[list[bool]],
+def unique_indices(used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None,
                    all_minerals: bool = False, return_digits: bool = False) -> np.ndarray:
     # modification of used indices (if there are two labels, their absolute errors are the same; one is enough)
+    if used_minerals is None: used_minerals = minerals_used
+    if used_endmembers is None: used_endmembers = endmembers_used
     unique_used_inds = deepcopy([list(used_minerals)] + used_endmembers)
     for i, unique_inds in enumerate(unique_used_inds):
         if np.sum(unique_inds) == 2:

@@ -382,7 +382,7 @@ def plot_error_evaluation_comp(y_true: np.ndarray, y_pred: np.ndarray,
 
 
 def plot_error_density_plots(y_true: np.ndarray, y_pred: np.ndarray,
-                             used_minerals: np.ndarray | None, used_endmembers: list[list[bool]] | None,
+                             used_minerals: np.ndarray | None = None, used_endmembers: list[list[bool]] | None = None,
                              offset: float = 0., suf: str = "", quiet: bool = False) -> None:
     if not quiet:
         print("Print density plots")

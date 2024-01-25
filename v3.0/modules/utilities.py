@@ -140,7 +140,7 @@ def stack(arrays: tuple | list, axis: int | None = None, reduce: bool = False) -
 
 
 def return_ddof(array: np.ndarray, axis: int | None = None) -> int:
-    return np.clip(np.size(array, axis) - 1, 0, 1)
+    return 1 if np.size(array, axis) > 1 else 0
     
 
 def return_mean_std(array: np.ndarray, axis: int | None = None) -> tuple[np.ndarray, ...] | tuple[float, ...]:

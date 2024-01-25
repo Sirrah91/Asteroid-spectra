@@ -1248,7 +1248,7 @@ def compute_mean_predictions(y_pred: np.ndarray) -> tuple[np.ndarray, ...]:
     return return_mean_std(y_pred * 100., axis=0)
 
 
-def print_conversion_chart(used_classes: dict[str, int] | None) -> None:
+def print_conversion_chart(used_classes: dict[str, int] | None = None) -> None:
     if used_classes is None:used_classes = classes
 
     print("Conversion chart:")

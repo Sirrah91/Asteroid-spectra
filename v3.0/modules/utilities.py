@@ -139,14 +139,13 @@ def stack(arrays: tuple | list, axis: int | None = None, reduce: bool = False) -
         return _stack(arrays, axis)
 
 
+def return_ddof(array: np.ndarray, axis: int | None = None) -> int:
+    return np.clip(np.size(array, axis) - 1, 0, 1)
+    
+
 def return_mean_std(array: np.ndarray, axis: int | None = None) -> tuple[np.ndarray, ...] | tuple[float, ...]:
     mean_value = np.nanmean(array, axis=axis)
-
-    if axis is None:
-        ddof = np.min((np.size(array) - 1, 1))
-    else:
-        ddof = np.min((np.shape(array)[axis] - 1, 1))
-    ddof = np.clip(ddof, 0, None)
+    ddof = return_ddof(array, axis=axis)
     
     std_value = np.nanstd(array, axis=axis, ddof=ddof)
 
@@ -231,12 +230,7 @@ def is_constant(array: np.ndarray | list | float, constant: float | None = None,
         array = array[np.newaxis]
 
     if constant is None:  # return True if the array is constant along the axis
-        # ddof = 1 for single value gives std = NaN, but I want std = 0
-        if axis is None:
-            ddof = np.min((np.size(array) - 1, 1))
-        else:
-            ddof = np.min((np.shape(array)[axis] - 1, 1))
-        ddof = np.clip(ddof, 0, None)
+        ddof = return_ddof(array, axis=axis)
         
         return np.std(array, axis=axis, ddof=ddof) < atol
 
@@ -734,8 +728,7 @@ def my_pca(x_data: np.ndarray,
     # Function computes first n_components principal components
 
     if standardise:
-        ddof = np.min((len(x_data) - 1, 1))
-        ddof = np.clip(ddof, 0, None)
+        ddof = return_ddof(array, axis=0)
         std = np.std(x_data, ddof=ddof, axis=0)
         if np.any(std <= num_eps):  # "<=" is necessary for num_eps = 0.
             raise ValueError("Not all features are determinative. Remove these features, or do not use standardisation.")

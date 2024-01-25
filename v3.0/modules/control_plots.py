@@ -110,7 +110,7 @@ def plot_scatter_plots(y_true: np.ndarray, y_pred: np.ndarray,
 
     LW_scatter = 2.5
 
-    error_estimation_method = "bin-like"  # "bin-like" or "overall"
+    error_estimation_method = "bin"  # "bin" or "overall"
 
     # limit = 0.25
     shift = 3.  # Control ranges of axes (from 0 - shift to 100 + shift)
@@ -147,7 +147,7 @@ def plot_scatter_plots(y_true: np.ndarray, y_pred: np.ndarray,
 
     actual_errorbar = np.array([3.])  # pp
 
-    if error_estimation_method == "bin-like":
+    if "bin" in error_estimation_method.lower():
         error_estimation = error_estimation_bin_like
     else:
         error_estimation = error_estimation_overall

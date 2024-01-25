@@ -277,7 +277,7 @@ def find_nearest(array: np.ndarray, value: float) -> float:
 
 
 def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
-                  z_thresh: float = 1., num_eps: float = _num_eps) -> np.ndarray:
+                  z_thresh: float = 2.5, num_eps: float = _num_eps) -> np.ndarray:
     if x is None: x = np.arange(len(y))
 
     if len(np.unique(x)) != len(x):
@@ -315,7 +315,7 @@ def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
 
 
 def remove_outliers(y: np.ndarray, x: np.ndarray | None = None,
-                    z_thresh: float = 1., num_eps: float = _num_eps) -> np.ndarray | tuple[np.ndarray, ...]:
+                    z_thresh: float = 2.5, num_eps: float = _num_eps) -> np.ndarray | tuple[np.ndarray, ...]:
     inds_to_remove = find_outliers(y=y, x=x, z_thresh=z_thresh, num_eps=num_eps)
 
     if x is None:
@@ -325,7 +325,7 @@ def remove_outliers(y: np.ndarray, x: np.ndarray | None = None,
 
 
 def interpolate_outliers(y: np.ndarray, x: np.ndarray | None = None,
-                    z_thresh: float = 1., num_eps: float = _num_eps) -> np.ndarray:
+                    z_thresh: float = 2.5, num_eps: float = _num_eps) -> np.ndarray:
     if x is None: x = np.arange(len(y))
     y_no_out, x_no_out = remove_outliers(y=y, x=x, z_thresh=z_thresh, num_eps=num_eps)
 

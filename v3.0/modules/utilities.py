@@ -146,6 +146,8 @@ def return_mean_std(array: np.ndarray, axis: int | None = None) -> tuple[np.ndar
         ddof = np.min((np.size(array) - 1, 1))
     else:
         ddof = np.min((np.shape(array)[axis] - 1, 1))
+    ddof = np.clip(ddof, 0, None)
+    
     std_value = np.nanstd(array, axis=axis, ddof=ddof)
 
     return mean_value, std_value
@@ -234,7 +236,8 @@ def is_constant(array: np.ndarray | list | float, constant: float | None = None,
             ddof = np.min((np.size(array) - 1, 1))
         else:
             ddof = np.min((np.shape(array)[axis] - 1, 1))
-
+        ddof = np.clip(ddof, 0, None)
+        
         return np.std(array, axis=axis, ddof=ddof) < atol
 
     else:  # return True if the array is equal to "constant" along the axis
@@ -732,6 +735,7 @@ def my_pca(x_data: np.ndarray,
 
     if standardise:
         ddof = np.min((len(x_data) - 1, 1))
+        ddof = np.clip(ddof, 0, None)
         std = np.std(x_data, ddof=ddof, axis=0)
         if np.any(std <= num_eps):  # "<=" is necessary for num_eps = 0.
             raise ValueError("Not all features are determinative. Remove these features, or do not use standardisation.")

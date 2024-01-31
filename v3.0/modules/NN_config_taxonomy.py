@@ -10,7 +10,7 @@ tax_output_setup = {
 
 # Re-interpolate input data to different resolutions (see reinterpolate_data in load_data.py)
 tax_grid_setup = {
-    "instrument": None, #"ASPECT_vis-nir1-nir2-swir_30",
+    "instrument": None,  # "ASPECT_vis-nir1-nir2-swir_30",
 
     "interpolate_to": "full",  # "full", "Itokawa", "Eros"; only if "instrument" is None
 

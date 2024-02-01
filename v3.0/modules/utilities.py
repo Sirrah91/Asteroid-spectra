@@ -141,12 +141,12 @@ def stack(arrays: tuple | list, axis: int | None = None, reduce: bool = False) -
 
 def return_ddof(array: np.ndarray, axis: int | None = None) -> int:
     return 1 if np.size(array, axis) > 1 else 0
-    
+
 
 def return_mean_std(array: np.ndarray, axis: int | None = None) -> tuple[np.ndarray, ...] | tuple[float, ...]:
     mean_value = np.nanmean(array, axis=axis)
     ddof = return_ddof(array, axis=axis)
-    
+
     std_value = np.nanstd(array, axis=axis, ddof=ddof)
 
     return mean_value, std_value
@@ -231,7 +231,7 @@ def is_constant(array: np.ndarray | list | float, constant: float | None = None,
 
     if constant is None:  # return True if the array is constant along the axis
         ddof = return_ddof(array, axis=axis)
-        
+
         return np.std(array, axis=axis, ddof=ddof) < atol
 
     else:  # return True if the array is equal to "constant" along the axis
@@ -322,7 +322,7 @@ def remove_outliers(y: np.ndarray, x: np.ndarray | None = None,
 
 
 def interpolate_outliers(y: np.ndarray, x: np.ndarray | None = None,
-                    z_thresh: float = 2.5, num_eps: float = _num_eps) -> np.ndarray:
+                         z_thresh: float = 2.5, num_eps: float = _num_eps) -> np.ndarray:
     if x is None: x = np.arange(len(y))
     y_no_out, x_no_out = remove_outliers(y=y, x=x, z_thresh=z_thresh, num_eps=num_eps)
 
@@ -728,10 +728,11 @@ def my_pca(x_data: np.ndarray,
     # Function computes first n_components principal components
 
     if standardise:
-        ddof = return_ddof(array, axis=0)
+        ddof = return_ddof(x_data, axis=0)
         std = np.std(x_data, ddof=ddof, axis=0)
         if np.any(std <= num_eps):  # "<=" is necessary for num_eps = 0.
-            raise ValueError("Not all features are determinative. Remove these features, or do not use standardisation.")
+            raise warnings.warn("Not all features are determinative. Remove these features, or do not use standardisation.")
+        std = np.clip(std, num_eps, None)
     else:
         std = np.full(np.shape(x_data)[1], fill_value=1.)
 

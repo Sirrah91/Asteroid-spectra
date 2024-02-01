@@ -1,6 +1,6 @@
 These codes and data are provided under the MIT licence (https://opensource.org/license/mit/).
 
-Copyright 2023 David Korda and co-authors.
+Copyright 2023–2024 David Korda and co-authors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
@@ -23,4 +23,4 @@ Trained models for determining mineralogical properties can be found in ./Models
 
 Used dataset and their metadata are stored in ./Datasets/. Mineral and elemental analytical data used as input during training, validation, and testing are in **combined-denoised-norm.npz**. Taxonomy data are in **asteroid_spectra-reduced-denoised-norm.npz**. The relevant metadata and detailed mineral and chemical analyses used to derive training input analytical data are stored in table **Sample_Catalogue.xlsx**. See the corresponding README.md for more details.
 
-For any questions or comments, contact me at david.korda@helsinki.fi.
+For any questions or comments, contact me at david.korda@asu.cas.cz.

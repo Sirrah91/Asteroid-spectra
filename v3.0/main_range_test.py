@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------- #
 # Neural Network to Classify Asteroids Using Keras and TensorFlow Backend #
-# by David Korda (david.korda@helsinki.fi)                                #
+# by David Korda (david.korda@asu.cas.cz)                                 #
 # ----------------------------------------------------------------------- #
 # Run with Python 3.10.6                                                  #
 # Install: requirements.txt                                               #
@@ -10,7 +10,7 @@
 """
 This code is provided under the MIT licence (https://opensource.org/license/mit/).
 
-Copyright 2023 David Korda (University of Helsinki).
+Copyright 2022–2024 David Korda (Astronomical Institute of the Czech Academy of Sciences).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation

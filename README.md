@@ -23,4 +23,6 @@ Trained models for determining mineralogical properties can be found in ./Models
 
 Used dataset and their metadata are stored in ./Datasets/. Mineral and elemental analytical data used as input during training, validation, and testing are in **combined-denoised-norm.npz**. Taxonomy data are in **asteroid_spectra-reduced-denoised-norm.npz**. The relevant metadata and detailed mineral and chemical analyses used to derive training input analytical data are stored in table **Sample_Catalogue.xlsx**. See the corresponding README.md for more details.
 
+The models can be run via a user-friendly web tool at https://sirrah.pythonanywhere.com.
+
 For any questions or comments, contact me at david.korda@asu.cas.cz.

@@ -28,7 +28,8 @@ def config_check(output_setup: dict, grid_setup: dict, data_split_setup: dict, m
         raise ValueError('Too high sum of "val_portion" and "test_portion.')
 
     if not (0. <= model_options["trim_mean_cut"] < 0.5):
-        raise ValueError('There is no mineral in "minerals_all".')
+        raise ValueError(f"Trimming parameter must be a non-negative number lower than 0.5 "
+                         f"but is {model_options['trim_mean_cut']}.")
 
     if output_setup["num_labels"] == 0:
         raise ValueError("There is no valid label.")

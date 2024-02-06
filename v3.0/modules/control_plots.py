@@ -731,41 +731,54 @@ def plot_model_history(model: Model, offset: float = 0., quiet: bool = False) ->
     ax1 = fig.add_subplot(111)
 
     plot1 = denoise_array(history["loss"], sigma=sigma)
-
-    metrics = history[model.metrics_names[1]]
-    if model.metrics_names[1] == "mse":  # MSE to RMSE
-        metrics = np.sqrt(metrics)
-        labely = "RMSE"
-
-    elif model.metrics_names[1] in ["mse", "mae", "rmse"]:
-        labely = model.metrics_names[1].upper()
-
-    else:
-        labely = model.metrics_names[1].capitalize()
-
-    plot3 = denoise_array(metrics, sigma=sigma)
-    labely = str(np.char.replace(labely, "_", " "))
-
     lns1 = ax1.plot(plot1, color=color1, linestyle="-", label="Loss - training")
-    ax2 = ax1.twinx()  # instantiate a second axis that shares the same x-axis
-    lns3 = ax2.plot(plot3, color=color2, linestyle="-", label=f"{labely} - training")
+
+    if len(model.metrics_names) == 1:  # no metrics were used
+        metric_name = ""
+    else:
+        metric_name = model.metrics_names[1]
+
+    if metric_name:
+        metrics = history[metric_name]
+        if metric_name == "mse":  # MSE to RMSE
+            metrics = np.sqrt(metrics)
+            labely = "RMSE"
+
+        elif metric_name in ["mse", "mae", "rmse"]:
+            labely = metric_name.upper()
+
+        else:
+            labely = metric_name.capitalize()
+
+        plot3 = denoise_array(metrics, sigma=sigma)
+        labely = str(np.char.replace(labely, "_", " "))
+
+        ax2 = ax1.twinx()  # instantiate a second axis that shares the same x-axis
+        lns3 = ax2.plot(plot3, color=color2, linestyle="-", label=f"{labely} - training")
 
     if "val_loss" in history.keys():
         plot2 = denoise_array(history["val_loss"], sigma=sigma)
-
-        metrics = history[f"val_{model.metrics_names[1]}"]
-
-        if model.metrics_names[1] == "mse":  # MSE to RMSE
-            metrics = np.sqrt(metrics)
-
-        plot4 = denoise_array(metrics, sigma=sigma)
-
         lns2 = ax1.plot(plot2, color=color1, linestyle=":", label="Loss - validation")
-        lns4 = ax2.plot(plot4, color=color2, linestyle=":", label=f"{labely} - validation")
 
-        lns = lns1 + lns2 + lns3 + lns4
+        if metric_name:
+            metrics = history[f"val_{metric_name}"]
+
+            if metric_name == "mse":  # MSE to RMSE
+                metrics = np.sqrt(metrics)
+
+            plot4 = denoise_array(metrics, sigma=sigma)
+            lns4 = ax2.plot(plot4, color=color2, linestyle=":", label=f"{labely} - validation")
+
+    if "val_loss" in history.keys():
+        if metric_name:
+            lns = lns1 + lns2 + lns3 + lns4
+        else:
+            lns = lns1 + lns2
     else:
-        lns = lns1 + lns3
+        if metric_name:
+            lns = lns1 + lns3
+        else:
+            lns = lns1
 
     ax1.set_xlabel("Epoch")
     ax1.tick_params(axis="x")
@@ -775,16 +788,20 @@ def plot_model_history(model: Model, offset: float = 0., quiet: bool = False) ->
     ax1.set_xlim(left=left, right=right)
     ax1.grid(False)
 
-    ax2.set_ylabel(labely, color=color2)  # we already handled the x-label with ax1
-    ax2.tick_params(axis="y", labelcolor=color2)
-    ax2.set_ylim(bottom=bottom)
-    ax2.grid(False)
+    if metric_name:
+        ax2.set_ylabel(labely, color=color2)  # we already handled the x-label with ax1
+        ax2.tick_params(axis="y", labelcolor=color2)
+        ax2.set_ylim(bottom=bottom)
+        ax2.grid(False)
 
     labs = [l.get_label() for l in lns]
-    if plot3[0] > plot3[-1]:  # the metric decreases if quality increases
-        loc = "upper right"
+    if metric_name:
+        if plot3[0] > plot3[-1]:  # the metric decreases if quality increases
+            loc = "upper right"
+        else:
+            loc = "center right"
     else:
-        loc = "center right"
+        loc = "upper right"
     ax1.legend(lns, labs, loc=loc)
 
     fig.tight_layout()  # Otherwise the right y-label is slightly clipped
@@ -793,8 +810,7 @@ def plot_model_history(model: Model, offset: float = 0., quiet: bool = False) ->
     plt.draw()
 
     if save_all:
-        now = datetime.utcnow()
-        dt_string = now.strftime("%Y%m%d%H%M%S")
+        dt_string = datetime.utcnow().strftime("%Y%m%d%H%M%S")
         fig_name = f"{dt_string}_model_history.{fig_format}"
     else:
         fig_name = f"model_history.{fig_format}"

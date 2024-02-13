@@ -4,7 +4,7 @@ environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from tensorflow.keras.callbacks import EarlyStopping, TerminateOnNaN, ReduceLROnPlateau
+from tensorflow.keras.callbacks import EarlyStopping, TerminateOnNaN, ReduceLROnPlateau, ModelCheckpoint
 from pprint import pprint
 import json
 import warnings

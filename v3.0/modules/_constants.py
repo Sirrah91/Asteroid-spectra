@@ -2,8 +2,9 @@
 import numpy as np
 from os import path
 
-# Base directory of the project
-_project_dir = "/home/dakorda/Python/NN"  # Do not use a relative path if you create files from the "modules" folder
+# Base directory of the project (do not use a relative path if you create files from the "modules" folder)
+# _project_dir = "/home/dakorda/Python/NN"
+_project_dir = "C:\\Users\\dkord\\python\\NN"
 
 # subdirs in _project_dir (useful for backup)
 _subdirs = {"modules": "modules",
@@ -61,7 +62,7 @@ _coordinates_name = "coordinates"
 _num_eps = 1e-5  # num_eps of float32 is 1e-7
 
 _wp = np.float32  # working precision -> set by keras config
-_model_suffix = "h5"  # suffix of saved models
+_model_suffix = "h5"  # suffix of saved models; DO NOT CHANGE if you use ModelCheckpoint callback
 
 _rnd_seed = 42  # to control reproducibility; can be int or None (None for "automatic" random seed)
 

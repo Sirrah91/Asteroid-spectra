@@ -81,6 +81,13 @@ def train(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np
     check_dir(filename)
     model.save(filename)
 
+    if path.isfile(filename):  # Model is saved using ModelCheckpoint; restore the best one here
+        model.load_weights(filename)
+    else:
+        print("Model weights were not saved using ModelCheckpoint")
+        
+    model.save(filename)
+    
     if not _quiet:
         print("Model was saved to disk")
 

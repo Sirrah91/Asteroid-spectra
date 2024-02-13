@@ -120,31 +120,48 @@ def fit_model(model: Model,
         validation_data, monitoring["objective"] = None, monitoring["objective"].replace("val_", "")
 
     # parameters in early stopping and reduce LR
-    stopping_coef, lr_factor = 0.3, 1.
+    stopping_patience = int(params["num_epochs"] * 0.3)
+    lr_factor = 1.
     callbacks = collect_callbacks(monitoring=monitoring,
-                                  stopping_patience=params["num_epochs"] * stopping_coef,
-                                  lr_factor=lr_factor)
+                                  model_name=model_name,
+                                  stopping_patience=stopping_patience,
+                                  reducelr_patience=stopping_patience // 2,
+                                  lr_factor=lr_factor,
+                                  verbose=verbose)
 
     model.fit(x_train, y_train, validation_data=validation_data, epochs=params["num_epochs"],
               batch_size=params["batch_size"], validation_batch_size=len(y_val), shuffle=True,
               callbacks=callbacks, verbose=verbose)
 
+    # Model is saved using ModelCheckpoint; restore the best one here
+    model.load_weights(model_name)
+
     return model
 
 
-def collect_callbacks(monitoring: dict[str, str], stopping_patience: float = 0., lr_factor: float = 1.) -> list:
+def collect_callbacks(monitoring: dict[str, str],
+                      model_name: str | None = None,
+                      stopping_patience: int = 0,
+                      reducelr_patience: int = 0,
+                      lr_factor: float = 1.,
+                      verbose: int = 2) -> list:
     callbacks = [TerminateOnNaN()]
 
-    if stopping_patience > 0.:
+    if model_name is not None:
+        checkpoint = ModelCheckpoint(model_name, monitor=monitoring["objective"], mode=monitoring["direction"],
+                                     save_best_only=True, save_weights_only=True, verbose=verbose)
+        callbacks.append(checkpoint)
+
+    if stopping_patience > 0:
         # Set early stopping monitor so the model will stop training if it does not improve anymore
         early_stopping_monitor = EarlyStopping(monitor=monitoring["objective"], mode=monitoring["direction"],
-                                               patience=int(stopping_patience), restore_best_weights=True)
+                                               patience=stopping_patience, restore_best_weights=True)
         callbacks.append(early_stopping_monitor)
 
-    if 0. < lr_factor < 1.:
+    if 0. < lr_factor < 1. and reducelr_patience > 0:
         # set reduction learning rate callback
         reduce_lr = ReduceLROnPlateau(monitor=monitoring["objective"], mode=monitoring["direction"], factor=lr_factor,
-                                      patience=50, min_lr=0.)
+                                      patience=reducelr_patience, min_lr=0.)
         callbacks.append(reduce_lr)
 
     return callbacks
@@ -203,10 +220,13 @@ def hp_tuner(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val:
     method = params["tuning_method"]
 
     # parameters in early stopping and reduce LR
-    stopping_coef, lr_factor = 0.5, 1.
+    stopping_patience = int(params["num_epochs"] * 0.5)
+    lr_factor = 1.
     callbacks = collect_callbacks(monitoring=monitoring,
-                                  stopping_patience=params["num_epochs"] * stopping_coef,
-                                  lr_factor=lr_factor)
+                                  stopping_patience=stopping_patience,
+                                  reducelr_patience=stopping_patience // 2,
+                                  lr_factor=lr_factor,
+                                  verbose=2)
 
     N = 5  # save N best models (if N < max_trials, N = max_trials)
 

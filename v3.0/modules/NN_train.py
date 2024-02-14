@@ -74,18 +74,19 @@ def train(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np
         show_control_plot, verbose = False, 0
     else:
         show_control_plot, verbose = _show_control_plot, _verbose
-    
+
     model_name, filename = gimme_model_name(params["model_usage"], model_subdir, model_name)
     check_dir(filename)
-    
+
     model = fit_model(model, x_train, y_train, x_val, y_val, params, monitoring, filename, verbose)
 
     # Save model to project dir with a timestamp
-    if path.isfile(filename):  # Model weights were saved using ModelCheckpoint; restore the best one here
+    if path.isfile(filename):
+        # Model weights were saved by ModelCheckpoint; restore the best one here
         model.load_weights(filename)
-    else:
-        print("Model weights were not saved using ModelCheckpoint")
-
+    # else Model weights were set by EarlyStopping
+    
+    # save the model here
     model.save(filename)
 
     if not _quiet:
@@ -109,7 +110,7 @@ def fit_model(model: Model,
               x_train: np.ndarray, y_train: np.ndarray,
               x_val: np.ndarray, y_val: np.ndarray,
               params: dict[str, str | int | float | bool | list[int]],
-              monitoring: dict[str, str], 
+              monitoring: dict[str, str],
               model_name: str | None = None,
               verbose: int = 2) -> Model:
     # visualise the model
@@ -142,9 +143,6 @@ def fit_model(model: Model,
     model.fit(x_train, y_train, validation_data=validation_data, epochs=params["num_epochs"],
               batch_size=params["batch_size"], validation_batch_size=len(y_val), shuffle=True,
               callbacks=callbacks, verbose=verbose)
-
-    # Model is saved using ModelCheckpoint; restore the best one here
-    model.load_weights(model_name)
 
     return model
 

@@ -4,7 +4,8 @@ environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import numpy as np
 import pandas as pd
 from datetime import datetime
-from tensorflow.keras.callbacks import EarlyStopping, TerminateOnNaN, ReduceLROnPlateau, ModelCheckpoint
+from tensorflow.keras.callbacks import TerminateOnNaN, ReduceLROnPlateau, ModelCheckpoint
+from modules.NN_callbacks import ReturnBestEarlyStopping
 from pprint import pprint
 import json
 import warnings
@@ -19,7 +20,8 @@ from tensorflow.keras.models import Model
 from modules.NN_models import MyHyperModel
 
 from modules.control_plots import plot_model_history, plot_corr_matrix, plot_model_layer
-from modules.utilities_spectra import gimme_model_specification, print_header, print_info, gimme_bin_code_from_name, load_txt
+from modules.utilities_spectra import gimme_model_specification, print_header, print_info, gimme_bin_code_from_name, \
+    load_txt
 from modules.utilities import check_dir, is_empty, sort_df_with_keys
 
 from modules.NN_HP import gimme_hyperparameters
@@ -39,7 +41,6 @@ def train(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np
           model_name: str | None = None,
           metrics: list[str] | None = None
           ) -> str:
-
     # loading needed values
     if params["model_usage"] == "taxonomy":
         if monitoring is None: monitoring = tax_model_setup["monitoring"]
@@ -73,27 +74,27 @@ def train(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np
         show_control_plot, verbose = False, 0
     else:
         show_control_plot, verbose = _show_control_plot, _verbose
-
-    model = fit_model(model, x_train, y_train, x_val, y_val, params, monitoring, verbose)
-
-    # Save model to project dir with a timestamp
+    
     model_name, filename = gimme_model_name(params["model_usage"], model_subdir, model_name)
     check_dir(filename)
-    model.save(filename)
+    
+    model = fit_model(model, x_train, y_train, x_val, y_val, params, monitoring, filename, verbose)
 
+    # Save model to project dir with a timestamp
     if path.isfile(filename):  # Model weights were saved using ModelCheckpoint; restore the best one here
         model.load_weights(filename)
     else:
         print("Model weights were not saved using ModelCheckpoint")
-        
+
     model.save(filename)
-    
+
     if not _quiet:
         print("Model was saved to disk")
 
     if show_control_plot:
         plot_model_history(model, quiet=_quiet)
-        plot_model_layer(model_name, subfolder_model=model_subdir, layer="Conv1D", suf=f"{_sep_out}kernels", quiet=_quiet)
+        plot_model_layer(model_name, subfolder_model=model_subdir, layer="Conv1D", suf=f"{_sep_out}kernels",
+                         quiet=_quiet)
 
     if not _quiet:
         print_header(bin_code=bin_code)
@@ -108,7 +109,9 @@ def fit_model(model: Model,
               x_train: np.ndarray, y_train: np.ndarray,
               x_val: np.ndarray, y_val: np.ndarray,
               params: dict[str, str | int | float | bool | list[int]],
-              monitoring: dict[str, str], verbose: int = 2) -> Model:
+              monitoring: dict[str, str], 
+              model_name: str | None = None,
+              verbose: int = 2) -> Model:
     # visualise the model
     # visualizer(model, filename="architecture", format="png", view=True)
 
@@ -161,14 +164,15 @@ def collect_callbacks(monitoring: dict[str, str],
 
     if stopping_patience > 0:
         # Set early stopping monitor so the model will stop training if it does not improve anymore
-        early_stopping_monitor = EarlyStopping(monitor=monitoring["objective"], mode=monitoring["direction"],
-                                               patience=stopping_patience, restore_best_weights=True)
+        early_stopping_monitor = ReturnBestEarlyStopping(monitor=monitoring["objective"], mode=monitoring["direction"],
+                                                         patience=stopping_patience, restore_best_weights=True,
+                                                         verbose=verbose)
         callbacks.append(early_stopping_monitor)
 
     if 0. < lr_factor < 1. and reducelr_patience > 0:
         # set reduction learning rate callback
         reduce_lr = ReduceLROnPlateau(monitor=monitoring["objective"], mode=monitoring["direction"], factor=lr_factor,
-                                      patience=reducelr_patience, min_lr=0.)
+                                      patience=reducelr_patience, min_lr=0., verbose=verbose)
         callbacks.append(reduce_lr)
 
     return callbacks
@@ -203,7 +207,6 @@ def hp_tuner(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val:
              model_name: str | None = None,
              metrics: list[str] | None = None
              ) -> list[str]:
-
     # loading needed values
     if composition_or_taxonomy == "taxonomy":
         if monitoring is None: monitoring = tax_model_setup["monitoring"]
@@ -311,7 +314,8 @@ def hp_tuner(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val:
         best_model = tuner.get_best_models(num_models=np.min((N, max_trials)))  # raises warnings
 
     final_suffix = "" if _model_suffix == "SavedModel" else f".{_model_suffix}"
-    model_names = [f"{model_name}{_sep_out}{dt_string}{_sep_out}Tuner{_sep_in}{i}{final_suffix}" for i in range(len(best_model))]
+    model_names = [f"{model_name}{_sep_out}{dt_string}{_sep_out}Tuner{_sep_in}{i}{final_suffix}" for i in
+                   range(len(best_model))]
 
     for name, model in zip(model_names, best_model):
         # Save top models to project dir with a timestamp

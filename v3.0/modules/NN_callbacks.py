@@ -11,5 +11,5 @@ class ReturnBestEarlyStopping(EarlyStopping):
                 print(f"\nEpoch {self.stopped_epoch + 1}: early stopping")
         elif self.restore_best_weights:
             if self.verbose > 0:
-                print("Restoring model weights from the end of the best epoch.")
+                print(f"Restoring model weights from the end of the best epoch: {self.best_epoch + 1}.")
             self.model.set_weights(self.best_weights)

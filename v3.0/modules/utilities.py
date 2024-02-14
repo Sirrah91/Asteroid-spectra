@@ -407,7 +407,7 @@ def split_path(filename: str, is_dir_check: bool = False) -> tuple[str, ...]:
     dirname, basename = path.split(filename)
 
     if "." in basename:
-        basename, extension = basename.split(".", 1)
+        basename, extension = basename.rsplit(".", 1)
     else:
         extension = ""
 

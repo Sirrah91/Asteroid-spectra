@@ -165,8 +165,8 @@ def plot_scatter_plots(y_true: np.ndarray, y_pred: np.ndarray,
         error_pred, error_true = pred_errorbar[start:stop], true_errorbar[start:stop]
 
         fig, ax = plt.subplots(1, num_minerals, figsize=(4.5 * num_minerals, 6), sharey=True)
-        ax = np.reshape(ax, (-1))  # to force iterable for the for cycle
-        
+        ax = np.reshape(ax, (-1,))  # to force iterable for the for cycle
+
         for i, axis in enumerate(ax):
             # lines
             lns1 = axis.plot(x_line, y_line, l0, label=lab_line0, linewidth=LW_scatter, zorder=3)
@@ -225,7 +225,7 @@ def plot_scatter_plots(y_true: np.ndarray, y_pred: np.ndarray,
 
         # fig size tuned such that the plots are of approximately the same size
         fig, ax = plt.subplots(1, count_endmember, figsize=(4.4 * count_endmember + 1.5, 6), sharey=True)
-        ax = np.reshape(ax, (-1))  # to force iterable for the for cycle
+        ax = np.reshape(ax, (-1,))  # to force iterable for the for cycle
 
         if num_minerals > 1:
             # non-zero modal

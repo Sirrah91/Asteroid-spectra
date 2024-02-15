@@ -85,7 +85,7 @@ def train(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np
         # Model weights were saved by ModelCheckpoint; restore the best one here
         model.load_weights(filename)
     # else Model weights were set by EarlyStopping
-    
+
     # save the model here
     model.save(filename)
 
@@ -155,7 +155,7 @@ def collect_callbacks(monitoring: dict[str, str],
                       verbose: int = 2) -> list:
     callbacks = [TerminateOnNaN()]
 
-    if model_name is not None:
+    if model_name is not None:  # good backup if something happens during training
         checkpoint = ModelCheckpoint(model_name, monitor=monitoring["objective"], mode=monitoring["direction"],
                                      save_best_only=True, save_weights_only=True, verbose=verbose)
         callbacks.append(checkpoint)

@@ -58,6 +58,15 @@ def check_file(filename: str, base_folder: str, subfolder: str) -> str:
     return path.abspath(filename)
 
 
+def rreplace(s: str, old: str, new: str, occurrence: int | None = None):
+    if occurrence is None:
+        li = s.rsplit(old)
+    else:
+        li = s.rsplit(old, occurrence)
+
+    return new.join(li)
+
+
 def flatten_list(nested_list: Iterable, general: bool = False) -> np.ndarray:
     # This function flattens a list of lists
     if not general:  # works for a list of lists

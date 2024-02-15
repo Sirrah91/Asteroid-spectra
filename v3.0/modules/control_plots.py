@@ -165,6 +165,8 @@ def plot_scatter_plots(y_true: np.ndarray, y_pred: np.ndarray,
         error_pred, error_true = pred_errorbar[start:stop], true_errorbar[start:stop]
 
         fig, ax = plt.subplots(1, num_minerals, figsize=(4.5 * num_minerals, 6), sharey=True)
+        ax = np.reshape(ax, (-1))  # to force iterable for the for cycle
+        
         for i, axis in enumerate(ax):
             # lines
             lns1 = axis.plot(x_line, y_line, l0, label=lab_line0, linewidth=LW_scatter, zorder=3)
@@ -223,6 +225,7 @@ def plot_scatter_plots(y_true: np.ndarray, y_pred: np.ndarray,
 
         # fig size tuned such that the plots are of approximately the same size
         fig, ax = plt.subplots(1, count_endmember, figsize=(4.4 * count_endmember + 1.5, 6), sharey=True)
+        ax = np.reshape(ax, (-1))  # to force iterable for the for cycle
 
         if num_minerals > 1:
             # non-zero modal
@@ -727,8 +730,7 @@ def plot_model_history(model: Model, offset: float = 0., quiet: bool = False) ->
 
     history = model.history.history
 
-    fig = plt.figure("Loss and accuracy", figsize=(8, 6))
-    ax1 = fig.add_subplot(111)
+    fig, ax1 = plt.subplots(1, 1, figsize=(8, 6))
 
     plot1 = denoise_array(history["loss"], sigma=sigma)
     lns1 = ax1.plot(plot1, color=color1, linestyle="-", label="Loss - training")
@@ -854,8 +856,8 @@ def plot_model_layer(model_name: str, subfolder_model: str = "", layer: str = "C
     blk = best_blk(np.shape(weights)[1])
 
     fig, ax = plt.subplots(blk[0], blk[1], figsize=(4 * blk[0], 4 * blk[1]), sharex=True, squeeze=False)
-    ax = np.reshape(ax, (blk[0], blk[1]))  # force the shape
-    
+    ax = np.reshape(ax, (blk[0], blk[1]))  # force dimensions for the for cycle
+
     c = 0
     for row in range(blk[0]):
         for column in range(blk[1]):

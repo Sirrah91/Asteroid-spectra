@@ -657,6 +657,7 @@ def plot_spectra_1(x_data: np.ndarray, y_data: np.ndarray, offset: float = 0.) -
     ast_data = data[_spectra_name][inds]
 
     fig, ax = plt.subplots(m, n, figsize=(4.7 * n, 4.7 * m), sharex=True, sharey=True, squeeze=False)
+    ax = np.reshape(ax, (m, n))  # force dimensions for the for cycle
 
     inds = np.where(np.sum(y_data[:, :3] > 0, axis=1) > 1)[0]
     # urceno z konkretnich dat (90, 63)
@@ -732,6 +733,7 @@ def plot_spectra_2(offset: float = 0.) -> None:
     m, n = best_blk(len(titles), cols_to_rows=6. / 3.)
 
     fig, ax = plt.subplots(m, n, figsize=(6 * n, 8 * m), sharey=True, squeeze=False)
+    ax = np.reshape(ax, (m, n))  # force dimensions for the for cycle
 
     for k, unique_type in enumerate(np.unique(types)):
         inds_class = np.array([unique_type == ast_type for ast_type in types])
@@ -841,6 +843,8 @@ def compare_spectra_with_instrument(filename: str,
     rows, columns = best_blk(len(classes_to_plot))
 
     fig, ax = plt.subplots(rows, columns, figsize=(columns * 5.5, rows * 4.2), squeeze=False)
+    ax = np.reshape(ax, (rows, columns))  # force dimensions for the for cycle
+
     fig.suptitle(f"{instrument}")
 
     for i in range(len(classes_to_plot)):
@@ -1444,6 +1448,7 @@ def plot_EI_type_hist(y_Eros: np.ndarray, y_Itokawa: np.ndarray, tax_type: str,
     titles = ["Eros", "Itokawa"]
 
     fig, ax = plt.subplots(1, len(ei_list), figsize=(12, 6))
+    ax = np.reshape(ax, (-1))  # to force iterable for the for cycle
 
     for i, data in enumerate(ei_list):
         ax[i].hist(data, bins=nbins, label=tax_type)
@@ -1690,6 +1695,7 @@ def plot_ast_type_hist(y_pred: np.ndarray, offset: float = 0.) -> None:
     # Modal first (expect all four minerals to be in the model)
     n_min = 3
     fig, ax = plt.subplots(1, n_min, figsize=(6 * n_min, 5), sharey=True)  # !!!!!
+    ax = np.reshape(ax, (-1))  # to force iterable for the for cycle
 
     labelx = ["Olivine fraction (vol\%)", "Orthopyroxene fraction (vol\%)",
               "Clinopyroxene fraction (vol\%)", "Plagioclase fraction (vol\%)"]
@@ -1736,6 +1742,7 @@ def plot_ast_type_hist(y_pred: np.ndarray, offset: float = 0.) -> None:
     # OL
     n_ol = 2
     fig, ax = plt.subplots(1, n_ol, figsize=(6 * n_ol, 5), sharey=True)
+    ax = np.reshape(ax, (-1))  # to force iterable for the for cycle
 
     labelx = ["Fa", "Fo"]
 
@@ -1772,6 +1779,7 @@ def plot_ast_type_hist(y_pred: np.ndarray, offset: float = 0.) -> None:
     # OPX
     n_opx = 2
     fig, ax = plt.subplots(1, n_opx, figsize=(6 * n_opx, 5), sharey=True)
+    ax = np.reshape(ax, (-1))  # to force iterable for the for cycle
 
     labelx = ["Fs (OPX)", "En (OPX)"]
 
@@ -1808,6 +1816,7 @@ def plot_ast_type_hist(y_pred: np.ndarray, offset: float = 0.) -> None:
     # CPX
     n_cpx = 3
     fig, ax = plt.subplots(1, n_cpx, figsize=(6 * n_cpx, 5), sharey=True)
+    ax = np.reshape(ax, (-1))  # to force iterable for the for cycle
 
     labelx = ["Fs (CPX)", "En (CPX)", "Wo (CPX)"]
 
@@ -1915,8 +1924,7 @@ def plot_OC_distance(y_pred: np.ndarray, meta: pd.DataFrame, used_minerals: np.n
     distance_L = np.array([distance(rect_H, p_L), distance(rect_L, p_L), distance(rect_LL, p_L)])
     distance_LL = np.array([distance(rect_H, p_LL), distance(rect_L, p_LL), distance(rect_LL, p_LL)])
 
-    fig = plt.figure(figsize=(8, 6))
-    ax = fig.add_subplot(111)
+    fig, ax = plt.subplots(1, 1, figsize=(8, 6))
 
     ax.scatter(distance_H, np.tile(np.array([[0, 1, 2]]).transpose(), (1, np.shape(distance_H)[1])), color="r",
                label="H", s=s)

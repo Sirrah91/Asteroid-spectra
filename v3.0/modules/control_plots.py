@@ -854,7 +854,8 @@ def plot_model_layer(model_name: str, subfolder_model: str = "", layer: str = "C
     blk = best_blk(np.shape(weights)[1])
 
     fig, ax = plt.subplots(blk[0], blk[1], figsize=(4 * blk[0], 4 * blk[1]), sharex=True, squeeze=False)
-
+    ax = np.reshape(ax, (blk[0], blk[1]))  # force the shape
+    
     c = 0
     for row in range(blk[0]):
         for column in range(blk[1]):

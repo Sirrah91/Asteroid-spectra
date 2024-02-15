@@ -75,19 +75,19 @@ def train(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np
     else:
         show_control_plot, verbose = _show_control_plot, _verbose
 
-    model_name, filename = gimme_model_name(params["model_usage"], model_subdir, model_name)
-    check_dir(filename)
+    model_name, model_filename = gimme_model_name(params["model_usage"], model_subdir, model_name)
+    check_dir(model_filename)
 
-    model = fit_model(model, x_train, y_train, x_val, y_val, params, monitoring, filename, verbose)
+    model = fit_model(model, x_train, y_train, x_val, y_val, params, monitoring, model_filename, verbose)
 
     # Save model to project dir with a timestamp
-    if path.isfile(filename):
+    if path.isfile(model_filename):
         # Model weights were saved by ModelCheckpoint; restore the best one here
-        model.load_weights(filename)
+        model.load_weights(model_filename)
     # else Model weights were set by EarlyStopping
 
     # save the model here
-    model.save(filename)
+    model.save(model_filename)
 
     if not _quiet:
         print("Model was saved to disk")
@@ -111,7 +111,7 @@ def fit_model(model: Model,
               x_val: np.ndarray, y_val: np.ndarray,
               params: dict[str, str | int | float | bool | list[int]],
               monitoring: dict[str, str],
-              model_name: str | None = None,
+              model_filename: str | None = None,
               verbose: int = 2) -> Model:
     # visualise the model
     # visualizer(model, filename="architecture", format="png", view=True)
@@ -134,7 +134,7 @@ def fit_model(model: Model,
     stopping_patience = int(params["num_epochs"] * 0.3)
     lr_factor = 1.
     callbacks = collect_callbacks(monitoring=monitoring,
-                                  model_name=model_name,
+                                  model_filename=model_filename,
                                   stopping_patience=stopping_patience,
                                   reducelr_patience=stopping_patience // 2,
                                   lr_factor=lr_factor,
@@ -148,15 +148,15 @@ def fit_model(model: Model,
 
 
 def collect_callbacks(monitoring: dict[str, str],
-                      model_name: str | None = None,
+                      model_filename: str | None = None,
                       stopping_patience: int = 0,
                       reducelr_patience: int = 0,
                       lr_factor: float = 1.,
                       verbose: int = 2) -> list:
     callbacks = [TerminateOnNaN()]
 
-    if model_name is not None:  # good backup if something happens during training
-        checkpoint = ModelCheckpoint(model_name, monitor=monitoring["objective"], mode=monitoring["direction"],
+    if model_filename is not None:  # good backup if something happens during training
+        checkpoint = ModelCheckpoint(model_filename, monitor=monitoring["objective"], mode=monitoring["direction"],
                                      save_best_only=True, save_weights_only=True, verbose=verbose)
         callbacks.append(checkpoint)
 

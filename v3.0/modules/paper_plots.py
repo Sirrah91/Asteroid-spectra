@@ -2813,7 +2813,7 @@ def plot_test_normalisation(error_type: str = "RMSE", remove_outliers: bool = Fa
     # ax.yaxis.set_major_formatter(FormatStrFormatter("%.1f"))
     ax.set_ylim(lim)
 
-    ax.set_xlabel("Normalization wavelength (nm)")
+    ax.set_xlabel("Normalisation wavelength (nm)")
     ax.legend(bbox_to_anchor=(0., 1.02, 1., 0.2), loc="lower left", mode="expand", borderaxespad=0.,
               ncol=best_blk(num_colors)[1])
 

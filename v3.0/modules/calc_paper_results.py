@@ -347,7 +347,6 @@ def paper_3() -> None:
     filtering_setup = data["config"][()]["filtering_setup"]
     data_split_setup = {"val_portion": 0.2, "test_portion": 0.2}
 
-
     for error_type in ["rmse", "within 10"]:
         wvl_norm, normalisation = plot_test_normalisation(error_type, remove_outliers=remove_outliers, offset=5)
         window_range, window = plot_test_window(error_type, remove_outliers=remove_outliers, offset=3)

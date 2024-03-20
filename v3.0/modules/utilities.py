@@ -58,15 +58,6 @@ def check_file(filename: str, base_folder: str, subfolder: str) -> str:
     return path.abspath(filename)
 
 
-def rreplace(s: str, old: str, new: str, occurrence: int | None = None):
-    if occurrence is None:
-        li = s.rsplit(old)
-    else:
-        li = s.rsplit(old, occurrence)
-
-    return new.join(li)
-
-
 def flatten_list(nested_list: Iterable, general: bool = False) -> np.ndarray:
     # This function flattens a list of lists
     if not general:  # works for a list of lists
@@ -299,8 +290,8 @@ def find_outliers(y: np.ndarray, x: np.ndarray | None = None,
         mu, sigma = return_mean_std(deriv)
         z_score = (deriv - mu) / sigma
 
-        positive = np.where(z_score > z_thresh)[0]
-        negative = np.where(-z_score > z_thresh)[0]
+        positive = np.where(np.logical_or(z_score > z_thresh, ~np.isfinite(z_score)))[0]
+        negative = np.where(np.logical_or(-z_score > z_thresh, ~np.isfinite(z_score)))[0]
 
         # noise -> the points are next to each other (overlap if compensated for "diff" shift)
         outliers = stack((np.intersect1d(positive, negative + 1), np.intersect1d(negative, positive + 1)))
@@ -338,23 +329,55 @@ def interpolate_outliers(y: np.ndarray, x: np.ndarray | None = None,
     return safe_extrap1d(x=x_no_out, y=y_no_out, x_new=x)
 
 
+def extrap(x: np.ndarray, y: np.ndarray, x_new: np.ndarray, n_points: int = 20) -> tuple[np.ndarray, ...]:
+    # Choose how many points to use for fitting (you may adjust this)
+    num_points_to_fit = np.min((n_points, len(x)))
+
+    deg = 1 if num_points_to_fit < 5 else 2
+
+    if np.any(x_new > np.nanmax(x)):  # extrapolate to larger values
+        # Fit the polynomial using the last few points
+        x_fit = x[-num_points_to_fit:]
+        y_fit = y[-num_points_to_fit:]
+
+        # Extrapolate using the fitted polynomial
+        y_right = np.polyval(my_polyfit(x_fit, y_fit, deg=deg), x_new)
+    else:
+        y_right = np.array([])
+
+    if np.any(x_new < np.nanmin(x)):  # extrapolate to lower values
+        # Fit the polynomial using the first few points
+        x_fit = x[:num_points_to_fit]
+        y_fit = y[:num_points_to_fit]
+
+        # Extrapolate using the fitted polynomial
+        y_left = np.polyval(my_polyfit(x_fit, y_fit, deg=deg), x_new)
+    else:
+        y_left = np.array([])
+
+    return y_left, y_right
+
+
 def safe_extrap1d(x: np.ndarray, y: np.ndarray, x_new: np.ndarray | None = None) -> np.ndarray:
     # use interpolation with variable kind and linear or nearest extrapolation
-    inds_in = np.logical_and(x_new >= np.min(x), x_new <= np.max(x))
+    inds_in = np.logical_and(x_new >= np.nanmin(x), x_new <= np.nanmax(x))
     kind = gimme_kind(x)
 
     if np.all(inds_in):  # no extrapolation needed
         return interp1d(x, y, kind=kind)(x_new)
 
-    # interpolation with variable kind
-    if kind == "cubic":
-        # interpolation first
-        y_in = interp1d(x, y, kind=kind, fill_value=np.nan, bounds_error=False)(x_new)
-        y_out = interp1d(x, y, kind="linear", fill_value="extrapolate")(x_new)
-        return np.where(inds_in, y_in, y_out)
+    # indices for "left" and "right" extrapolation
+    inds_left_ext = np.where(x_new < np.min(x))[0]
+    inds_right_ext = np.where(x_new > np.max(x))[0]
 
-    else:  # not cubic -> can use extrapolation directly
-        return interp1d(x, y, kind=kind, fill_value="extrapolate")(x_new)
+    # interpolation with variable kind
+    y_in = interp1d(x, y, kind=kind, fill_value=np.nan, bounds_error=False)(x_new)
+
+    # values from which the extrapolation is computed
+    x_ext, y_ext = x, y
+    L, R = extrap(x_ext, y_ext, x_new)
+
+    return stack((L[inds_left_ext], y_in[inds_in], R[inds_right_ext]))
 
 
 def gimme_kind(x: np.ndarray) -> str:
@@ -416,7 +439,7 @@ def split_path(filename: str, is_dir_check: bool = False) -> tuple[str, ...]:
     dirname, basename = path.split(filename)
 
     if "." in basename:
-        basename, extension = basename.rsplit(".", 1)
+        basename, extension = basename.split(".", 1)
     else:
         extension = ""
 

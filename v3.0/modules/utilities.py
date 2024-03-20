@@ -373,11 +373,10 @@ def safe_extrap1d(x: np.ndarray, y: np.ndarray, x_new: np.ndarray | None = None)
     # interpolation with variable kind
     y_in = interp1d(x, y, kind=kind, fill_value=np.nan, bounds_error=False)(x_new)
 
-    # values from which the extrapolation is computed
-    x_ext, y_ext = x, y
-    L, R = extrap(x_ext, y_ext, x_new)
+    # linear or quadratic extrapolation
+    left_part, right_part = extrap(x, y, x_new)
 
-    return stack((L[inds_left_ext], y_in[inds_in], R[inds_right_ext]))
+    return stack((left_part[inds_left_ext], y_in[inds_in], right_part[inds_right_ext]))
 
 
 def gimme_kind(x: np.ndarray) -> str:

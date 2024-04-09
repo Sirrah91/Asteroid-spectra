@@ -37,10 +37,10 @@ def check_dir(dir_or_file_path: str) -> None:
 
     dir_or_file_path = Path(dir_or_file_path)
 
-    if dir_or_file_path.suffix:
-        directory = dir_or_file_path.parent  # is file
+    if dir_or_file_path.is_file():
+        directory = dir_or_file_path.parent
     else:
-        directory = dir_or_file_path  # is folder
+        directory = dir_or_file_path
 
     if not directory.is_dir():
         print(f'Directory "{directory.as_posix()}" does not exist, creating it now.')

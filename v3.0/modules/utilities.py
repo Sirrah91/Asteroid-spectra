@@ -37,7 +37,7 @@ def check_dir(dir_or_file_path: str) -> None:
 
     dir_or_file_path = Path(dir_or_file_path)
 
-    if dir_or_file_path.is_file():
+    if dir_or_file_path.suffix:
         directory = dir_or_file_path.parent
     else:
         directory = dir_or_file_path

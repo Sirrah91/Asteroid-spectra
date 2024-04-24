@@ -1,1 +1,1 @@
-This project is related to the publication **Silicate Mineralogy from Vis–NIR Reflectance Spectra** by **David Korda and Tomáš Kohout, 2023, A&A, 675, A50** (https://doi.org/10.1051/0004-6361/202346290) about the evaluation of Eros and Itokawa reflectance spectra.
+This project is related to the publication **Silicate Mineralogy from Vis–NIR Reflectance Spectra** by **David Korda and Tomáš Kohout, 2024,  Planet. Sci. J., 5, 85.** (https://doi.org/10.3847/PSJ/ad2685) about the optimal wavelength grid to estimate silicate olivine and pyroxene mineralogy.

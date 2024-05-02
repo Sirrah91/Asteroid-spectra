@@ -186,7 +186,7 @@ def gimme_model_name(model_usage: Literal["composition", "taxonomy"], model_subd
         if model_subdir is None: model_subdir = comp_model_setup["model_subdir"]
         if model_name is None: model_name = comp_model_setup["model_name"]
 
-    model_name = model_name.replace(".", "_")  # there cannot be . in model_name
+    model_name = model_name.replace(".", "")  # there cannot be . in model_name
 
     dt_string = datetime.utcnow().strftime("%Y%m%d%H%M%S")
 

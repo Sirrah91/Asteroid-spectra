@@ -387,7 +387,7 @@ def gimme_kind(x: np.ndarray) -> str:
 
 def plot_me(x: np.ndarray | list, *args, backend: str = "TkAgg", **kwargs) -> tuple:
     import matplotlib
-    # Potentially dangerous (changes backend in the following code)
+    # Matplotlib backend change
     matplotlib.use(backend)  # Set the backend dynamically
     from matplotlib import pyplot as plt  # Import pyplot after setting the backend   
 

@@ -36,7 +36,6 @@ from modules._constants import _label_true_name, _label_pred_name, _config_name
 from modules.NN_config_composition import minerals_used, endmembers_used
 from modules.NN_config_taxonomy import classes
 
-
 TEXT_SIZE = 12
 SMALL_SIZE = 16
 MEDIUM_SIZE = 20

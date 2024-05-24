@@ -19,8 +19,6 @@ from scipy.ndimage import gaussian_filter1d
 from scipy.integrate import trapezoid
 from scipy.interpolate import interp1d
 import shutil
-import matplotlib
-from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import tracemalloc
 from linecache import getline
@@ -387,8 +385,11 @@ def gimme_kind(x: np.ndarray) -> str:
     return "nearest"
 
 
-def plot_me(x: np.ndarray | list, *args, **kwargs) -> tuple:
-    matplotlib.use("TkAgg")  # Potentially dangerous (changes backend in the following code)
+def plot_me(x: np.ndarray | list, *args, backend: str = "TkAgg", **kwargs) -> tuple:
+    import matplotlib
+    # Potentially dangerous (changes backend in the following code)
+    matplotlib.use(backend)  # Set the backend dynamically
+    from matplotlib import pyplot as plt  # Import pyplot after setting the backend   
 
     fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(8, 6))
 
@@ -426,8 +427,10 @@ def plot_me(x: np.ndarray | list, *args, **kwargs) -> tuple:
     mng = plt.get_current_fig_manager()
     mng.resize(*mng.window.maxsize())
     plt.tight_layout()
-    plt.show()
-
+    
+    if backend in ["TkAgg", "Qt5Agg", "GTK3Agg", "WXAgg"]:
+        plt.show()
+    
     return fig, ax
 
 

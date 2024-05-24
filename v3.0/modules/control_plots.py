@@ -2,12 +2,14 @@ from os import environ, path
 environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 import matplotlib as mpl
+mpl.use("Agg")
+import matplotlib.pyplot as plt  # Import pyplot after setting the backend
+
 import numpy as np
 import pandas as pd
 import warnings
 from datetime import datetime
 
-import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import confusion_matrix
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -34,8 +36,6 @@ from modules._constants import _label_true_name, _label_pred_name, _config_name
 from modules.NN_config_composition import minerals_used, endmembers_used
 from modules.NN_config_taxonomy import classes
 
-
-mpl.use("Agg")
 
 TEXT_SIZE = 12
 SMALL_SIZE = 16

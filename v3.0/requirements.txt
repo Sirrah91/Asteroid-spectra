@@ -1,3 +1,4 @@
+# run with Python 3.10
 Flask==3.0.3
 h5py==3.8.0
 keras==2.12.0

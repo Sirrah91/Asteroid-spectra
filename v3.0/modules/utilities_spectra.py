@@ -346,7 +346,7 @@ def clean_and_resave(filename: str, reinterpolate: bool = False, used_minerals: 
 
 def apply_transmission(spectra: np.ndarray,
                        transmission: np.ndarray,
-                       wvl_transmission: np.ndarray,
+                       wavelengths: np.ndarray,
                        wvl_cen_method: Literal["argmax", "dot"] = "argmax",
                        sum_or_int: Literal["sum", "int"] = "sum") -> tuple[np.ndarray, ...]:
     # need num_transmissions x num_wavelengths
@@ -356,22 +356,22 @@ def apply_transmission(spectra: np.ndarray,
         raise ValueError("Transmission must be 1-D or 2-D array.")
 
     # sort wavelengths first
-    idx = np.argsort(wvl_transmission)
-    wvl_transmission, transmission = wvl_transmission[idx], transmission[:, idx]
+    idx = np.argsort(wavelengths)
+    wavelengths, transmission = wavelengths[idx], transmission[:, idx]
 
     if sum_or_int == "sum":
         transmission = normalise_in_rows(transmission)
     else:
-        transmission = normalise_in_rows(transmission, trapezoid(y=transmission, x=wvl_transmission))
+        transmission = normalise_in_rows(transmission, trapezoid(y=transmission, x=wavelengths))
 
     if wvl_cen_method == "argmax":
-        wvl_central = np.array([my_argmax(wvl_transmission, transm, n_points=2, fit_method="ransac") for transm in transmission])
+        wvl_central = np.array([my_argmax(wavelengths, transm, n_points=2, fit_method="ransac") for transm in transmission])
 
     elif wvl_cen_method == "dot":
         if sum_or_int == "sum":
-            wvl_central = transmission @ wvl_transmission
+            wvl_central = transmission @ wavelengths
         else:
-            wvl_central = trapezoid(y=transmission * wvl_transmission, x=wvl_transmission)
+            wvl_central = trapezoid(y=transmission * wavelengths, x=wavelengths)
 
     else:
         raise ValueError('Unknown method how to estimate central wavelengths. Available methods are "argmax" and "dot".')
@@ -382,7 +382,7 @@ def apply_transmission(spectra: np.ndarray,
     if sum_or_int == "sum":
         final_spectra = spectra @ np.transpose(transmission)
     else:
-        final_spectra = trapezoid(y=np.einsum("...j, kj -> ...kj", spectra, transmission), x=wvl_transmission)
+        final_spectra = trapezoid(y=np.einsum("...j, kj -> ...kj", spectra, transmission), x=wavelengths)
 
     wvl_central, final_spectra = np.array(wvl_central, dtype=_wp), np.array(final_spectra, dtype=_wp)
 

@@ -443,7 +443,6 @@ def reinterpolate_data(x_data: np.ndarray, wvl_old: np.ndarray, wvl_new: np.ndar
 
         return np.array(wvl_new, dtype=_wp), np.array(x_data, dtype=_wp)
 
-
     return np.array(wvl_old, dtype=_wp), np.array(x_data, dtype=_wp)
 
 
@@ -505,8 +504,8 @@ def apply_aspect_filter(wvl_data: np.ndarray, x_data: np.ndarray,
     # one Gaussian per row
     gauss = np.transpose(norm.pdf(np.reshape(wvl_data, (len(wvl_data), 1)), loc=wvl_new, scale=sigma_new))
 
-    wvl_new, filtered_data = apply_transmission(spectra=x_data, transmission=gauss,
-                                                wvl_transmission=wvl_data, wvl_cen_method="argmax")
+    wvl_new, filtered_data = apply_transmission(spectra=x_data, transmission=gauss, wavelengths=wvl_data,
+                                                wvl_cen_method="argmax")
 
     if wvl_norm == "adaptive":
         wvl_norm = normalise_spectrum_at_wvl(wvl_new)
@@ -531,13 +530,13 @@ def apply_hyperscout_filter(wvl_data: np.ndarray, x_data: np.ndarray,
     wvl_raw, transmissions = wvl_raw[mask], transmissions[:, mask]
 
     # this is here to delete channels which centres are not covered
-    mask =  trapezoid(y=transmissions, x=wvl_raw) / areas >= 0.5
+    mask = trapezoid(y=transmissions, x=wvl_raw) / areas >= 0.5
     transmissions = transmissions[mask]
 
     x_data = interp1d(wvl_data, x_data, kind=gimme_kind(wvl_data))(wvl_raw)
 
-    wvl_central, filtered_data = apply_transmission(spectra=x_data, transmission=transmissions,
-                                                    wvl_transmission=wvl_raw, wvl_cen_method="argmax")
+    wvl_central, filtered_data = apply_transmission(spectra=x_data, transmission=transmissions, wavelengths=wvl_raw,
+                                                    wvl_cen_method="argmax")
 
     if wvl_norm == "adaptive":
         wvl_norm = normalise_spectrum_at_wvl(wvl_central)

@@ -85,8 +85,8 @@ Example: `1110-11-110-111-000` represents OL, OPX, and CPX, but no PLG, with spe
 ### **Steps to Train a Model**
 
 1. Modify the configuration in `./modules/NN_config_composition.py` as needed.
-2. Write a function to read your dataset.
-3. Include interpolation steps (lines 69--72 in `./modules/NN_data.py`).
+2. Load your data, apply interpolation and normalisation, and resave it as a `.npz` file.
+3. Update the filename in `main_composition.py`.
 4. Run `main_composition.py`.
 
 ---

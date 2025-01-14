@@ -7,7 +7,7 @@ This repository contains a neural network algorithm for deriving mineral composi
 ## **Version Information**
 
 - Preferred version: **v3.0**
-- Python version: **3.10**
+- Python version: **3.10*
 - Required libraries: Refer to `requirements.txt`
 
 ---
@@ -43,8 +43,9 @@ Example: `1110-11-110-111-000` represents OL, OPX, and CPX, but no PLG, with spe
 2. **Reshape data**: Ensure your data has the shape `(N_spectra, len_spectrum)`.
    - For a single spectrum with shape `(len_spectrum,)`, reshape it to `(1, len_spectrum)`.
 3. **Interpolation**:
-   - Interpolate the spectra to match the model's expected wavelength grid.
-4. **Normalisation**: Normalise spectra according to the model's requirements.
+   - For pretrained models: Interpolate the spectra to match the model's expected wavelength grid.
+4. **Normalisation**:
+   - For pretrained models: Normalise spectra according to the model's requirements.
 
 ---
 
@@ -57,9 +58,9 @@ Example: `1110-11-110-111-000` represents OL, OPX, and CPX, but no PLG, with spe
    - **Parameters**:
      - List of model paths.
      - Input data (array or path to .npz file).
-     - Optional: `subdir` parameter to search for models if model paths are not absolute.
+     - Optional: `subdir` parameter to search for models in `_constants.py` paths.
 3. **Alternative Option**:
-   - Use [https://sirrah.pythonanywhere.com/](https://sirrah.pythonanywhere.com/) to evaluate spectra via a web interface.
+   - Use <a href="https://sirrah.pythonanywhere.com/" target="_blank">https://sirrah.pythonanywhere.com/</a> to evaluate spectra via a web interface.
    - Data must be in a .txt file with wavelengths in the first row or column and reflectances in subsequent rows or columns.
 
 ---
@@ -84,8 +85,8 @@ Example: `1110-11-110-111-000` represents OL, OPX, and CPX, but no PLG, with spe
 ### **Steps to Train a Model**
 
 1. Modify the configuration in `./modules/NN_config_composition.py` as needed.
-2. Load the data to a numpy array.
-3. Include interpolation and normalisation (set in `./modules/NN_config_composition.py`)
+2. Write a function to read your dataset.
+3. Include interpolation steps (lines 69--72 in `./modules/NN_data.py`).
 4. Run `main_composition.py`.
 
 ---
@@ -102,4 +103,5 @@ Example: `1110-11-110-111-000` represents OL, OPX, and CPX, but no PLG, with spe
 - Use the web interface for quick results if the local setup is challenging.
 - When training new models, ensure all spectra are interpolated to the correct grid and properly normalised.
 
-For additional assistance or clarifications, please feel free to contact me at david.korda@asu.cas.cz.
+For additional assistance or clarifications, please feel free to reach out.
+

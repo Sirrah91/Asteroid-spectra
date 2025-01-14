@@ -7,7 +7,7 @@ This repository contains a neural network algorithm for deriving mineral composi
 ## **Version Information**
 
 - Preferred version: **v3.0**
-- Python version: **3.10*
+- Python version: **3.10**
 - Required libraries: Refer to `requirements.txt`
 
 ---

@@ -1,6 +1,6 @@
 # Asteroid Spectra Neural Network Algorithm
 
-This repository contains a neural network algorithm for deriving mineral compositions from reflectance spectra. It is primarily designed for use with .npz files and can be adapted for specific spectral configurations. The following documentation provides detailed guidance for setting up, running, and customising the algorithm.
+This repository contains a neural network algorithm for deriving mineral compositions from reflectance spectra. It is primarily designed for use with .npz files and can be adapted for specific spectral configurations. The following documentation provides detailed guidance for setting up, running, and customising the algorithm. For any questions or comments, feel free to contact me at david.korda@asu.cas.cz.
 
 ---
 

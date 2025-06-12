@@ -1,11 +1,12 @@
 # This file contains global parameters defining the neural network
-import numpy as np
-from os import path
-
 from modules.utilities import safe_arange
 from modules.NN_HP import gimme_hyperparameters
 from modules.NN_config_parse import gimme_model_grid, gimme_used_quantities, config_check, used_to_bin, gimme_num_labels
 from modules._constants import _sep_out
+
+import numpy as np
+from os import path
+
 
 comp_output_setup = {
     "minerals": np.array([True,  # olivine
@@ -21,12 +22,12 @@ comp_output_setup = {
 
 # Re-interpolate input data to different resolutions (see reinterpolate_data in load_data.py)
 comp_grid_setup = {
-    "instrument": "ASPECT_vis-nir1-nir2-swir_30",
+    "instrument": "ASPECT-vis-nir1-nir2",  # "HS-H", "ASPECT-vis-nir1-nir2",
 
-    "interpolate_to": "full",  # "full", "Itokawa", "Eros"; only if "instrument" is None
+    "interpolate_to": None,  # "full", "Itokawa", "Eros"; only if "instrument" is None
 
     # used when "instrument" is None and interpolate_to is unknown
-    "wvl_grid": safe_arange(750., 1550., 20., endpoint=True),
+    "wvl_grid": safe_arange(820., 1600., 20., endpoint=True),
     # used when interpolate_to is unknown
     "wvl_norm": "adaptive"  # float, None, or "adaptive" (don't use None unless you have a good reason for that)
 }
@@ -56,7 +57,7 @@ comp_filtering_setup = {
 
 comp_data_split_setup = {
     "val_portion": 0.2,  # Set the fraction of data for validation
-    "test_portion": 0.2  # Set the fraction of data for tests
+    "test_portion": 0.0  # Set the fraction of data for tests
 }
 
 comp_model_setup = {

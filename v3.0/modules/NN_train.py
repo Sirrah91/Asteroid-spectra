@@ -1,22 +1,3 @@
-from os import environ
-environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-
-import numpy as np
-import pandas as pd
-from datetime import datetime
-from tensorflow.keras.callbacks import TerminateOnNaN, ReduceLROnPlateau, ModelCheckpoint
-from modules.NN_callbacks import ReturnBestEarlyStopping
-from pprint import pprint
-import json
-import warnings
-from os import path, walk
-from typing import Literal
-from itertools import chain
-
-from keras_tuner.tuners import BayesianOptimization, RandomSearch
-import keras_tuner as kt
-from tensorflow.keras.models import Model
-
 from modules.NN_models import MyHyperModel
 
 from modules.control_plots import plot_model_history, plot_corr_matrix, plot_model_layer
@@ -32,6 +13,23 @@ from modules._constants import (_path_model, _path_hp_tuning, _model_suffix, _se
 # defaults only
 from modules.NN_config_composition import comp_model_setup
 from modules.NN_config_taxonomy import tax_model_setup
+
+import numpy as np
+import pandas as pd
+from datetime import datetime
+from tensorflow.keras.callbacks import TerminateOnNaN, ReduceLROnPlateau, ModelCheckpoint
+from modules.NN_callbacks import ReturnBestEarlyStopping
+from pprint import pprint
+import json
+import h5py
+import warnings
+from os import path, walk
+from typing import Literal
+from itertools import chain
+
+from keras_tuner.tuners import BayesianOptimization, RandomSearch
+import keras_tuner as kt
+from tensorflow.keras.models import Model
 
 
 def train(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np.ndarray,
@@ -87,7 +85,7 @@ def train(x_train: np.ndarray, y_train: np.ndarray, x_val: np.ndarray, y_val: np
     # else Model weights were set by EarlyStopping
 
     # save the model here
-    model.save(model_filename)
+    save_model(model, model_filename=model_filename, params=params)
 
     if not _quiet:
         print("Model was saved to disk")
@@ -131,12 +129,12 @@ def fit_model(model: Model,
         validation_data, monitoring["objective"] = None, monitoring["objective"].replace("val_", "")
 
     # parameters in early stopping and reduce LR
-    stopping_patience = int(params["num_epochs"] * 0.3)
-    lr_factor = 1.
+    stopping_patience = int(params["num_epochs"])  # np.min((int(params["num_epochs"] * 0.3), 500))
+    lr_factor = 0.5
     callbacks = collect_callbacks(monitoring=monitoring,
                                   model_filename=model_filename,
                                   stopping_patience=stopping_patience,
-                                  reducelr_patience=stopping_patience // 2,
+                                  reducelr_patience=stopping_patience // 10,
                                   lr_factor=lr_factor,
                                   verbose=verbose)
 
@@ -147,6 +145,34 @@ def fit_model(model: Model,
     return model
 
 
+def save_model(model: Model, model_filename: str, params: dict | None = None) -> None:
+    check_dir(model_filename)
+
+    # Save model to project dir with a timestamp
+    if path.isfile(model_filename):
+        # Model weights were saved by ModelCheckpoint; restore the best one here
+        model.load_weights(model_filename)
+    # else Model weights were set by EarlyStopping
+
+    model.save(model_filename)
+
+    if params is not None:
+        with h5py.File(model_filename, "a") as f:
+            # Check if "params" already exists
+            if "params" not in f.attrs:
+                # load with ast.literal_eval(f.attrs["params"])
+                f.attrs["params"] = str(params)
+
+    with h5py.File(model_filename, "a") as f:
+        # Check if "layer_names" already exists
+        if "layer_names" not in f.attrs:
+            layer_names = [layer.name for layer in model.layers]
+            f.attrs["layer_names"] = layer_names
+
+    if not _quiet:
+        print("Model was saved to disk")
+
+
 def collect_callbacks(monitoring: dict[str, str],
                       model_filename: str | None = None,
                       stopping_patience: int = 0,
@@ -155,10 +181,12 @@ def collect_callbacks(monitoring: dict[str, str],
                       verbose: int = 2) -> list:
     callbacks = [TerminateOnNaN()]
 
+    """
     if model_filename is not None:  # good backup if something happens during training
         checkpoint = ModelCheckpoint(model_filename, monitor=monitoring["objective"], mode=monitoring["direction"],
                                      save_best_only=True, save_weights_only=True, verbose=verbose)
         callbacks.append(checkpoint)
+    """
 
     if stopping_patience > 0:
         # Set early stopping monitor so the model will stop training if it does not improve anymore

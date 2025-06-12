@@ -1,20 +1,7 @@
-import numpy as np
-from copy import deepcopy
-
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from functools import reduce
-from scipy.interpolate import interp1d
-from scipy.integrate import trapezoid
-from scipy.stats import norm
-from tensorflow.keras.utils import to_categorical
-from typing import Literal
-import warnings
-
 from modules.utilities import normalise_in_rows, normalise_array, stack, safe_arange, my_polyfit, is_empty, gimme_kind
 
 from modules.utilities_spectra import gimme_indices, used_indices, normalise_spectra, if_no_test_data
-from modules.utilities_spectra import join_data, load_npz, apply_transmission
+from modules.utilities_spectra import join_data, load_npz, apply_transmission, apply_transmission_OLD
 
 from modules.NN_data_grids import normalise_spectrum_at_wvl
 
@@ -29,6 +16,19 @@ from modules._constants import _sep_in, _sep_out, _rnd_seed, _quiet
 from modules.NN_config_composition import comp_grid, comp_filtering_setup, comp_data_split_setup
 from modules.NN_config_composition import minerals_used, endmembers_used
 from modules.NN_config_taxonomy import tax_grid, tax_data_split_setup, tax_filtering_setup, classes
+
+import numpy as np
+from copy import deepcopy
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from functools import reduce
+from scipy.interpolate import interp1d
+from scipy.integrate import trapezoid
+from scipy.stats import norm
+from tensorflow.keras.utils import to_categorical
+from typing import Literal
+import warnings
 
 
 def load_composition_data(filename_data: str, clean_dataset: bool = True, keep_all_labels: bool = False,
@@ -87,7 +87,6 @@ def load_composition_data(filename_data: str, clean_dataset: bool = True, keep_a
 
     # convert data to working precision
     x_train, y_train = np.array(x_train, dtype=_wp), np.array(y_train, dtype=_wp)
-    wavelengths = np.array(wavelengths, dtype=_wp)
 
     if return_meta:
         if return_wavelengths:
@@ -141,7 +140,6 @@ def load_taxonomy_data(filename_data: str, clean_dataset: bool = True, return_me
 
     # convert data to working precision
     x_train, y_train = np.array(x_train, dtype=_wp), np.array(y_train, dtype=_wp)
-    wavelengths = np.array(wavelengths, dtype=_wp)
 
     if return_meta:
         if return_wavelengths:
@@ -392,13 +390,20 @@ def split_data(x_data: np.ndarray, y_data: np.ndarray, model_type: Literal["comp
 
 def reinterpolate_data(x_data: np.ndarray, wvl_old: np.ndarray, wvl_new: np.ndarray | None = None,
                        wvl_new_norm: float | str | None = None,
-                       instrument: str | None = None) -> tuple[np.ndarray, ...]:
+                       instrument: str | None = None) -> tuple[tuple[np.ndarray, float | None], np.ndarray]:
     # re-interpolate the spectra to the given wavelength range and the given spacing
     # re-normalise it to the given wavelength
 
+    if wvl_new_norm == "adaptive":
+        wvl_new_norm = normalise_spectrum_at_wvl(wvl_new)
+
     if instrument is not None:
         print(f"Re-interpolating the data to the {instrument} resolution.")
+        wvl_new, filtered_data = apply_transmission_filter(instrument=instrument, wvl_data=wvl_old,
+                                                           x_data=x_data, wvl_norm=wvl_new_norm)
+        """
         if "ASPECT" in instrument:
+            
             specifications = instrument.split(_sep_out)
             if not(len(specifications) == 3 and specifications[-1].isdigit()):
                 raise ValueError(f'Invalid ASPECT specification ({instrument}). '
@@ -407,18 +412,20 @@ def reinterpolate_data(x_data: np.ndarray, wvl_old: np.ndarray, wvl_new: np.ndar
             usable_channels = tuple(specifications[1].split(_sep_in))
             targeted_resolution = float(specifications[2])
 
-            wvl_new, filtered_data = apply_aspect_filter(wvl_old, x_data,
+            wvl_new, filtered_data = apply_aspect_filter_OLD(wvl_old, x_data,
                                                          targeted_resolution=targeted_resolution,
                                                          wvl_norm=wvl_new_norm,
                                                          usable_channels=usable_channels)
-
+            
         elif "HS-H" in instrument:
-            wvl_new, filtered_data = apply_hyperscout_filter(wvl_old, x_data, wvl_norm=wvl_new_norm)
+            wvl_new, filtered_data = apply_hyperscout_filter(instrument=instrument, wvl_data=wvl_old, 
+                                                               x_data=x_data, wvl_norm=wvl_new_norm)
 
         else:
             raise ValueError("Unknown instrument.")
+        """
 
-        return np.array(wvl_new, dtype=_wp), np.array(filtered_data, dtype=_wp)
+        return (np.array(wvl_new, dtype=_wp), wvl_new_norm), np.array(filtered_data, dtype=_wp)
 
     if wvl_new is not None:
         m, M = int(np.round(np.min(wvl_new))), int(np.round(np.max(wvl_new)))
@@ -435,22 +442,19 @@ def reinterpolate_data(x_data: np.ndarray, wvl_old: np.ndarray, wvl_new: np.ndar
         # new resolution
         x_data = interp1d(wvl_old, x_data, kind=gimme_kind(wvl_old))(wvl_new)
 
-        if wvl_new_norm == "adaptive":
-            wvl_new_norm = normalise_spectrum_at_wvl(wvl_new)
-
         if wvl_new_norm is not None:
             x_data = normalise_spectra(x_data, wvl_new, wvl_norm_nm=wvl_new_norm)
 
-        return np.array(wvl_new, dtype=_wp), np.array(x_data, dtype=_wp)
+        return (np.array(wvl_new, dtype=_wp), wvl_new_norm), np.array(x_data, dtype=_wp)
 
-    return np.array(wvl_old, dtype=_wp), np.array(x_data, dtype=_wp)
+    return (np.array(wvl_old, dtype=_wp), wvl_new_norm), np.array(x_data, dtype=_wp)
 
 
-def apply_aspect_filter(wvl_data: np.ndarray, x_data: np.ndarray,
-                        targeted_resolution: float = 30.,
-                        wvl_norm: float | str | None = None,
-                        usable_channels: tuple[str, ...] = ("vis", "nir1", "nir2", "swir"),
-                        remove_overlaps: bool = False) -> tuple[np.ndarray, ...]:
+def apply_aspect_filter_OLD(wvl_data: np.ndarray, x_data: np.ndarray,
+                            targeted_resolution: float = 30.,
+                            wvl_norm: float | str | None = None,
+                            usable_channels: tuple[str, ...] = ("vis", "nir1", "nir2", "swir"),
+                            remove_overlaps: bool = False) -> tuple[np.ndarray, ...]:
     fwhm_to_sigma = 1. / np.sqrt(8. * np.log(2.))
 
     vis = safe_arange(650., 900., targeted_resolution, endpoint=True)
@@ -503,9 +507,10 @@ def apply_aspect_filter(wvl_data: np.ndarray, x_data: np.ndarray,
 
     # one Gaussian per row
     gauss = np.transpose(norm.pdf(np.reshape(wvl_data, (len(wvl_data), 1)), loc=wvl_new, scale=sigma_new))
+    gauss = normalise_in_rows(gauss)
 
-    wvl_new, filtered_data = apply_transmission(spectra=x_data, transmission=gauss, wavelengths=wvl_data,
-                                                wvl_cen_method="argmax")
+    wvl_new, filtered_data = apply_transmission_OLD(spectra=x_data, transmission=gauss, wavelengths=wvl_data,
+                                                    wvl_cen_method="argmax")
 
     if wvl_norm == "adaptive":
         wvl_norm = normalise_spectrum_at_wvl(wvl_new)
@@ -516,27 +521,73 @@ def apply_aspect_filter(wvl_data: np.ndarray, x_data: np.ndarray,
     return np.array(wvl_new, dtype=_wp), np.array(filtered_data, dtype=_wp)
 
 
-def apply_hyperscout_filter(wvl_data: np.ndarray, x_data: np.ndarray,
-                            wvl_norm: float | str | None = None) -> tuple[np.ndarray, ...]:
-    HS = load_npz(f"HS{_sep_in}H{_sep_out}transmission.npz", subfolder="HyperScout")
-    wvl_raw, transmissions = HS["wavelengths"], HS["transmissions"]  # wvl_raw are sorted
+def load_transmission(instrument: str) -> tuple[np.ndarray, ...]:
+    if "HS-H" in instrument:
+        data = load_npz(f"HS{_sep_in}H{_sep_out}transmission.npz", subfolder="HyperScout")
+        wvl_transmissions, transmissions = data["wavelengths"].ravel(), data["transmissions"]  # wvl_raw are sorted
+        wvl_central = data["central_wavelengths"]
 
-    mask = 665. <= wvl_raw  # to remove additional peaks (done with broadband filter??)
-    wvl_raw, transmissions = wvl_raw[mask], transmissions[:, mask]
+    elif "ASPECT" in instrument:
+        data = load_npz(f"ASPECT{_sep_out}transmission.npz", subfolder="ASPECT")
+        wvl_transmissions, transmissions, wvl_central = data["wavelengths"].ravel(), [], []
+        if "vis" in instrument:
+            transmissions.append(data["vis"][()]["transmissions"])
+            wvl_central.append(data["vis"][()]["central_wavelengths"])
+        if "nir1" in instrument:
+            transmissions.append(data["nir1"][()]["transmissions"])
+            wvl_central.append(data["nir1"][()]["central_wavelengths"])
+        if "nir2" in instrument:
+            transmissions.append(data["nir2"][()]["transmissions"])
+            wvl_central.append(data["nir2"][()]["central_wavelengths"])
+        if "swir" in instrument:
+            transmissions.append(data["swir"][()]["transmissions"])
+            wvl_central.append(data["swir"][()]["central_wavelengths"])
 
-    areas = trapezoid(y=transmissions, x=wvl_raw)
+        transmissions = np.concatenate(transmissions, axis=0)
+        wvl_central = np.concatenate(wvl_central)
+    else:
+        raise ValueError("Unknown instrument.")
 
-    mask = np.logical_and(wvl_raw >= np.min(wvl_data), wvl_raw <= np.max(wvl_data))
-    wvl_raw, transmissions = wvl_raw[mask], transmissions[:, mask]
+    if np.ndim(transmissions) == 1:
+        transmissions = np.reshape(transmissions, (1, -1))
+
+    # sort wavelengths
+    idx = np.argsort(wvl_transmissions)
+    wavelengths, transmissions = wvl_transmissions[idx], transmissions[:, idx]
+
+    # sort transmissions
+    idx = np.argsort(wvl_central)
+    wvl_central, transmissions = wvl_central[idx], transmissions[idx]
+
+    return wvl_transmissions, transmissions, wvl_central
+
+
+def apply_transmission_filter(instrument: str, wvl_data: np.ndarray, x_data: np.ndarray,
+                              wvl_norm: float | str | None = None) -> tuple[np.ndarray, ...]:
+    wvl_transmissions, transmissions, wvl_central = load_transmission(instrument)
+
+    transmissions = normalise_in_rows(transmissions)
+
+    # cut unseen wavelengths (same as setting transmission to zero there, but no need of extrapolation)
+    mask = np.logical_and(wvl_transmissions >= np.min(wvl_data), wvl_transmissions <= np.max(wvl_data))
+    wvl_transmissions, transmissions = wvl_transmissions[mask], transmissions[:, mask]
 
     # this is here to delete channels which centres are not covered
-    mask = trapezoid(y=transmissions, x=wvl_raw) / areas >= 0.5
+    """
+    areas = trapezoid(y=transmissions, x=wvl_transmissions)
+    mask = trapezoid(y=transmissions, x=wvl_transmissions) / areas >= 0.5
     transmissions = transmissions[mask]
+    """
 
-    x_data = interp1d(wvl_data, x_data, kind=gimme_kind(wvl_data))(wvl_raw)
+    x_data = interp1d(wvl_data, x_data, kind=gimme_kind(wvl_data))(wvl_transmissions)
+    x_data = np.clip(x_data, a_min=0., a_max=None)  # Just in case
 
-    wvl_central, filtered_data = apply_transmission(spectra=x_data, transmission=transmissions, wavelengths=wvl_raw,
-                                                    wvl_cen_method="argmax")
+    filtered_data = apply_transmission(spectra=x_data, transmission=transmissions)
+
+    if "swir" in instrument:
+        print("ASPECT SWIR: Cutting the last three wavelengths that are not well-covered by the prepared data.")
+        filtered_data = filtered_data[:, :-3]
+        wvl_central = wvl_central[:-3]
 
     if wvl_norm == "adaptive":
         wvl_norm = normalise_spectrum_at_wvl(wvl_central)
@@ -809,7 +860,7 @@ def labels_to_categories(y_data: np.ndarray,
             warnings.warn(f"Labels \"{', '.join(unused_labels)}\" are not used. Check the data and config.")
 
     try:
-        return to_categorical(y_data, num_labels, dtype=_wp)
+        return to_categorical(y_data, num_labels).astype(dtype=_wp)
     except IndexError:
         raise IndexError("There are more categories in your data than what is defined in the config or they have "
                          "higher indices. Check the data and config.")

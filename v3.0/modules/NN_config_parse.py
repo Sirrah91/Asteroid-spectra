@@ -1,10 +1,12 @@
-import numpy as np
-from warnings import warn
 from modules.utilities import safe_arange, flatten_list
 from modules.NN_data_grids import data_grids, check_grid, normalise_spectrum_at_wvl
 from modules.NN_classes import gimme_list_of_classes
+# from modules.NN_data import load_transmission
 
 from modules._constants import _wp, _sep_in
+
+import numpy as np
+from warnings import warn
 
 
 def config_check(output_setup: dict, grid_setup: dict, data_split_setup: dict, model_options: dict) -> None:
@@ -111,14 +113,31 @@ def gimme_model_grid(instrument: str | None, interpolate_to: str | None,
         model_grid = _sep_in.join(str(x) for x in [m, M, res, norm_for_grid])
 
     else:
-        model_grid = instrument
-        new_wvl_grid = None
         new_wvl_grid_normalisation = wvl_norm
+        if new_wvl_grid_normalisation == "adaptive":
+            if "HS-H" in instrument:
+                new_wvl_grid_normalisation = 753.8210951243377
+            elif "swir" in instrument:
+                new_wvl_grid_normalisation = 2348.2704323918992
+            elif "nir2" in instrument:
+                new_wvl_grid_normalisation = 1538.602977169707
+            elif "vis" in instrument:
+                new_wvl_grid_normalisation = 743.9567391593046
+            elif "nir1" in instrument:
+                new_wvl_grid_normalisation = 942.2298860692123
+
+        if new_wvl_grid_normalisation is None:
+            norm_for_grid = None
+        else:
+            norm_for_grid = int(np.round(new_wvl_grid_normalisation))
+
+        model_grid = _sep_in.join(str(x) for x in [instrument, norm_for_grid])
+        new_wvl_grid = None
 
     return {"model_grid": model_grid,
             "instrument": instrument,
             "wvl_grid": new_wvl_grid,
-            "wvl_norm": new_wvl_grid_normalisation}
+            "wvl_norm": float(new_wvl_grid_normalisation)}
 
 
 def gimme_used_quantities(minerals: np.ndarray,

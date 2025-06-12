@@ -1,15 +1,5 @@
 from modules.control_plots import *
 
-from typing import Literal
-import numpy as np
-from copy import deepcopy
-import matplotlib.patches as patches
-import cv2
-from glob import glob
-from os import path
-from scipy.interpolate import interp1d
-# from matplotlib.ticker import FormatStrFormatter
-
 from modules.BAR_BC_method import calc_BAR_BC, calc_composition, filter_data_mask
 
 from modules.NN_data import numbers_to_classes
@@ -24,6 +14,16 @@ from modules.NN_config_parse import gimme_num_minerals, gimme_endmember_counts
 from modules._constants import _path_data, _path_asteroid_images, _sep_out, _sep_in, _label_true_name, _label_pred_name
 from modules._constants import _spectra_name, _wavelengths_name, _label_name, _config_name, _path_model
 from modules._constants import _path_accuracy_tests
+
+from typing import Literal
+import numpy as np
+from copy import deepcopy
+import matplotlib.patches as patches
+import cv2
+from glob import glob
+from os import path
+from scipy.interpolate import interp1d
+# from matplotlib.ticker import FormatStrFormatter
 
 
 def plot_PC1_PC2_NN(y_pred: np.ndarray, offset: float = 0.) -> None:
@@ -834,6 +834,7 @@ def compare_spectra_with_instrument(filename: str,
     # apply instrument transmission function
     wavelengths_intrument, avg_spectra_instrument = reinterpolate_data(avg_spectra, wavelengths, wvl_new_norm=None,
                                                                        instrument=instrument)
+    wavelengths_intrument, wavelengths_norm = wavelengths_intrument
 
     # interpolate avg_spectra to wavelengths_instrument grid
     avg_spectra = interp1d(wavelengths, avg_spectra, kind=gimme_kind(wavelengths))(wavelengths_intrument)

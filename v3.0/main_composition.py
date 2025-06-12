@@ -25,9 +25,6 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-from os import environ
-environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-
 from modules.NN_data import load_composition_data as load_data
 from modules.NN_data import split_composition_data_proportional as split_data_proportional
 from modules.NN_train import train, hp_tuner
@@ -36,8 +33,9 @@ import numpy as np
 from tqdm import tqdm
 
 from modules.utilities_spectra import collect_all_models
+from modules.utilities import flatten_list, find_nearest
 from modules.NN_config_composition import (comp_model_setup, minerals_used, endmembers_used, comp_grid,
-                                           comp_filtering_setup, comp_data_split_setup)
+                                           comp_filtering_setup, comp_data_split_setup, mineral_names, endmember_names)
 from modules._constants import _sep_in, _sep_out
 
 train_new_model = True  # If you have a trained model, just run evaluate(model_names, filename_data_or_data)
@@ -57,14 +55,16 @@ def pipeline(num_models: int = 1) -> np.ndarray:
             filename_train_data = f"mineral{_sep_in}spectra{_sep_out}denoised.npz"
 
         # Load the data
-        x_train, y_train = load_data(filename_train_data, clean_dataset=True,
-                                     used_minerals=minerals_used, used_endmembers=endmembers_used,
-                                     grid_setup=comp_grid, filtering_setup=comp_filtering_setup)
+        x_train, y_train, wvl = load_data(filename_train_data, clean_dataset=True, return_wavelengths=True,
+                                          used_minerals=minerals_used, used_endmembers=endmembers_used,
+                                          grid_setup=comp_grid, filtering_setup=comp_filtering_setup)
 
         # Split the data
         x_train, y_train, x_val, y_val, x_test, y_test = split_data_proportional(x_train, y_train,
-                                                                                 val_portion=comp_data_split_setup["val_portion"],
-                                                                                 test_portion=comp_data_split_setup["test_portion"],
+                                                                                 val_portion=comp_data_split_setup[
+                                                                                     "val_portion"],
+                                                                                 test_portion=comp_data_split_setup[
+                                                                                     "test_portion"],
                                                                                  used_minerals=minerals_used)
 
         if tune_hyperparameters:
@@ -75,11 +75,20 @@ def pipeline(num_models: int = 1) -> np.ndarray:
                                    metrics=comp_model_setup["metrics"])
         else:
             # Create, train, and save the neural network
-            model_names = [train(x_train, y_train, x_val, y_val, params=comp_model_setup["params"],
+            used_quantities = flatten_list([np.array(mineral_names)[minerals_used]]
+                                           + [np.array(endmember_names[i])[endmembers_used[i]]
+                                              for i in range(len(endmembers_used))])
+
+            params = {"quantities": {name: index for index, name in enumerate(used_quantities)},
+                      "instrument": comp_grid["instrument"],
+                      "wavelengths": tuple(wvl[0]),
+                      "normalised_at": find_nearest(wvl[0], wvl[1]),
+                      } | comp_model_setup["params"]
+            model_names = [train(x_train, y_train, x_val, y_val, params=params,
                                  monitoring=comp_model_setup["monitoring"],
                                  model_subdir=model_subdir, model_name=model_name,
                                  metrics=comp_model_setup["metrics"]) for _ in range(num_models)]
-        
+
         # Evaluate it on the test data
         predictions, accuracy = evaluate_test_data(model_names, x_test, y_test, x_val=x_val, y_val=y_val,
                                                    x_train=x_train, y_train=y_train,
@@ -109,7 +118,7 @@ if __name__ == "__main__":
     if tune_hyperparameters:
         pipeline()
     elif train_new_model:
-        for _ in tqdm(range(1)):
+        for _ in tqdm(range(10)):
             y_pred = pipeline()
     else:
         y_pred = pipeline()

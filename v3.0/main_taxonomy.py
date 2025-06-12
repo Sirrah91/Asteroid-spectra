@@ -25,9 +25,6 @@ OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHE
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 
-from os import environ
-environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
-
 from modules.NN_data import load_taxonomy_data as load_data
 from modules.NN_data import split_taxonomy_data_proportional as split_data_proportional
 from modules.NN_data import labels_to_categories
@@ -37,6 +34,7 @@ import numpy as np
 from tqdm import tqdm
 
 from modules.utilities_spectra import collect_all_models
+from modules.utilities import find_nearest
 from modules.NN_config_taxonomy import (tax_model_setup, num_labels_in_file, classes, tax_grid, tax_filtering_setup,
                                         tax_data_split_setup)
 from modules._constants import _sep_in, _sep_out
@@ -58,8 +56,9 @@ def pipeline(num_models: int = 1) -> np.ndarray:
             raise ValueError("There are no non-normalised data for training.")
 
         # Load the data
-        x_train, y_train = load_data(filename_train_data, clean_dataset=True, used_classes=classes,
-                                     grid_setup=tax_grid, filtering_setup=tax_filtering_setup)
+        x_train, y_train, wvl = load_data(filename_train_data, clean_dataset=True, used_classes=classes,
+                                          return_wavelengths=True, grid_setup=tax_grid,
+                                          filtering_setup=tax_filtering_setup)
 
         # Split the data
         x_train, y_train, x_val, y_val, x_test, y_test = split_data_proportional(x_train, y_train,
@@ -78,7 +77,12 @@ def pipeline(num_models: int = 1) -> np.ndarray:
                                    model_subdir=model_subdir, model_name=model_name, metrics=tax_model_setup["metrics"])
         else:
             # Create, train, and save the neural network
-            model_names = [train(x_train, y_train, x_val, y_val, params=tax_model_setup["params"],
+            params = {"classes": classes,
+                      "instrument": tax_grid["instrument"],
+                      "wavelengths": tuple(wvl[0]),
+                      "normalised_at": find_nearest(wvl[0], wvl[1]),
+                      } | tax_model_setup["params"]
+            model_names = [train(x_train, y_train, x_val, y_val, params=params,
                                  monitoring=tax_model_setup["monitoring"],
                                  model_subdir=model_subdir, model_name=model_name,
                                  metrics=tax_model_setup["metrics"]) for _ in range(num_models)]
